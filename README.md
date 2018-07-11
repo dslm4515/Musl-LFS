@@ -11,3 +11,5 @@ Goals:
 <li>(2) Currently, I only have computers with 32 and 64 bit x86 CPUs (i.e. Intel Core Duo). In the future, I would like this project to expand to the ARM architecture </li>
 <li>(3) First build had Stack Smashing Protection (SSP) defaulted to High, which made the build process harder. In the future, I would like to enable SSP again.
 </ul>
+
+Once the build is refined, I will convert project to a series of scripts and a HTML "book".
