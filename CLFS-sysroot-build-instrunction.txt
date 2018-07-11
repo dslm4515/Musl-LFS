@@ -1,0 +1,1998 @@
+# LFS-8.2-musl-runit-i686 Sysroot&Chroot-Method
+# Variables:
+# CLFS=/mnt/clfs
+# CLFS_TARGET=i686-linux-musl
+# CLFS_CPU=i686
+# CLFS_HOST=x86_64-cross-linux-musl
+# ** Double check symbolic links for libs **
+
+# Create root filesystem directories:
+mkdir -pv ${CLFS}/{bin,boot,dev,{etc/,}opt,home,lib,mnt}
+mkdir -pv ${CLFS}/{proc,media/{floppy,cdrom},sbin,srv,sys}
+mkdir -pv ${CLFS}/var/{lock,log,mail,run,spool}
+mkdir -pv ${CLFS}/var/{opt,cache,lib/{misc,locate},local}
+install -dv -m 0750 ${CLFS}/root
+install -dv -m 1777 ${CLFS}{/var,}/tmp
+mkdir -pv ${CLFS}/usr/{,local/}{bin,include,lib,sbin,src}
+mkdir -pv ${CLFS}/usr/{,local/}share/{doc,info,locale,man}
+mkdir -pv ${CLFS}/usr/{,local/}share/{misc,terminfo,zoneinfo}
+mkdir -pv ${CLFS}/usr/{,local/}share/man/man{1,2,3,4,5,6,7,8}
+mkdir -pv ${CLFS}/run
+for dir in ${CLFS}/usr{,/local}; do
+  ln -sfnv share/{man,doc,info} ${dir}
+done
+
+#Creating the passwd, group, and log Files
+cat > ${CLFS}/etc/passwd << "EOF"
+root::0:0:root:/root:/bin/bash
+EOF
+cat > ${CLFS}/etc/group << "EOF"
+root:x:0:
+bin:x:1:
+sys:x:2:
+kmem:x:3:
+tty:x:4:
+tape:x:5:
+daemon:x:6:
+floppy:x:7:
+disk:x:8:
+lp:x:9:
+dialout:x:10:
+audio:x:11:
+video:x:12:
+utmp:x:13:
+usb:x:14:
+cdrom:x:15:
+EOF
+touch ${CLFS}/var/run/utmp ${CLFS}/var/log/{btmp,lastlog,wtmp}
+chmod -v 664 ${CLFS}/var/run/utmp ${CLFS}/var/log/lastlog
+chmod -v 600 ${CLFS}/var/log/btmp
+
+# Toolchain: Linux headers
+# Version: 4.16.3
+make mrproper
+make ARCH=${CLFS_ARCH} headers_check
+make ARCH=${CLFS_ARCH} INSTALL_HDR_PATH=${CLFS}/cross-tools/${CLFS_TARGET} headers_install
+
+#Toolchain: Binutils 2.30
+#Adjusted for musl-libc
+mkdir build && cd  build
+../configure \
+   --prefix=${CLFS}/cross-tools \
+   --target=${CLFS_TARGET} \
+   --with-sysroot=${CLFS}/cross-tools/${CLFS_TARGET} \
+   --disable-nls \
+   --disable-multilib \
+   --enable-deterministic-archives \
+   --disable-compressed-debug-sections \
+   --disable-werror \
+   --disable-ppl-version-check \
+   --disable-cloog-version-check
+
+make configure-host
+make && make install
+
+# Toolchain: GCC static
+# verison 7.3.1
+# using dragora musl patches
+tar -xf ../mpfr-4.0.1.tar.xz
+mv -v mpfr-4.0.1 mpfr
+tar -xf ../gmp-6.1.2.tar.xz
+mv -v gmp-6.1.2 gmp
+tar -xf ../mpc-1.1.0.tar.gz
+mv -v mpc-1.1.0 mpc
+patch -Np1 -i ../gcc-7.3.0-dragora-musl-fixes.patch
+mkdir build && cd  build
+	../configure \
+	  --prefix=${CLFS}/cross-tools \
+	  --build=${CLFS_HOST} \
+	  --host=${CLFS_HOST} \
+	  --target=${CLFS_TARGET} \
+	  --with-sysroot=${CLFS}/cross-tools/${CLFS_TARGET} \
+	  --disable-nls  \
+	  --disable-shared \
+	  --without-headers \
+	  --with-newlib \
+	  --disable-decimal-float \
+	  --disable-libgomp \
+	  --disable-libmudflap \
+	  --disable-libssp \
+	  --disable-libatomic \
+	  --disable-libquadmath \
+	  --disable-threads \
+	  --enable-languages=c \
+	  --disable-multilib \
+	  --with-arch=${CLFS_CPU} \
+	  --enable-clocale=generic \
+	  --disable-decimal-float \
+	  --disable-libitm \
+	  --disable-libvtv \
+	  --disable-libcilkrts \
+	  --disable-libstdcxx \
+	  --disable-gnu-indirect-function \
+	  --disable-libsanitizer \
+	  --disable-libmpx \
+	  --without-ppl \
+	  --without-cloog 
+make all-gcc all-target-libgcc
+make install-gcc install-target-libgcc
+
+# LibC - Musl
+./configure \
+  CROSS_COMPILE=${CLFS_TARGET}- \
+  --prefix=/usr \
+  --target=${CLFS_TARGET} 
+make
+DESTDIR=${CLFS} make install
+
+# ToolChain: GCC Cross Compiler Final
+# Verison: 7.3.0
+# Adjusted for musl
+tar -xf ../mpfr-4.0.1.tar.xz
+mv -v mpfr-4.0.1 mpfr
+tar -xf ../gmp-6.1.2.tar.xz
+mv -v gmp-6.1.2 gmp
+tar -xf ../mpc-1.1.0.tar.gz
+mv -v mpc-1.1.0 mpc
+patch -Np1 -i ../gcc-7.3.0-dragora-musl-fixes.patch
+mkdir build && cd  build
+AR=ar LDFLAGS="-Wl,-rpath,${CLFS}/cross-tools/lib" \
+../configure \
+    --prefix=${CLFS}/cross-tools \
+    --build=${CLFS_HOST} \
+    --host=${CLFS_HOST} \
+    --target=${CLFS_TARGET} \
+    --disable-multilib \
+    --with-sysroot=${CLFS} \
+    --disable-nls \
+    --enable-shared \
+    --enable-languages=c,c++ \
+    --enable-__cxa_atexit \
+    --enable-c99 \
+    --enable-long-long \
+    --enable-threads=posix \
+    --enable-clocale=generic \
+    --enable-libstdcxx-time \
+    --enable-checking=release \
+    --enable-fully-dynamic-string \
+    --disable-symvers \
+    --disable-gnu-indirect-function \
+    --disable-libmudflap \
+    --disable-libsanitizer \
+    --disable-libmpx \
+    --disable-lto-plugin 
+make AS_FOR_TARGET="${CLFS_TARGET}-as" \
+    LD_FOR_TARGET="${CLFS_TARGET}-ld"
+make install
+
+# Toolchain: File
+# Version: 5.32
+./configure --prefix=${CLFS}/cross-tools
+make && make install
+
+# Toolchain: Groff
+# Version: 1.22.3
+PAGE=letter ./configure --prefix=${CLFS}/cross-tools --without-x
+make -j1 && make install
+
+# Toolchain: Shadow
+# Version: 4.1.4.2
+# **Need to update patch for newer version of package**
+# **Remove references to ruserok for Musl**
+patch -Np1 -i ../shadow-4.1.4.2-sysroot_hacks_musl.patch
+cat > config.cache << EOF
+shadow_cv_passwd_dir="${CLFS}/bin"
+EOF
+cat >> config.cache << EOF
+ac_cv_func_lckpwdf=no
+EOF
+./configure --prefix=${CLFS}/cross-tools \
+    --sbindir=${CLFS}/cross-tools/bin \
+    --sysconfdir=$CLFS/etc \
+    --disable-shared \
+    --without-libpam \
+    --without-audit \
+    --without-selinux \
+    --program-prefix=${CLFS_TARGET}- \
+    --without-nscd --cache-file=config.cache
+cp config.h{,.orig}
+sed "/PASSWD_PROGRAM/s/passwd/${CLFS_TARGET}-&/" config.h.orig > config.h
+make && make install
+
+# Toolchain: Ncurses
+# Version: 6.1
+./configure --prefix=${CLFS}/cross-tools \
+    --without-debug --without-shared
+make -C include
+make -C progs tic
+install -m755 progs/tic ${CLFS}/cross-tools/bin
+
+# Toolchain: Sysroot Wrapper
+# create source:
+cat > sysroot_wrapper.c << "EOF"
+#include <sys/wait.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+
+char *sysrootdir = "";
+
+int main(int argc, char *argv[]) {
+  sysrootdir = getenv("CLFS");
+  if (!sysrootdir)
+    sysrootdir="";
+
+  int stdout_pipe[2];
+  pipe(stdout_pipe);
+
+  pid_t pid = fork();
+
+  if (pid == 0) {
+    /* Redirect stdout to our pipe */
+    close(1);
+    dup(stdout_pipe[1]);
+    close(stdout_pipe[0]);
+    close(stdout_pipe[1]);
+
+    char *name = strdup(argv[0]);
+    strcat(name, ".sysroot");
+
+    execvp(name, argv);
+
+    free(name);
+
+    exit(0);
+  } else {
+    /* Close stdout for write */
+    close(stdout_pipe[1]);
+
+    /* redirect our stdout pipe from the child to our stdin */
+    close(0);
+    dup(stdout_pipe[0]);
+    close(stdout_pipe[0]);
+
+    char c, lc;
+    char *d = malloc(1);
+    int d_len = 0;
+
+    while ((c = fgetc(stdin)) != EOF) {
+      d_len++;
+      d = realloc(d, d_len + 1);
+      *(d + d_len - 1) = c;
+      *(d + d_len) = '\0';
+
+      if ((lc == '-')&&((c == 'L')||(c == 'I'))) {
+        d_len = d_len + strlen(sysrootdir);
+        d = realloc(d, d_len + 1);
+        strcat(d, sysrootdir);
+      }
+
+      lc = c;
+    }
+
+    printf ("%s", d);
+    free(d);
+
+    exit(0);
+  }
+
+  return 0;
+}
+EOF
+# compile wrapper:
+gcc ${BUILD64} sysroot_wrapper.c -o ${CLFS}/cross-tools/bin/sysroot_wrapper
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Toolchain: Porg - Source package Manager
+# Version: 0.10
+# **Each Patch works for musl x86_64 and x86 **
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+patch -Np0 -i ../porg-0.10-musl-fix.diff
+./configure --prefix=${CLFS}/cross-tools --disable-grop
+make && make install
+mkdir -pv  $CLFS/var/log/porg
+
+## Build System Software ##
+
+#################
+# man-pages
+# Version: 4.15
+#################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+make prefix=${CLFS}/usr install
+
+#################
+# GMP
+# Version: 6.1.2
+#################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+ABI=32 CPPFLAGS=-fexceptions ./configure --prefix=/usr \
+    --build=${CLFS_HOST} --host=${CLFS_TARGET} \
+    --enable-cxx --enable-mpbsd
+make && make DESTDIR=${CLFS} install
+rm -v ${CLFS}/usr/lib/lib{gmp,gmpxx,mp}.la
+
+###################
+# MPFR
+# Version: 4.0.1
+###################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+./configure --prefix=/usr --enable-shared \
+    --build=${CLFS_HOST} --host=${CLFS_TARGET} \
+    --with-gmp-lib=${CLFS}/usr/lib
+make && make DESTDIR=${CLFS} install
+rm -v ${CLFS}/usr/lib/libmpfr.la
+
+###################
+# Zlib
+# version: 1.2.11
+####################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+./configure --prefix=/usr --shared
+make && make prefix=${CLFS}/usr install
+mv -v ${CLFS}/usr/lib/libz.so.* ${CLFS}/lib
+ln -sfv ../../lib/libz.so.1 ${CLFS}/usr/lib/libz.so
+
+##########################
+# Binutils
+# Version: 2.30
+# Adjusted for Musl
+##########################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+mkdir -v build && cd build
+AR=ar \
+AS=as \
+../configure \
+    --prefix=/usr \
+    --build=${CLFS_HOST} \
+    --host=${CLFS_TARGET} \
+    --target=${CLFS_TARGET} \
+    --enable-shared \
+    --enable-deterministic-archives \
+    --enable-gold=yes \
+    --enable-ld=default \
+    --enable-relro \
+    --enable-lto \
+    --enable-nls \
+    --enable-plugins \
+    --enable-threads \
+    --enable-64-bit-bfd \
+    --enable-targets=i386-efi-pe,x86_64-pep \
+    --enable-install-libiberty \
+    --disable-werror \
+    --disable-compressed-debug-sections \
+    --with-system-zlib
+make configure-host && make tooldir=/usr && make DESTDIR=${CLFS} tooldir=/usr install
+
+##################
+# MPC
+# Version: 1.1.0
+##################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+./configure --prefix=/usr    \
+            --disable-static \
+            --docdir=/usr/share/doc/mpc-1.1.0 \
+            --build=${CLFS_HOST} \
+            --host=${CLFS_TARGET} \
+            --enable-shared
+make && make DESTDIR=${CLFS} install
+
+##########################
+# GCC
+# Version: 7.3.0
+# Adjusted for Musl
+##########################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+patch -Np1 -i ../gcc-7.3.0-dragora-musl-fixes.patch
+cp libiberty/Makefile.in{,.orig}
+sed 's/install_to_$(INSTALL_DEST) //' libiberty/Makefile.in.orig > \
+    libiberty/Makefile.in
+cp gcc/Makefile.in{,.orig}
+sed 's@\./fixinc\.sh@-c true@' gcc/Makefile.in.orig > gcc/Makefile.in
+mkdir -p build && cd build
+LDFLAGS="-Wl,-rpath-link,${CLFS}/cross-tools/${CLFS_TARGET}/lib" \
+    ../configure \
+    --prefix=/usr \
+    --libexecdir=/usr/lib \
+    --build=${CLFS_HOST} \
+    --host=${CLFS_TARGET} \
+    --target=${CLFS_TARGET} \
+    --enable-shared \
+    --enable-threads=posix \
+    --enable-__cxa_atexit \
+    --enable-c99 \
+    --enable-long-long \
+    --enable-clocale=generic \
+    --enable-languages=c,c++ \
+    --disable-libstdcxx-pch \
+    --enable-tls \
+    --enable-nls \
+    --enable-lto \
+    --enable-libstdcxx-time \
+    --enable-checking=release \
+    --enable-fully-dynamic-string \
+    --enable-default-ssp \
+    --enable-default-pie \
+    --disable-symvers \
+    --disable-libitm \
+    --disable-gnu-indirect-function \
+    --disable-libmudflap \
+    --disable-libsanitizer \
+    --disable-libmpx \
+    --disable-libcilkrts \
+    --with-system-zlib \
+    --with-gmp-include="$CLFS/usr/include" \
+    --with-gmp-lib="$CLFS/usr/lib" \
+    --with-mpfr-include="$CLFS/usr/include" \
+    --with-mpfr-lib="$CLFS/usr/lib" \
+    --with-mpc-include="$CLFS/usr/include" \
+    --with-mpc-lib="$CLFS/usr/lib"
+cp Makefile{,.orig}
+sed "/^HOST_\(GMP\)\(LIBS\|INC\)/s:-[IL]/\(lib\|include\)::" \
+    Makefile.orig > Makefile
+make && make DESTDIR=${CLFS} install
+ln -sfv ../usr/bin/cpp ${CLFS}/lib
+ln -sfv gcc ${CLFS}/usr/bin/cc
+install -v -dm755 $CLFS/usr/lib/bfd-plugins
+ln -svf $CLFS/usr/lib/gcc/i686-linux-musl/7.3.0/liblto_plugin.so \
+    $CLFS/usr/lib/bfd-plugins/
+mkdir -pv $CLFS/usr/share/gdb/auto-load/usr/lib
+mv -v $CLFS/usr/lib/*gdb.py $CLFS/usr/share/gdb/auto-load/usr/lib
+
+#####################
+# Bzip2
+# Version: 1.0.6
+#####################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+patch -Np1 -i ../bzip2-1.0.6-install_docs-1.patch
+cp Makefile{,.orig}
+sed -e "/^all:/s/ test//" Makefile.orig > Makefile
+sed -i 's@\(ln -s -f \)$(PREFIX)/bin/@\1@' Makefile
+sed -i "s@(PREFIX)/man@(PREFIX)/share/man@g" Makefile
+make -f Makefile-libbz2_so CC="${CC}" AR="${AR}" RANLIB="${RANLIB}"
+make clean
+make CC="${CC}" AR="${AR}" RANLIB="${RANLIB}"
+make PREFIX=${CLFS}/usr install
+mkdir -v $CLFS/bin
+cp -v bzip2-shared ${CLFS}/bin/bzip2
+cp -av libbz2.so* ${CLFS}/lib
+ln -sfv ../../lib/libbz2.so.1.0 ${CLFS}/usr/lib/libbz2.so
+rm -v ${CLFS}/usr/bin/{bunzip2,bzcat,bzip2}
+ln -sfv bzip2 ${CLFS}/bin/bunzip2
+ln -sfv bzip2 ${CLFS}/bin/bzcat
+
+#######################################
+# pkgconf - replacement for pkg-config
+# Version: 1.5.1
+#######################################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+./autogen.sh
+./configure --prefix=/usr \
+    --build=${CLFS_HOST} \
+    --host=${CLFS_TARGET} \
+    --bindir=/bin
+make && make DESTDIR=${CLFS} install
+
+###############
+# Ncurses
+# Version: 6.1
+###############
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+sed -i '/LIBTOOL_INSTALL/d' c++/Makefile.in
+./configure --prefix=/usr \
+    --build=${CLFS_HOST} \
+    --host=${CLFS_TARGET} \
+    --mandir=/usr/share/man \
+    --libdir=/lib \
+    --with-shared \
+    --enable-widec \
+    --without-debug \
+    --without-ada \
+    --with-normal \
+    --with-manpage-format=normal \
+    --enable-pc-files       \
+    --with-build-cc="gcc -D_GNU_SOURCE"
+make && make DESTDIR=${CLFS} install
+rm -v ${CLFS}/lib/lib{ncursesw,menuw,panelw,formw}.so
+ln -sfv ../../lib/libncursesw.so.5 ${CLFS}/usr/lib/libncursesw.so
+ln -sfv ../../lib/libmenuw.so.5 ${CLFS}/usr/lib/libmenuw.so
+ln -sfv ../../lib/libpanelw.so.5 ${CLFS}/usr/lib/libpanelw.so
+ln -sfv ../../lib/libformw.so.5 ${CLFS}/usr/lib/libformw.so
+for lib in curses ncurses form panel menu ; do
+        echo "INPUT(-l${lib}w)" > ${CLFS}/usr/lib/lib${lib}.so
+        ln -sfv lib${lib}w.a ${CLFS}/usr/lib/lib${lib}.a
+done
+ln -sfv libncursesw.so ${CLFS}/usr/lib/libcursesw.so
+ln -sfv libncursesw.a ${CLFS}/usr/lib/libcursesw.a
+ln -sfv libncurses++w.a ${CLFS}/usr/lib/libncurses++.a
+ln -sfv ncursesw5-config ${CLFS}/usr/bin/ncurses5-config
+ln -sfv ../share/terminfo ${CLFS}/usr/lib/terminfo
+
+##################
+# Attr
+# Version: 2.4.48
+##################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+sed -i -e 's|/@pkg_name@|&-@pkg_version@|' include/builddefs.in
+sed -i -e "/SUBDIRS/s|man[25]||g" man/Makefile
+sed -i 's:{(:\\{(:' test/run
+./configure --prefix=/usr \
+            --bindir=/bin \
+            --disable-static \
+	    --build=${CLFS_HOST} \
+            --host=${CLFS_TARGET}
+make && make DESTDIR=${CLFS} install
+chmod -v 755 $CLFS/usr/lib/libattr.so
+mv -v $CLFS/usr/lib/libattr.so.* $CLFS/lib
+ln -svf ../../lib/libattr.so.1 $CLFS/usr/lib/libattr.so
+
+#################
+# ACL
+# Version: 2.2.53
+#################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+sed -i -e 's|/@pkg_name@|&-@pkg_version@|' include/builddefs.in
+sed -i "s:| sed.*::g" test/{sbits-restore,cp,misc}.test
+sed -i 's/{(/\\{(/' test/run
+sed -i -e "/TABS-1;/a if (x > (TABS-1)) x = (TABS-1);" \
+    libacl/__acl_to_any_text.c
+./configure --prefix=/usr    \
+            --bindir=/bin    \
+            --disable-static \
+            --libexecdir=/usr/lib \
+            --build=${CLFS_HOST} \
+            --host=${CLFS_TARGET}
+make && make DESTDIR=${CLFS} install 
+chmod -v 755 $CLFS/usr/lib/libacl.so
+mv -v $CLFS/usr/lib/libacl.so.* $CLFS/lib
+ln -svf ../../lib/libacl.so $CLFS/usr/lib/libacl.so
+
+###############
+# Libcap
+# Version: 2.25
+###############
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+patch -Np1 -i ../libcap-2.25-gperf-fix.patch
+make CC="$CC" BUILD_CC=cc
+make RAISE_SETFCAP=no lib=lib prefix=/usr DESTDIR=${CLFS} install
+mv -v $CLFS/usr/lib/libcap.so.* $CLFS/lib
+ln -sfv ../../lib/libcap.so $CLFS/usr/lib/libcap.so
+
+##############
+# Sed
+# Version: 4.4
+##############
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+sed -i 's/usr/tools/'                 build-aux/help2man
+sed -i 's/testsuite.panic-tests.sh//' Makefile.in
+./configure --build=${CLFS_HOST} --host=${CLFS_TARGET} \
+    --prefix=/usr --bindir=/bin
+make && make DESTDIR=${CLFS} install
+
+################
+# Shadow
+# Version: 4.5
+################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+sed -i 's/groups$(EXEEXT) //' src/Makefile.in
+find man -name Makefile.in -exec sed -i 's/groups\.1 / /'   {} \;
+find man -name Makefile.in -exec sed -i 's/getspnam\.3 / /' {} \;
+find man -name Makefile.in -exec sed -i 's/passwd\.5 / /'   {} \;
+sed -i -e 's@#ENCRYPT_METHOD DES@ENCRYPT_METHOD SHA512@' \
+       -e 's@/var/spool/mail@/var/mail@' etc/login.defs
+sed -i 's/1000/999/' etc/useradd
+cat > config.cache << EOF
+ac_cv_func_setpgrp_void=yes
+EOF
+./configure --build=${CLFS_HOST} \
+    --host=${CLFS_TARGET} \
+    --sysconfdir=/etc \
+    --without-libpam \
+    --without-audit \
+    --without-selinux \
+    --with-group-name-max-length=32 \
+    --cache-file=config.cache
+make && make DESTDIR=${CLFS} install
+mv -v $CLFS/usr/bin/passwd $CLFS/bin
+${CLFS_TARGET}-pwconv
+${CLFS_TARGET}-passwd root
+
+################
+# Psmisc
+# Version: 23.1
+################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+patch -Np1 -i ../
+cat > config.cache << EOF
+ac_cv_func_malloc_0_nonnull=yes
+ac_cv_func_realloc_0_nonnull=yes
+EOF
+./configure --prefix=/usr \
+    --build=${CLFS_HOST} \
+    --host=${CLFS_TARGET} \
+    --exec-prefix="" \
+    --cache-file=config.cache
+make && make DESTDIR=${CLFS} install
+#################
+# Iana-ETC
+# Version: 2.30
+#################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+make && make DESTDIR=${CLFS} install
+
+##################
+# Bison
+# Version: 3.0.4
+#################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+./configure --build=${CLFS_HOST} \
+            --host=${CLFS_TARGET} \
+            --prefix=/usr
+make && make DESTDIR=${CLFS} install
+
+#################
+# Flex
+# Version: 2.6.4
+#################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+cp -v Makefile.in{,.orig}
+sed "s/-I@includedir@//g" Makefile.in.orig > Makefile.in
+cat > config.cache << EOF
+ac_cv_func_malloc_0_nonnull=yes
+ac_cv_func_realloc_0_nonnull=yes
+EOF
+HELP2MAN=/tools/bin/true \
+./configure --prefix=/usr \
+            --docdir=/usr/share/doc/flex-2.6.4 \
+            --build=${CLFS_HOST} \
+            --host=${CLFS_TARGET} \
+            --cache-file=config.cache
+make && make DESTDIR=${CLFS} install
+ln -sv flex $CLFS/usr/bin/lex
+
+################
+# Grep
+# Version: 3.1
+################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+./configure --prefix=/usr \
+            --bindir=/bin \
+            --build=${CLFS_HOST} \
+            --host=${CLFS_TARGET}
+make && make DESTDIR=${CLFS} install
+
+##################
+# Readline
+# Version: 7.0
+# **wrong order: build before M4 **
+##################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+sed -i '/MV.*old/d' Makefile.in
+sed -i '/{OLDSUFF}/c:' support/shlib-install
+sed -i 's:^SHLIB_LIBS=:SHLIB_LIBS=-lncursesw:' support/shobj-conf
+./configure --build=${CLFS_HOST} \
+            --host=${CLFS_TARGET} \
+            --prefix=/usr \
+            --libdir=/lib
+make SHLIB_LIBS="-L/tools/lib -lncursesw"
+make DESTDIR=${CLFS} SHLIB_LIBS="-L/tools/lib -lncursesw" install
+
+##################
+# Bash
+# Version: 4.4.18
+##################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+cat > config.cache << "EOF"
+ac_cv_func_mmap_fixed_mapped=yes
+ac_cv_func_strcoll_works=yes
+ac_cv_func_working_mktime=yes
+bash_cv_func_sigsetjmp=present
+bash_cv_getcwd_malloc=yes
+bash_cv_job_control_missing=present
+bash_cv_printf_a_format=yes
+bash_cv_sys_named_pipes=present
+bash_cv_ulimit_maxfds=yes
+bash_cv_under_sys_siglist=yes
+bash_cv_unusable_rtsigs=no
+gt_cv_int_divbyzero_sigfpe=yes
+EOF
+./configure --prefix=/usr                       \
+            --docdir=/usr/share/doc/bash-4.4.18 \
+            --without-bash-malloc               \
+            --with-installed-readline \
+            --build=${CLFS_HOST} \
+            --host=${CLFS_TARGET} \
+            --cache-file=config.cache
+make && make DESTDIR=${CLFS} install
+mv -v $CLFS/usr/bin/bash $CLFS/bin
+
+###############
+# File
+# Version 5.32
+# ** Wrong order: build before readline **
+###############
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+patch -Np1 -i ../file-5.32-cross_compile-1.patch
+./configure --build=${CLFS_HOST} \
+            --host=${CLFS_TARGET} \
+            --prefix=/usr
+make && make DESTDIR=${CLFS} install
+
+##################
+# M4
+# Version: 1.4.18
+# ** Wrong order: Build before BC **
+##################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+cat > config.cache << EOF
+gl_cv_func_btowc_eof=yes
+gl_cv_func_mbrtowc_incomplete_state=yes
+gl_cv_func_mbrtowc_sanitycheck=yes
+gl_cv_func_mbrtowc_null_arg=yes
+gl_cv_func_mbrtowc_retval=yes
+gl_cv_func_mbrtowc_nul_retval=yes
+gl_cv_func_wcrtomb_retval=yes
+gl_cv_func_wctob_works=yes
+EOF
+./configure --build=${CLFS_HOST} \
+            --host=${CLFS_TARGET} \
+            --prefix=/usr \
+            --cache-file=config.cache
+make && make DESTDIR=${CLFS} install
+
+##################
+# Bc
+# version: 1.07.1
+# **Wrong order: Build before binutils **
+##################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+cat > bc/fix-libmath_h << "EOF"
+#! /bin/bash
+sed -e '1   s/^/{"/' \
+    -e     's/$/",/' \
+    -e '2,$ s/^/"/'  \
+    -e   '$ d'       \
+    -i libmath.h
+
+sed -e '$ s/$/0}/' \
+    -i libmath.h
+EOF
+sed -i -e '/flex/s/as_fn_error/: ;; # &/' configure
+./configure --prefix=/usr           \
+            --with-readline         \
+            --mandir=/usr/share/man \
+            --infodir=/usr/share/info \
+            --build=${CLFS_HOST} \
+            --host=${CLFS_TARGET}
+sed -i -e 's|^\(\s\+\)./fbc|\1bc|g' bc/Makefile
+make && make DESTDIR=${CLFS} install
+
+################
+# Libtool
+# Version: 2.4.6
+################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+./configure --build=${CLFS_HOST} \
+            --host=${CLFS_TARGET} \
+    	    --prefix=/usr
+make && make DESTDIR=${CLFS} install
+
+#################
+# GDBM
+# Version: 1.14.1
+#################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+./configure --build=${CLFS_HOST} \
+            --host=${CLFS_TARGET} \
+            --prefix=/usr \
+            --bindir=/bin \
+            --disable-static \
+            --enable-libgdbm-compat
+make && make DESTDIR=${CLFS} install
+
+###############
+# Gperf
+# Version-3.1
+###############
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+./configure --build=${CLFS_HOST} \
+            --host=${CLFS_TARGET} \
+            --prefix=/usr \
+            --docdir=/usr/share/doc/gperf-3.1
+make && make DESTDIR=${CLFS} install
+
+#################
+# Expat
+# version: 2.2.5
+#################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+sed -i 's|usr/bin/env |bin/|' run.sh.in
+./configure --build=${CLFS_HOST} --host=${CLFS_TARGET} \
+            --prefix=/usr \
+            --disable-static
+make && make DESTDIR=${CLFS} install
+
+################
+# Inetutils
+# Version: 1.9.4
+################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+patch -Np1 -i ../
+./configure --build=${CLFS_HOST} \
+            --host=${CLFS_TARGET} \
+	    --prefix=/usr \
+            --localstatedir=/var \
+            --disable-logger     \
+            --disable-whois      \
+            --disable-rcp        \
+            --disable-rexec      \
+            --disable-rlogin     \
+            --disable-rsh        \
+            --disable-servers
+make && make DESTDIR=${CLFS} install
+
+####################
+# Perl
+# Version: 5.26.1
+####################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+echo "127.0.0.1 localhost $(hostname)" > $CLFS/etc/hosts
+export BUILD_ZLIB=False
+export BUILD_BZIP2=0
+#use perl-cross, cp over perl source
+./configure --prefix=/usr \
+            --target=${CLFS_TARGET} \
+             -Dpager="/usr/bin/less -isR" \                    
+             -Duseshrplib \
+             -Dusethreads \
+            --build=${CLFS_HOST} \
+            --host=${CLFS_TARGET}
+make && make DESTDIR=${CLFS} install
+unset BUILD_ZLIB BUILD_BZIP2
+
+########################################
+# XML::Parser [perl module]
+# version: 2.44
+# **perl modules are arch independant**
+########################################
+perl Makefile.pl
+make &&  make DESTDIR=${CLFS} install
+
+###################
+# Intltool
+# Version: 0.51.0
+# ** Fails to detect cross-compiled XML::Parser **
+# ** uses Host's XMP::Parser instead **
+###################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+sed -i 's:\\\${:\\\$\\{:' intltool-update.in
+./configure --build=${CLFS_HOST} \
+            --host=${CLFS_TARGET} \
+            --prefix=/usr 
+make && make DESTDIR=${CLFS} install
+
+##################
+# Autoconf
+# Version: 2.69
+# ** 2.69 version does not recognize musl: **
+# ** Update config.{stub,guess} in build-auxh**
+# ** or used patch. P**
+#################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+patch -Np1 -i ../autoconf-2.68-musl.patch
+./configure --build=${CLFS_HOST} \
+            --host=${CLFS_TARGET} \
+            --prefix=/usr
+make && make DESTDIR=${CLFS} install
+
+#################
+# Automake
+# Version: 1.15.1
+#################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+./configure --build=${CLFS_HOST} \
+            --host=${CLFS_TARGET} \
+            --prefix=/usr
+make && make DESTDIR=${CLFS} install
+
+#################
+# Xz
+# Version: 5.2.3
+#################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+./configure --build=${CLFS_HOST} \
+            --host=${CLFS_TARGET} \
+            --prefix=/usr
+make && make DESTDIR=${CLFS} install
+
+################
+# Kmod
+# Version: 25
+# !! skipped: cannot detect host's xz installation !!
+# !! may try under a chroot !!
+################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+./configure --build=${CLFS_HOST} \
+            --host=${CLFS_TARGET} \
+            --prefix=/usr \
+            --bindir=/bin          \
+            --sysconfdir=/etc      \
+            --with-rootlibdir=/lib \
+            --with-xz              \
+            --with-zlib
+make  && make DESTDIR=${CLFS} install
+
+####################
+# Gettext
+# version: 0.19.8.1
+####################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+cat > config.cache << EOF
+am_cv_func_iconv_works=yes
+gl_cv_func_wcwidth_works=yes
+gt_cv_func_printf_posix=yes
+gt_cv_int_divbyzero_sigfpe=yes
+EOF
+sed -i '/^TESTS =/d' gettext-runtime/tests/Makefile.in &&
+sed -i 's/test-lock..EXEEXT.//' gettext-tools/gnulib-tests/Makefile.in
+./configure --build=${CLFS_HOST} \
+            --host=${CLFS_TARGET} \
+            --prefix=/usr \
+            --cache-file=config.cache \
+            --disable-static \
+            --docdir=/usr/share/doc/gettext-0.19.8.1
+make && make DESTDIR=${CLFS} install
+
+###################
+# libelf-compat
+# version: 0.156c001
+# ** no libelf.so **
+##################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+sed -i 's/-O3 //' Makefile
+echo "CFLAGS += -fPIC" > config.mak 
+sed -i 's@HEADERS = src/libelf.h@HEADERS = src/libelf.h src/gelf.h@' Makefile
+make CC="${CC}" AR="${AR}" RANLIB="${RANLIB}" 
+make CC="${CC}" AR="${AR}" RANLIB="${RANLIB}" prefix=/usr libdir=/usr/lib DESTDIR=${CLFS} install
+
+###################
+# libffi
+# Version: 3.2.1
+###################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+sed -e '/^includesdir/ s/$(libdir).*$/$(includedir)/' \
+    -i include/Makefile.in
+sed -e '/^includedir/ s/=.*$/=@includedir@/' \
+    -e 's/^Cflags: -I${includedir}/Cflags:/' \
+    -i libffi.pc.in
+./configure --build=${CLFS_HOST} \
+            --host=${CLFS_TARGET} \
+            --prefix=/usr \
+            --disable-static
+make && make DESTDIR=${CLFS} install
+
+#################
+# libreSSL
+# Version: 2.7.4
+#################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+./configure --prefix=/usr         \
+            --build=${CLFS_HOST} \
+            --host=${CLFS_TARGET} \
+            --enable-hardening \
+            --with-openssldir=/etc/ssl
+make && make DESTDIR=${CLFS} install
+
+################
+# Python 3
+# Version: 3.6.4
+################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+rm -rf Modules/expat Modules/zlib Modules/_ctypes/libffi*
+cat > config.site << "EOF"
+ac_cv_file__dev_ptmx=no
+ac_cv_file__dev_ptc=no
+EOF
+CONFIG_SITE=config.site \
+./configure --prefix=/usr         \
+            --build=${CLFS_HOST} \
+            --host=${CLFS_TARGET} \
+            --enable-shared     \
+            --with-system-expat \
+            --with-system-ffi   \
+            --with-ensurepip=yes
+make && make DESTDIR=${CLFS} install
+chmod -v 755 $CLFS/usr/lib/libpython3.6m.so
+chmod -v 755 $CLFS/usr/lib/libpython3.so
+
+#############
+# Ninja & Meson
+# !! Skipped. Will build under a chroot !!
+###########################################
+
+##################
+# Procps-ng
+# Version: 3.3.12
+##################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+#adjust configure.ac to remove  AC_FUNC_MALLOC and AC_FUNC_REALLOC
+autoconf -v
+./configure --prefix=/usr                            \
+            --exec-prefix=                           \
+            --libdir=/usr/lib                        \
+            --docdir=/usr/share/doc/procps-ng-3.3.12 \
+            --disable-static                         \
+            --disable-kill \
+            --without-systemd \
+            --disable-modern-top \
+            --build=${CLFS_HOST} \
+            --host=${CLFS_TARGET}
+make &&  make DESTDIR=${CLFS} install
+
+#################
+# Util-linux
+# version: 2.32
+#################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+mkdir -pv $CLFS/var/lib/hwclock
+./configure ADJTIME_PATH=/var/lib/hwclock/adjtime \
+            --build=${CLFS_HOST} \
+            --host=${CLFS_TARGET} \
+    	    --enable-arch \
+            --enable-partx \
+            --disable-wall \
+            --enable-write \
+            --disable-makeinstall-chown \
+	    --disable-chfn-chsh  \
+            --disable-login      \
+            --disable-nologin    \
+            --disable-su         \
+            --disable-setpriv    \
+            --disable-runuser    \
+            --disable-pylibmount \
+            --disable-static     \
+            --without-systemd    \
+            --without-systemdsystemunitdir \
+	    --enable-usrdir-path \
+            --enable-shared \
+            --enable-sulogin-emergency-mount \
+            --enable-use-tty-group \
+            --enable-libblkid \
+            --enable-libmount \
+            --enable-libuuid  \
+            --without-python
+make &&  make DESTDIR=${CLFS} install
+
+#################
+# Gawk
+# Version: 4.2.0
+#################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+sed -i 's/extras//' Makefile.in
+./configure --build=${CLFS_HOST} \
+            --host=${CLFS_TARGET} \
+            --prefix=/usr
+make &&  make DESTDIR=${CLFS} install
+
+################
+# Porg
+# Version: 0.10
+################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+cat > config.cache << "EOF"
+ac_cv_func_creat64=no
+ac_cv_func_fopen64=no
+ac_cv_func_freopen64=no
+ac_cv_func_open64=no
+ac_cv_func_openat64=no
+EOF
+patch -Np1 -i ../porg-0.10-musl-fix-32.diff
+LDFLAGS=" -lssp_nonshared" \
+./configure --build=${CLFS_HOST}  \
+            --host=${CLFS_TARGET}  \
+            --prefix=/usr \
+	    --sysconfdir=/etc \
+            --disable-grop \
+            --cache-file=config.cache
+make &&  make DESTDIR=${CLFS} install
+
+#################
+# Make
+# Version: 4.2.1
+#################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+sed -i '211,217 d; 219,229 d; 232 d' glob/glob.c
+./configure --build=${CLFS_HOST}  \
+            --host=${CLFS_TARGET}  \
+            --prefix=/usr 
+make &&  make DESTDIR=${CLFS} install
+
+###################
+# Coreutils
+# Version: 8.29 
+###################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+patch -Np1 -i ../coreutils-8.29-i18n-1.patch
+#symbolic link automake & aclocal to version 1.15
+cat > config.cache << EOF
+fu_cv_sys_stat_statfs2_bsize=yes
+gl_cv_func_rename_trailing_slash_bug=no
+gl_cv_func_mbrtowc_incomplete_state=yes
+gl_cv_func_mbrtowc_nul_retval=yes
+gl_cv_func_mbrtowc_null_arg=yes
+gl_cv_func_mbrtowc_retval=yes
+gl_cv_func_btowc_eof=yes
+gl_cv_func_wcrtomb_retval=yes
+gl_cv_func_wctob_works=yes
+EOF
+sed -i '/test.lock/s/^/#/' gnulib-tests/gnulib.mk
+./configure --build=${CLFS_HOST} \
+            --host=${CLFS_TARGET} \
+            --prefix=/usr \
+            --cache-file=config.cache \
+            --enable-no-install-program=kill,uptime \
+            --enable-install-program=hostname
+make && make DESTDIR=${CLFS} install
+mv -v $CLFS/usr/bin/{cat,chgrp,chmod,chown,cp,date,dd,df,echo} $CLFS/bin
+mv -v $CLFS/usr/bin/{false,ln,ls,mkdir,mknod,mv,pwd,rm} $CLFS/bin
+mv -v $CLFS/usr/bin/{rmdir,stty,sync,true,uname} $CLFS/bin
+mv -v $CLFS/usr/bin/chroot $CLFS/usr/sbin
+mv -v $CLFS/usr/share/man/man1/chroot.1 $CLFS/usr/share/man/man8/chroot.8
+sed -i s/\"1\"/\"8\"/1 $CLFS/usr/share/man/man8/chroot.8
+mv -v $CLFS/usr/bin/{head,sleep,nice} $CLFS/bin
+
+##################
+# Kernel Headers
+# Version:4.16.3
+##################
+make mrproper
+ARCH=x86 make INSTALL_HDR_PATH=dest headers_install
+find dest/include \( -name .install -o -name ..install.cmd \) -delete
+cp -rv dest/include/* $CLFS/usr/include
+
+##################
+# Chroot
+##############################################
+# use sbase to create coreutils for chroot...ignore: coreutils built
+# make CC="${CC}" AR="${AR}" RANLIB="${RANLIB}" PREFIX=/tools install
+# mount vkfs
+mknod -m 600 $CLFS/dev/console c 5 1
+mknod -m 666 $CLFS/dev/null c 1 3
+mount -v --bind /dev $CLFS/dev
+mount -vt devpts devpts $CLFS/dev/pts -o gid=5,mode=620
+mount -vt proc proc $CLFS/proc
+mount -vt sysfs sysfs $CLFS/sys
+mount -vt tmpfs tmpfs $CLFS/run
+if [ -h $LFS/dev/shm ]; then
+  mkdir -pv $CLFS/$(readlink $LFS/dev/shm)
+fi
+# chroot
+setarch linux32 chroot "$CLFS" /bin/env -i \
+    HOME=/root                  \
+    TERM="$TERM"                \
+    PS1='(clfs chroot) \u:\w\$ ' \
+    PATH=/bin:/usr/bin:/sbin:/usr/sbin:/tools/bin \
+    /bin/bash --login +h
+
+##################
+# E2fsprogs
+# version: 1.44.2
+# built under chroot
+##################
+mkdir -v build
+cd build
+CFLAGS="-fno-stack-protector" \
+LDFLAGS="-lssp_nonshared" \
+PKG_CONFIG=/bin/pkgconf \
+../configure --prefix=/usr  \
+             --bindir=/bin   \
+             --with-root-prefix="" \
+             --enable-elf-shlibs  \
+             --disable-libblkid  \
+             --disable-libuuid  \
+             --disable-uuidd   \
+             --disable-fsck \
+             e2fsprogs_cv_struct_st_flags=no
+make && make install
+
+#####################
+# Kmod
+# Version: 25
+# built under chroot
+#####################
+CFLAGS="-fno-stack-protector" \
+PKG_CONFIG=/bin/pkgconf \
+./configure --prefix=/usr          \
+            --bindir=/bin          \
+            --sysconfdir=/etc      \
+            --with-rootlibdir=/lib \
+            --with-xz              \
+            --with-zlib            \
+            --disable-manpages
+make && make install
+
+#####################
+# Check
+# Version:
+# Built under chroot
+#####################
+CFLAGS="-fno-stack-protector" \
+./configure --prefix=/usr
+make && make install
+
+####################
+# Tar
+# Version: 1.30
+####################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+cat > config.cache << EOF
+gl_cv_func_wcwidth_works=yes
+gl_cv_func_btowc_eof=yes
+ac_cv_func_malloc_0_nonnull=yes
+ac_cv_func_realloc_0_nonnull=yes
+gl_cv_func_mbrtowc_incomplete_state=yes
+gl_cv_func_mbrtowc_nul_retval=yes
+gl_cv_func_mbrtowc_null_arg=yes
+gl_cv_func_mbrtowc_retval=yes
+gl_cv_func_wcrtomb_retval=yes
+EOF
+./configure --build=${CLFS_HOST} --host=${CLFS_TARGET} \
+    --prefix=/usr --bindir=/bin --libexecdir=/usr/sbin \
+    --cache-file=config.cache
+make && make DESTDIR=${CLFS} install
+
+######################
+# Patch
+# Version: 2.7.6
+######################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+cat > config.cache << EOF
+ac_cv_path_ed_PROGRAM=ed
+EOF
+./configure --build=${CLFS_HOST} --host=${CLFS_TARGET} \
+    --prefix=/usr --cache-file=config.cache
+make && make DESTDIR=${CLFS} install
+
+#######################
+# Diffutils
+# Version: 3.6
+#######################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+./configure --build=${CLFS_HOST} \
+            --host=${CLFS_TARGET} \
+            --prefix=/usr
+make && make DESTDIR=${CLFS} install
+
+######################
+# Findutils
+# Version: 4.6.0
+######################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+sed -i 's/test-lock..EXEEXT.//' tests/Makefile.in
+cat > config.cache << EOF
+gl_cv_func_wcwidth_works=yes
+gl_cv_header_working_fcntl_h=yes
+ac_cv_func_fnmatch_gnu=yes
+EOF
+./configure --build=${CLFS_HOST} --host=${CLFS_TARGET} \
+    --prefix=/usr --cache-file=config.cache \
+    --libexecdir=/usr/lib/locate \
+    --localstatedir=/var/lib/locate
+make && make DESTDIR=${CLFS} install
+
+######################
+# Groff
+# Version: 1.22.3
+# built under chroot
+######################
+LDFLAGS="-lssp_nonshared" \
+CXXFLAGS="-g -O2 -fstack-protector" \
+PAGE=letter \
+./configure --prefix=/usr
+make && make install
+
+##################
+# GRUB
+# Version: 2.02
+##################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+./configure --prefix=/usr          \
+            --sbindir=/sbin        \
+            --sysconfdir=/etc      \
+            --disable-efiemu       \
+            --disable-werror \
+            --build=${CLFS_HOST} \
+            --host=${CLFS_TARGET}
+make && make DESTDIR=${CLFS} install
+
+#################
+# Less
+# version 5.30
+#################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+./configure --build=${CLFS_HOST} \
+            --host=${CLFS_TARGET} \
+            --prefix=/usr \
+            --sysconfdir=/etc
+make && make prefix=${CLFS}/usr install
+mv -v ${CLFS}/usr/bin/less ${CLFS}/bin
+
+#################
+# Gzip
+# Version: 1.9
+#################
+export CC="${CLFS_TARGET}-gcc"
+export CXX="${CLFS_TARGET}-g++"
+export AR="${CLFS_TARGET}-ar"
+export AS="${CLFS_TARGET}-as"
+export RANLIB="${CLFS_TARGET}-ranlib"
+export LD="${CLFS_TARGET}-ld"
+export STRIP="${CLFS_TARGET}-strip"
+./configure --build=${CLFS_HOST} \
+            --host=${CLFS_TARGET} \
+            --prefix=/usr \
+            --bindir=/bin
+make && make prefix=${CLFS}/usr install
+
+#################
+# IPRoute2
+# version: 4.16.0
+# built under chroot
+#################
+sed -i /ARPD/d Makefile
+rm -fv man/man8/arpd.8
+sed -i 's/m_ipt.o//' tc/Makefile
+# remove DISTGEN DISTDATA from netem/Makfile
+PKG_CONFIG=/bin/pkgconf \
+CXXFLAGS="-fno-stack-protector" \
+CFLAGS="-fno-stack-protector" \
+make && make DOCDIR=/usr/share/doc/iproute2-4.16.0 install
+
+#################
+# Kbd
+# Version: 2.0.4
+# Built under chroot
+##################
+patch -Np1 -i ../kbd-2.0.4-backspace-1.patch
+sed -i 's/\(RESIZECONS_PROGS=\)yes/\1no/g' configure
+sed -i 's/resizecons.8 //' docs/man/man8/Makefile.in
+# add -fno-stack-protector to CFLAGS
+CFLAGS="-fno-stack-protector -g -O2 -Wall -Wextra -Wmissing-noreturn -Wdisabled-optimization -Wcast-align -Wshadow -Wmissing-format-attribute -Wmissing-prototypes -Wstrict-prototypes -Wmissing-declarations"  \
+PKG_CONFIG=/bin/pkgconf \
+./configure --prefix=/usr --disable-vloc
+make && make install
+
+####################
+# Libpipeline
+# Version: 1.5.0
+# Built under chroot
+####################
+CFLAGS="-fno-stack-protector -O2" \
+PKG_CONFIG=/bin/pkgconf \
+./configure --prefix=/usr
+make && make install
+
+####################
+# Ninja
+# Version: 1.8.2
+# built from chroot
+####################
+patch -Np1 -i ../ninja-1.8.2-add_NINJAJOBS_var-1.patch
+CFLAGS="-fno-stack-protector" \
+python3 configure.py --bootstrap
+install -vm755 ninja /usr/bin/
+install -vDm644 misc/bash-completion /usr/share/bash-completion/completions/ninja
+install -vDm644 misc/zsh-completion  /usr/share/zsh/site-functions/_ninja
+
+###################
+# Meson
+# version: 0.44.0
+# built from chroot
+###################
+CFLAGS="-fno-stack-protector" python3 setup.py build
+python3 setup.py install
+
+##################
+# Eudev
+# Version: 3.2.5
+# built from chroot
+##################
+sed -r -i 's|/usr(/bin/test)|\1|' test/udev-test.pl
+cat > config.cache << "EOF"
+HAVE_BLKID=1
+BLKID_LIBS="-lblkid"
+BLKID_CFLAGS="-I/tools/include"
+EOF
+CFLAGS="-fno-stack-protector" \
+PKG_CONFIG=/bin/pkgconf \
+./configure --prefix=/usr           \
+            --bindir=/sbin          \
+            --sbindir=/sbin         \
+            --libdir=/usr/lib       \
+            --sysconfdir=/etc       \
+            --libexecdir=/lib       \
+            --with-rootprefix=      \
+            --with-rootlibdir=/lib  \
+            --enable-manpages       \
+            --disable-static        \
+            --config-cache
+make && make install
+tar -xvf ../udev-lfs-20171102.tar.bz2
+make -f udev-lfs-20171102/Makefile.lfs install
+
+####################
+# Sysklogd skipped
+####################
+
+####################
+# Man-DB
+# Version:
+# Built under chroot
+####################
+CFLAGS="-fno-stack-protector" \
+PKG_CONFIG=/bin/pkgconf \
+./configure --prefix=/usr                        \
+            --docdir=/usr/share/doc/man-db-2.8.1 \
+            --sysconfdir=/etc                    \
+            --disable-setuid                     \
+            --enable-cache-owner=bin             \
+            --with-browser=/usr/bin/lynx         \
+            --with-vgrind=/usr/bin/vgrind        \
+            --with-grap=/usr/bin/grap            \
+            --with-systemdtmpfilesdir=
+make && make install
+
+###################
+# Texinfo
+# version 6.5
+# built under chroot
+####################
+CFLAGS="-fno-stack-protector" \
+./configure --prefix=/usr \
+            --disable-static
+make && make install
+
+########################
+# Ncurses
+# version: 6.1
+# reinstall under chroot
+#######################
+sed -i '/LIBTOOL_INSTALL/d' c++/Makefile.in
+CFLAGS="-O2 -fno-stack-protector" CXXFLAGS="-O2 -fno-stack-protector" \
+PKG_CONFIG=/bin/pkgconf \
+./configure --prefix=/usr           \
+            --mandir=/usr/share/man \
+            --with-shared           \
+            --without-debug         \
+            --without-normal        \
+            --enable-pc-files       \
+            --enable-widec          \
+            --with-normal \
+            --enable-pc-files \
+            --with-build-cc="gcc -D_GNU_SOURCE"
+make && make install
+####################
+# Vim
+# Version: 8.0.586
+# Built under chroot
+####################
+echo '#define SYS_VIMRC_FILE "/etc/vimrc"' >> src/feature.h
+sed -i '/call/{s/split/xsplit/;s/303/492/}' src/testdir/test_recover.vim
+# add CFLAGS+="-O2 -fno-stack-protector" to src/Makefile
+./configure --prefix=/usr
+make && make install
+
+####################
+# Runit
+# Version: 2.1.2
+# Built under chroot
+#####################
+echo "gcc -fno-stack-protector -O2 -g -D_GNU_SOURCE" > config-cc
+echo "gcc -no-pie -lssp_nonshared  -Wl,-z -Wl,noexecstack" > config-ld
+make
+install -v runit runit-init /sbin
+install -v runsvdir runsv chpst svlogd sv /usr/bin
+install -v runsvchdir utmpset /usr/sbin
+cp -v ../man/* /usr/share/man/man8
+ln -svf /sbin/runit-init /sbin/init
+mkdir -pv /etc/sv
+mkdir -pv /etc/runit/runsvdir/single
+mkdir -pv /etc/runit/runsvdir/multi
+# untar runit-for-lfs.tar.gz or git clone
+cd runit-for-lfs/lfs-servicescripts
+make && make install
+
+####################
+# Libestr
+# Version: 0.1.10
+# built under chroot
+####################
+CFLAGS="-fno-stack-protector" \
+PKG_CONFIG=/bin/pkgconf \
+./configure --prefix=/usr
+make && make install
+
+####################
+# Libfastjson
+# Version 0.99.8
+# Built under chroot
+####################
+./autogen.sh --prefix=/usr
+CXXFLAGS="-fno-stack-protector -O2" \
+CFLAGS="-fno-stack-protector -O2" \
+./configure --prefix=/usr
+make && make install
+
+####################
+# libgpg-error
+# Version: 1.27
+# built under chroot
+####################
+CXXFLAGS="-fno-stack-protector -O2" \
+CFLAGS="-fno-stack-protector -O2" \
+./configure --prefix=/usr
+# add "-fno-stackprotector" to src/Makefile & doc/Makefile
+make && make install
+
+####################
+# libgcrypt
+# Version: 1.8.2
+# built under chroot
+####################
+CXXFLAGS="-fno-stack-protector -O2" \
+CFLAGS="-fno-stack-protector -O2" \
+./configure --prefix=/usr
+# add "-fno-stackprotector" to doc/Makefile
+make && make install
+
+###################
+# C-ares
+# Verson: 1.12.0
+# built under chroot
+####################
+CXXFLAGS="-fno-stack-protector -O2" \
+CFLAGS="-fno-stack-protector -O2" \
+./configure --prefix=/usr
+make && make install
+
+###################
+# Nettle
+# Verson: 3.4
+# built under chroot
+####################
+CC_FOR_BUILD="gcc -fno-stack-protector" \
+./configure --prefix=/usr
+make && make install
+
+####################
+# libunistring
+# Version: 0.9.8
+# built under chroot
+####################
+CFLAGS="-O2 -fno-stack-protector" \
+CXXFLAGS="-O2 -fno-stack-protector" \
+CC_FOR_BUILD="gcc -fno-stack-protector" \
+LDFLAGS="-lssp_nonshared" \
+./configure --prefix=/usr                \
+            --disable-static             
+            --docdir=/usr/share/doc/libunistring-0.9.8
+make && make install
+
+####################
+# libtasn1
+# Version: 4.13 
+# built under chroot
+####################
+CXXFLAGS="-fno-stack-protector -O2" \
+CFLAGS="-fno-stack-protector -O2" \
+./configure --prefix=/usr \
+            --disable-static
+make && make install
+
+####################
+# p11-kit
+# Version: 0.23.9
+# built under chroot
+####################
+CXXFLAGS="-fno-stack-protector -O2" \
+CFLAGS="-fno-stack-protector -O2" \
+./configure --prefix=/usr \
+            --sysconfdir=/etc \
+            --with-trust-paths=/etc/pki/anchors
+make && make install
+
+####################
+# GnuTLS
+# Version: 3.6.2
+# built under chroot
+####################
+CXXFLAGS="-fno-stack-protector -O2" \
+CFLAGS="-fno-stack-protector -O2" \
+./configure --prefix=/usr \
+            --with-default-trust-store-pkcs11="pkcs11:" \
+	    --disable-openssl-compatibility \
+            --disable-rpath \
+            --disable-static \
+            --disable-guile
+make && make install
+
+####################
+# libssh2
+# version: 1.8.0
+# built under chroot
+####################
+CXXFLAGS="-fno-stack-protector -O2 -g" \
+CFLAGS="-fno-stack-protector -O2 -g" \
+./configure --prefix=/usr \
+            --disable-static
+make && make install
+
+####################
+# cURL 
+# Version: 7.58.0
+# built under chroot
+####################
+LDFLAGS="-lssp_nonshared" \
+./configure --prefix=/usr                           \
+            --disable-static                        \
+            --enable-threaded-resolver              \
+            --with-ca-path=/etc/ssl/certs \
+            --without-ssl --with-gnutls 
+make
+
+####################
+# Rsyslog
+# Version: 8.36.0
+# built under chroot
+####################
+LDFLAGS="-lssp_nonshared" \
+./configure --prefix=/usr \
+            --sbindir=/sbin
+make && make install
+
+####################
+# Linux kernel
+# Version: 4.16.3
+# built under chroot
+#####################
+# add '-fno-stack-protector" to CFLAGS in toplevel Makefile
+make menuconfig
+make
+
+#########################
+# Wrap-up
+########################
+* create $CLFS/etc/fstab
+chown -Rv 0:0 ${CLFS}
+chgrp -v 13 ${CLFS}/var/run/utmp ${CLFS}/var/log/lastlog
+chgrp -v 4 ${CLFS}/usr/bin/write
+chmod g+s ${CLFS}/usr/bin/write
+mknod -m 0666 ${CLFS}/dev/null c 1 3
+mknod -m 0600 ${CLFS}/dev/console c 5 1
+* modify bootscripts for rsyslog
+vi /etc/runit/1
+mkdir -v $CLFS/etc/sv/rsyslogd
+cat > $CLFS/etc/sv/rsyslogd/run << "EOF"
+#!/bin/sh
+exec rsyslogd -n
+EOF
+
