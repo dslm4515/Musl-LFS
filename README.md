@@ -1,7 +1,7 @@
 # Musl-LFS
 Linux From Scratch using Musl as Libc and Runit as init system
 
-This is based on the works of Linux From Scratch (http://www.linuxfromscratch.org), which use GLibc and SysVinit/systemD. Additional work was derived from Void Linux (https://voidlinux.org), Alpine Linux (https://alpinelinux.org), and Dragora Linux (https://dragora.org)
+This is based on the works of Linux From Scratch (http://www.linuxfromscratch.org), which use GLibc and SysVinit/systemD. Additional work was derived from Void Linux (https://voidlinux.org), Alpine Linux (https://alpinelinux.org), and Dragora Linux (https://dragora.org). Runit scripts were used from (https://github.com/inthecloud247/runit-for-lfs). For logging, I used porg from http://porg.sourceforge.net/.
 
 The aim of this project is to create a create a Linux system using Musl (www.musl-libc.org) instead of GNU's Glibc and Runit (http://smarden.org/runit/) instead SysVinit.
 

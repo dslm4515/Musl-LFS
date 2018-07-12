@@ -1,0 +1,13 @@
+diff -uNr psmisc-23.1.orig/src/peekfd.c psmisc-23.1/src/peekfd.c
+--- psmisc-23.1.orig/src/peekfd.c	2017-03-24 18:11:56.167702700 -0500
++++ psmisc-23.1/src/peekfd.c	2018-06-21 10:27:09.867237381 -0500
+@@ -27,7 +27,9 @@
+ #include <sys/types.h>
+ #include <sys/wait.h>
+ #include <sys/syscall.h>
++#define pt_regs uapi_pt_regs
+ #include <asm/ptrace.h>
++#undef pt_regs
+ #include <byteswap.h>
+ #include <endian.h>
+ #include <sys/user.h>

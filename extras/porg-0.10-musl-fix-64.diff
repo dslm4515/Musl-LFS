@@ -1,0 +1,79 @@
+--- lib/porg-log/log.c.orig	2015-11-06 11:43:07.000000000 -0600
++++ lib/porg-log/log.c		2018-05-14 16:52:06.625012499 -0500
+@@ -53,13 +53,14 @@
+ 
+ 
+ /* Fake declarations of libc's internal __open and __open64 */
++/* Does not work with Musl Libc
+ #if !HAVE_DECL___OPEN
+ int __open(const char*, int, ...);
+ #endif
+ #if !HAVE_DECL___OPEN64
+ int __open64(const char*, int, ...);
+ #endif
+-
++*/
+ 
+ static void porg_vprintf(const char* fmt, va_list ap)
+ {
+@@ -279,7 +280,7 @@
+ 	/* this fixes a bug when the installer program calls jemalloc 
+ 	   (thanks Masahiro Kasahara) */
+ 	if (!porg_tmpfile && path && !strncmp(path, "/proc/", 6))
+-		return __open(path, flags);
++		return open(path, flags);
+ 
+ 	porg_init();
+ 	
+@@ -349,7 +350,7 @@
+ }
+ 
+ 
+-FILE* fopen(const char* path, const char* mode)
++FILE* pfopen(const char* path, const char* mode)
+ {
+ 	FILE* ret;
+ 	
+@@ -362,7 +363,7 @@
+ }
+ 
+ 
+-FILE* freopen(const char* path, const char* mode, FILE* stream)
++FILE* pfreopen(const char* path, const char* mode, FILE* stream)
+ {
+ 	FILE* ret;
+ 	
+@@ -377,13 +378,13 @@
+ 
+ #if HAVE_64_FUNCS
+ 
+-int open64(const char* path, int flags, ...)
++int popen64(const char* path, int flags, ...)
+ {
+ 	va_list a;
+ 	int mode, accmode, ret;
+ 	
+ 	if (!porg_tmpfile && path && !strncmp(path, "/proc/", 6))
+-		return __open64(path, flags);
++		return open64(path, flags);
+ 
+ 	porg_init();
+ 	
+@@ -401,7 +402,7 @@
+ }
+ 
+ 
+-int creat64(const char* path, mode_t mode)
++int pcreat64(const char* path, mode_t mode)
+ {
+ 	int ret;
+ 	
+@@ -527,7 +528,7 @@
+ 
+ #if HAVE_OPENAT64
+ 
+-int openat64(int fd, const char* path, int flags, ...)
++int popenat64(int fd, const char* path, int flags, ...)
+ {
+ 	va_list a;
+ 	int mode, accmode, ret;

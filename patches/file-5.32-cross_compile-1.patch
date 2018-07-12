@@ -1,0 +1,24 @@
+diff -uNr file-5.32.orig/magic/Makefile.am file-5.32/magic/Makefile.am
+--- file-5.32.orig/magic/Makefile.am	2017-08-10 06:01:38.000000000 -0500
++++ file-5.32/magic/Makefile.am	2018-06-21 12:48:31.887197539 -0500
+@@ -308,7 +308,7 @@
+ FILE_COMPILE_DEP = $(FILE_COMPILE)
+ endif
+ 
+-${MAGIC}: $(EXTRA_DIST) $(FILE_COMPILE_DEP)
++${MAGIC}: $(EXTRA_DIST)
+ 	@rm -fr magic
+ 	@mkdir magic && cp -p $(EXTRA_DIST) magic
+ 	@(if expr "${FILE_COMPILE}" : '.*/.*' > /dev/null; then \
+diff -uNr file-5.32.orig/magic/Makefile.in file-5.32/magic/Makefile.in
+--- file-5.32.orig/magic/Makefile.in	2017-09-02 03:54:31.000000000 -0500
++++ file-5.32/magic/Makefile.in	2018-06-21 12:49:47.084257447 -0500
+@@ -793,7 +793,7 @@
+ .PRECIOUS: Makefile
+ 
+ 
+-${MAGIC}: $(EXTRA_DIST) $(FILE_COMPILE_DEP)
++${MAGIC}: $(EXTRA_DIST)
+ 	@rm -fr magic
+ 	@mkdir magic && cp -p $(EXTRA_DIST) magic
+ 	@(if expr "${FILE_COMPILE}" : '.*/.*' > /dev/null; then \

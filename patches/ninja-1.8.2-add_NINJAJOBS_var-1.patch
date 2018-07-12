@@ -1,0 +1,65 @@
+Submitted By:            Bruce Dubbs <bdubbs at linuxfromscratch dot org>
+Date:                    2017-10-14
+Initial Package Version: 1.9.2
+Upstream Status:         Not submitted
+Origin:                  Self
+Description:             Ninja normally uses all cores+2 when building
+                         a package.  This patch allows useers to limit the 
+                         cores used by setting an environment variable:
+                         NINJAJOBS to an integer.
+
+                         The patch also fixes a few warnings.
+
+
+diff -Naur ninja-1.8.2.orig/src/build_log.cc ninja-1.8.2/src/build_log.cc
+--- ninja-1.8.2.orig/src/build_log.cc	2017-09-10 20:20:10.000000000 -0500
++++ ninja-1.8.2/src/build_log.cc	2017-10-12 14:38:00.988957823 -0500
+@@ -75,12 +75,12 @@
+   }
+   switch (len & 7)
+   {
+-  case 7: h ^= uint64_t(data[6]) << 48;
+-  case 6: h ^= uint64_t(data[5]) << 40;
+-  case 5: h ^= uint64_t(data[4]) << 32;
+-  case 4: h ^= uint64_t(data[3]) << 24;
+-  case 3: h ^= uint64_t(data[2]) << 16;
+-  case 2: h ^= uint64_t(data[1]) << 8;
++  case 7: h ^= uint64_t(data[6]) << 48;  __attribute__ ((fallthrough));
++  case 6: h ^= uint64_t(data[5]) << 40;  __attribute__ ((fallthrough));
++  case 5: h ^= uint64_t(data[4]) << 32;  __attribute__ ((fallthrough));
++  case 4: h ^= uint64_t(data[3]) << 24;  __attribute__ ((fallthrough));
++  case 3: h ^= uint64_t(data[2]) << 16;  __attribute__ ((fallthrough));
++  case 2: h ^= uint64_t(data[1]) << 8;   __attribute__ ((fallthrough));
+   case 1: h ^= uint64_t(data[0]);
+           h *= m;
+   };
+diff -Naur ninja-1.8.2.orig/src/hash_map.h ninja-1.8.2/src/hash_map.h
+--- ninja-1.8.2.orig/src/hash_map.h	2017-09-10 20:20:10.000000000 -0500
++++ ninja-1.8.2/src/hash_map.h	2017-10-12 14:30:29.563974429 -0500
+@@ -39,8 +39,8 @@
+     len -= 4;
+   }
+   switch (len) {
+-  case 3: h ^= data[2] << 16;
+-  case 2: h ^= data[1] << 8;
++  case 3: h ^= data[2] << 16; __attribute__ ((fallthrough));
++  case 2: h ^= data[1] << 8;  __attribute__ ((fallthrough));
+   case 1: h ^= data[0];
+     h *= m;
+   };
+diff -Naur ninja-1.8.2.orig/src/ninja.cc ninja-1.8.2/src/ninja.cc
+--- ninja-1.8.2.orig/src/ninja.cc	2017-09-10 20:20:10.000000000 -0500
++++ ninja-1.8.2/src/ninja.cc	2017-10-12 14:47:34.143936739 -0500
+@@ -221,6 +221,12 @@
+ 
+ /// Choose a default value for the -j (parallelism) flag.
+ int GuessParallelism() {
++
++  int   j = 0;
++  char* jobs = getenv( "NINJAJOBS" );
++  if ( jobs != NULL ) j = atoi( jobs );
++  if ( j > 0 ) return j;
++
+   switch (int processors = GetProcessorCount()) {
+   case 0:
+   case 1:
