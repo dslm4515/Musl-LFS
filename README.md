@@ -7,9 +7,9 @@ The aim of this project is to create a create a Linux system using Musl (www.mus
 
 Goals:
 <ul>
-<li> [x] ~~Use the chroot method used in the Linux From Scratch (LFS) book. So far version 1.00 has 77% of packages are cross-compiled~~ ~~with 23% under a chroot'ed environment.~~ Version 2.xx now compiles all packages under chroot by cross-compiling the toolchain. </li>
+<li> [x] Version 2.xx now compiles all packages under chroot by cross-compiling the toolchain. </li>
 <li> [ ] Currently, I only have computers with 32 and 64 bit x86 CPUs (i.e. Intel Core Duo). In the future, I would like this project to expand to the ARM architecture </li>
-<li> [ ] ~~First build had Stack Smashing Protection (SSP) defaulted to High, which made the build process harder. In the future, I would~~ ~~like to enable SSP again.~~ Stack Smashing Protection (SSP) will be enabled since using a patch from Void Linux should solve the previous issues of packages failing to compile when SSP is enabled by default.
+<li> [ ] Stack Smashing Protection (SSP) will be enabled since using a patch from Void Linux should solve the previous issues of packages failing to compile when SSP is enabled by default.
 </ul>
 
 Once the build is refined, I will convert project to a series of text files and a HTML "book". Text files are great when working on a host that does not have a GUI (i.e. Xorg) but has GPM installed (to easily copy and past commands).
