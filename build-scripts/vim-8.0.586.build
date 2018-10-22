@@ -1,0 +1,10 @@
+#! /bin/bash
+echo '#define SYS_VIMRC_FILE "/etc/vimrc"' >> src/feature.h &&
+./configure --prefix=/usr  &&
+read -p "Compile? " && make -j2 && 
+read -p "Install? " && porg -lp vim-8.0.586 "make install -j1" &&
+porg -lp+ vim-8.0.586 "ln -sv vim /usr/bin/vi" &&
+for L in  /usr/share/man/{,*/}man1/vim.1; do
+    porg -lp+ vim-8.0.586 "ln -sv vim.1 $(dirname $L)/vi.1"
+done
+porg -lp+ vim-8.0.586 "ln -sv ../vim/vim81/doc /usr/share/doc/vim-8.1"

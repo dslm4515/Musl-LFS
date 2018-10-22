@@ -1,0 +1,10 @@
+#! /bin/bash
+
+./configure --prefix=/usr \
+            --disable-static \
+            --docdir=/usr/share/doc/xz-5.2.3  &&
+read -p "Compile? " && make -j2 && 
+read -p "Install? " && porg -lD "make install -j1" &&
+porg -lD+ "mv -v   /usr/bin/{lzma,unlzma,lzcat,xz,unxz,xzcat} /bin" &&
+porg -lD+ "mv -v /usr/lib/liblzma.so.* /lib" &&
+porg -lD+ "ln -svf ../../lib/$(readlink /usr/lib/liblzma.so) /usr/lib/liblzma.so"

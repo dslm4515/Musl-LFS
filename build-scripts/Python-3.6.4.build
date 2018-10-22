@@ -1,0 +1,17 @@
+#! /bin/bash
+patch -Np0 -i ../Python-3.6.4-libressl-2.7.patch &&
+patch -Np0 -i ../Python-3.6.4-musl-find_library.patch &&
+rm -r Modules/zlib &&
+rm -r Modules/expat &&
+rm -r Modules/_ctypes/{darwin,libffi}* &&
+./configure --prefix=/usr \
+            --enable-shared     \
+            --with-system-expat \
+            --with-system-ffi   \
+            --with-ensurepip=yes \
+            --enable-ipv6 \
+            --with-threads  &&
+read -p "Compile? " && make -j2 && 
+read -p "Install? " && porg -lD "make install -j1" &&
+chmod -v 755 /usr/lib/libpython3.6m.so &&
+chmod -v 755 /usr/lib/libpython3.so 

@@ -1,0 +1,12 @@
+#! /bin/bash
+
+sed -i '/MV.*old/d' Makefile.in &&
+sed -i '/{OLDSUFF}/c:' support/shlib-install&&
+./configure --prefix=/usr    \
+            --disable-static \
+            --docdir=/usr/share/doc/readline-7.0 &&
+read -p "Compile? " && make SHLIB_LIBS="-L/tools/lib -lncursesw" -j2 &&
+read -p "Install? " && porg -lD 'make SHLIB_LIBS="-L/tools/lib -lncurses" install -j1' &&
+porg -lD+ "mv -v /usr/lib/lib{readline,history}.so.* /lib" &&
+porg -lD+ "ln -sfv ../../lib/$(readlink /usr/lib/libreadline.so) /usr/lib/libreadline.so" &&
+porg -lD+ "ln -sfv ../../lib/$(readlink /usr/lib/libhistory.so ) /usr/lib/libhistory.so"

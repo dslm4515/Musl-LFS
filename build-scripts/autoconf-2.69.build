@@ -1,0 +1,5 @@
+#! /bin/bash
+patch -Np1 -i ../autoconf-2.69-musl.patch &&
+./configure --prefix=/usr  &&
+read -p "Compile? " && make -j2 && 
+read -p "Install? " && porg -lD "make install -j1" 

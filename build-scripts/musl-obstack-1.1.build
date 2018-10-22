@@ -1,0 +1,6 @@
+#! /bin/bash
+sed -i "/pkgconfig_DATA/i pkgconfigdir=/usr/lib/pkgconfig" Makefile.am &&
+./bootstrap.sh &&
+./configure --prefix=/usr  &&
+read -p "Compile? " && make -j2 && 
+read -p "Install? " && porg -lD "make install -j1" 

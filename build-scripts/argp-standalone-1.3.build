@@ -1,0 +1,7 @@
+#! /bin/bash
+
+CFLAGS=" -fPIC" ./configure --prefix=/usr \
+	                    --disable-static &&
+read -p "Compile? " && make -j2 &&
+porg -lD  "cp -v libargp.a /usr/lib/" &&
+porg -lD+ "cp -v argp.h    /usr/include/"

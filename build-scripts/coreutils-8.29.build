@@ -1,0 +1,16 @@
+#! /bin/bash
+patch -Np1 -i ../coreutils-8.29-i18n-1.patch &&
+autoreconf -vfi &&
+sed -i '/test.lock/s/^/#/' gnulib-tests/gnulib.mk &&
+FORCE_UNSAFE_CONFIGURE=1  \
+./configure --prefix=/usr \
+            --enable-no-install-program=kill,uptime  &&
+read -p "Compile? " && FORCE_UNSAFE_CONFIGURE=1 make -j2 && 
+read -p "Install? " && porg -lD "make install -j1" &&
+porg -lD+ "mv -v /usr/bin/{cat,chgrp,chmod,chown,cp,date,dd,df,echo} /bin " &&
+porg -lD+ "mv -v /usr/bin/{false,ln,ls,mkdir,mknod,mv,pwd,rm} /bin " &&
+porg -lD+ "mv -v /usr/bin/{rmdir,stty,sync,true,uname} /bin" &&
+porg -lD+ "mv -v /usr/bin/chroot /usr/sbin" &&
+porg -lD+ "mv -v /usr/share/man/man1/chroot.1 /usr/share/man/man8/chroot.8" &&
+porg -lD+ "sed -i s/\"1\"/\"8\"/1 /usr/share/man/man8/chroot.8" &&
+porg -lD+ "mv -v /usr/bin/{head,sleep,nice} /bin"

@@ -1,0 +1,14 @@
+#! /bin/bash
+echo "127.0.0.1 localhost xerium" > /etc/hosts &&
+export BUILD_ZLIB=False &&
+export BUILD_BZIP2=0 &&
+sh Configure -des -Dprefix=/usr                 \
+                  -Dvendorprefix=/usr           \
+                  -Dman1dir=/usr/share/man/man1 \
+                  -Dman3dir=/usr/share/man/man3 \
+                  -Dpager="/usr/bin/less -isR"  \
+                  -Duseshrplib                  \
+                  -Dusethreads &&
+read -p "Compile? " && make -j2 && 
+read -p "Install? " && porg -lD "make install -j1" &&
+unset BUILD_ZLIB BUILD_BZIP2
