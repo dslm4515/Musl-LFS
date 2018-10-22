@@ -1,0 +1,10 @@
+#! /bin/bash
+sed -e '/^includesdir/ s/$(libdir).*$/$(includedir)/' \
+    -i include/Makefile.in
+
+sed -e '/^includedir/ s/=.*$/=@includedir@/' \
+    -e 's/^Cflags: -I${includedir}/Cflags:/' \
+    -i libffi.pc.in
+./configure --prefix=/usr --disable-static --with-gcc-arch=i686  &&
+read -p "Compile? " && make -j2 && 
+read -p "Install? " && porg -lD "make install -j1" 

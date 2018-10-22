@@ -1,0 +1,9 @@
+#! /bin/bash
+
+./configure --prefix=/usr \
+            --sbindir=/sbin        \
+            --sysconfdir=/etc      \
+            --disable-efiemu       \
+            --disable-werror  &&
+read -p "Compile? " && make -j2 && 
+read -p "Install? " && porg -lD "make install -j1" 

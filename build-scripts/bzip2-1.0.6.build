@@ -1,0 +1,16 @@
+#! /bin/bash
+
+patch -Np1 -i ../bzip2-1.0.6-install_docs-1.patchi     &&
+sed -i 's@\(ln -s -f \)$(PREFIX)/bin/@\1@' Makefile    &&
+sed -i "s@(PREFIX)/man@(PREFIX)/share/man@g" Makefile  &&
+make -f Makefile-libbz2_so &&
+make clean &&
+read -p "Compile?" && make -j2 && 
+read -p 'Install?" && porg -lD  "make PREFIX=/usr install -j1" &&
+porg -lD+ "cp -v bzip2-shared /bin/bzip2" &&
+porg -lD+ "cp -av libbz2.so* /lib" &&
+porg -lD+ "ln -sv ../../lib/libbz2.so.1.0 /usr/lib/libbz2.so" &&
+porg -lD+ "rm -v /usr/bin/{bunzip2,bzcat,bzip2}" &&
+porg -lD+ "ln -sv bzip2 /bin/bunzip2" &&
+porg -lD+ "ln -sv bzip2 /bin/bzcat"
+

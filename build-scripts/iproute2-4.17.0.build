@@ -1,0 +1,6 @@
+#! /bin/bash
+sed -i /ARPD/d Makefile &&
+rm -fv man/man8/arpd.8 &&
+sed -i 's/.m_ipt.o//' tc/Makefile &&
+read -p "Compile? " && make -j2 && 
+read -p "Install? " && porg -lD "make DOCDIR=/usr/share/doc/iproute2-4.17.0 install -j1" 

@@ -1,0 +1,5 @@
+#! /bin/bash
+patch -Np0 -i ../libressl-2.7.4-fail-instead-of-trying-fallback.patch &&
+./config --prefix=/usr --with-openssldir=/etc/ssl  &&
+read -p "Compile? " && make -j2 && 
+read -p "Install? " && porg -lD "make install -j1" 

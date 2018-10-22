@@ -1,0 +1,16 @@
+#! /bin/bash
+read -p "Compile? " &&
+make TZDIR=/usr/share/zoneinfo
+read -p "Install? " &&
+porg -lD  "cp -v zic zdump /usr/sbin" &&
+porg -lD+ "cp -v tzselect  /usr/bin"  &&
+porg -lD+ "mkdir -pv /usr/share/zoneinfo/{posix,right}" &&
+porg -lD+ "install -m444 -t /usr/share/zoneinfo iso3166.tab zone1970.tab zone.tab" &&
+export timezones="africa antarctica asia australasia europe northamerica \
+                southamerica pacificnew etcetera backward systemv factory"
+porg -lD+ "zic -y ./yearistype -d /usr/share/zoneinfo ${timezones}" &&
+porg -lD+ "zic -y ./yearistype -d /usr/share/zoneinfo/posix ${timezones}" &&
+porg -lD+ "zic -y ./yearistype -d /usr/share/zoneinfo/right -L leapseconds ${timezones}" &&
+porg -lD+ "zic -y ./yearistype -d /usr/share/zoneinfo -p America/New_York" &&
+unset timezones
+

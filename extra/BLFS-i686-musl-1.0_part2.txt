@@ -1,0 +1,501 @@
+################
+# ATK-2.28.1
+mkdir build &&
+cd    build &&
+meson --prefix=/usr
+ninja && ninja install
+
+################
+# shared-mime-info-1.9
+./configure --prefix=/usr &&
+make && make install
+
+# JasPer-2.0.14
+# Will not link correctly
+mkdir BUILD && cd    BUILD &&
+cmake -DCMAKE_INSTALL_PREFIX=/usr    \
+      -DCMAKE_BUILD_TYPE=Release     \
+      -DCMAKE_SKIP_INSTALL_RPATH=YES \
+      -DJAS_ENABLE_DOC=NO            \
+      -DCMAKE_INSTALL_DOCDIR=/usr/share/doc/jasper-2.0.14 \
+      ..  &&
+make && make install
+
+################
+# gdk-pixbuf-2.36.12
+./configure --prefix=/usr --with-x11 &&
+make && make install
+
+################
+# Cairo-1.14.12
+./configure --prefix=/usr    \
+            --disable-static \
+            --enable-tee \
+            --enable-xlib-xcb \
+            --enable-gl
+make && make install
+
+###############
+# Pango-1.42.1
+mkdir build && cd build &&
+meson --prefix=/usr --sysconfdir=/etc .. &&
+ninja && ninja install
+
+##############
+# hicolor-icon-theme-0.17
+./configure --prefix=/usr
+make install
+
+##############
+# Little CMS-2.9
+./configure --prefix=/usr --disable-static &&
+make && make install
+
+##############
+# libgudev-232
+./configure --prefix=/usr --disable-umockdev &&
+make && make install
+
+##############
+# libusb-1.0.22
+sed -i "s/^PROJECT_LOGO/#&/" doc/doxygen.cfg.in &&
+./configure --prefix=/usr --disable-static &&
+make -j1 && make install
+
+##############
+# usbutils-010
+./configure --prefix=/usr --datadir=/usr/share/hwdata &&
+make && make install
+install -dm755 /usr/share/hwdata/ &&
+wget http://www.linux-usb.org/usb.ids -O /usr/share/hwdata/usb.ids
+
+##############
+# Vala-0.40.3
+sed -i '115d; 121,137d; 139,140d'  configure.ac &&
+sed -i '/valadoc/d' Makefile.am                 &&
+ACLOCAL= autoreconf -fiv                        &&
+./configure --prefix=/usr                       &&
+make && make install
+
+##############
+# itstool-2.0.4
+patch -Np1 -i ../itstool-2.0.4-segfault-1.patch &&
+PYTHON=/usr/bin/python3 ./configure --prefix=/usr &&
+make && make install
+
+##############
+# Boost-1.67.0
+./bootstrap.sh --prefix=/usr --with-python=python3 &&
+./b2 stage threading=multi link=shared
+./b2 install threading=multi link=shared
+
+##############
+# Lua-5.3.4
+cat > lua.pc << "EOF"
+V=5.3
+R=5.3.4
+
+prefix=/usr
+INSTALL_BIN=${prefix}/bin
+INSTALL_INC=${prefix}/include
+INSTALL_LIB=${prefix}/lib
+INSTALL_MAN=${prefix}/share/man/man1
+INSTALL_LMOD=${prefix}/share/lua/${V}
+INSTALL_CMOD=${prefix}/lib/lua/${V}
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: Lua
+Description: An Extensible Extension Language
+Version: ${R}
+Requires:
+Libs: -L${libdir} -llua -lm -ldl
+Cflags: -I${includedir}
+EOF
+patch -Np1 -i ../lua-5.3.4-shared_library-1.patch &&
+sed -i '/#define LUA_ROOT/s:/usr/local/:/usr/:' src/luaconf.h &&
+make MYCFLAGS="-DLUA_COMPAT_5_2 -DLUA_COMPAT_5_1" linux
+make INSTALL_TOP=/usr                \
+     INSTALL_DATA="cp -d"            \
+     INSTALL_MAN=/usr/share/man/man1 \
+     TO_LIB="liblua.so liblua.so.5.3 liblua.so.5.3.4" \
+     install &&
+
+mkdir -pv                      /usr/share/doc/lua-5.3.4 &&
+cp -v doc/*.{html,css,gif,png} /usr/share/doc/lua-5.3.4 &&
+
+install -v -m644 -D lua.pc /usr/lib/pkgconfig/lua.pc
+
+#######################
+# Highlight-3.43
+make && make install
+
+#######################
+# six-1.11.0
+python2 setup.py build
+python2 setup.py install --optimize=1
+python3 setup.py build
+python3 setup.py install --optimize=1
+
+######################
+#GTK-Doc-1.28
+./configure --prefix=/usr &&
+make && make install
+
+######################
+# libgusb-0.3.0
+mkdir build && cd    build &&
+CFLAGS="-g -O2 -fno-stack-protector" \
+meson --prefix=/usr -Ddocs=false &&
+ninja && ninja install
+
+######################
+# yasm-1.3.0
+sed -i 's#) ytasm.*#)#' Makefile.in &&
+./configure --prefix=/usr &&
+make && make install
+
+######################
+# Autoconf2.13
+patch -Np1 -i ../autoconf-2.13-consolidated_fixes-1.patch &&
+mv -v autoconf.texi autoconf213.texi                      &&
+rm -v autoconf.info                                       &&
+./configure --prefix=/usr --program-suffix=2.13           &&
+make && make install
+
+#####################
+# pycparser-2.18
+# Cffi -1.11.5
+# ipaddress-1.022
+# enum34-1.1.6
+# asn1crypto-0.24.0
+# idna-2.7
+python setup.py build
+python setup.py install
+python3 setup.py build
+python3 setup.py install
+
+#########################
+# Python Cryptography-2.3
+python setup.py build
+python setup.py install
+python3 setup.py build
+python3 setup.py install
+
+# will not configure
+# JS-60.0.2-pre1
+cd js/src
+./configure --prefix=/usr \
+            --with-intl-api \
+            --with-system-zlib \
+            --with-system-nspr \
+            --with-system-icu  \
+            --enable-readline 
+#########################
+# JS-52.3.0 from firefox source
+patch -Np1 -i ../mozjs52-copy-headers.patch
+patch -Np1 -i ../mozjs52-disable-mozglue.patch
+patch -Np1 -i ../mozjs52-fix-soname.patch
+patch -Np1 -i ../mozjs52-include-configure-script.patch
+cd js/src
+touch ${wrksrc}/js/src/configure
+CFLAGS="-fpermissive -fno-delete-null-pointer-checks -fno-tree-vrp -fno-strict-aliasing" \
+CXXFLAGS="-fpermissive -fno-delete-null-pointer-checks -fno-tree-vrp -fno-strict-aliasing" \
+LDFLAGS="-fuse-ld=bfd" \
+SHELL=/bin/bash PYTHON=/usr/bin/python2 ./configure --prefix=/usr \
+                --disable-jemalloc --disable-optimize --enable-ctypes \
+                --enable-gcgenerational --enable-pie --enable-readline \
+                --enable-shared-js --enable-system-ffi --enable-tests \
+                --enable-threadsafe --enable-xterm-updates --with-intl-api \
+                --with-system-icu --with-system-nspr --with-system-zlib
+
+
+# JS-52.2.1gnome1
+# will not compile under musl
+cd js/src && 
+#edit  dist/system_wrappers/sys/cdefs.h to remove sys/cdefs.h
+#edit  dist/system_wrappers/sys/sysctl.h to remove sys/sysctl.h
+SHELL=/bin/bash \
+CFLAGS="-fpermissive -fno-delete-null-pointer-checks -fno-tree-vrp -fno-strict-aliasing" \
+CXXFLAGS="-fpermissive -fno-delete-null-pointer-checks -fno-tree-vrp -fno-strict-aliasing" \
+LDFLAGS="-fuse-ld=bfd" \
+./configure --prefix=/usr       \
+            --with-intl-api     \
+            --with-system-zlib  \
+            --with-system-nspr  \
+            --with-system-icu   \
+            --enable-threadsafe \
+            --enable-readline   &&
+make && make install
+
+######################
+# Polkit-0.114
+groupadd -fg 27 polkitd &&
+useradd -c "PolicyKit Daemon Owner" -d /etc/polkit-1 -u 27 \
+        -g polkitd -s /bin/false polkitd
+patch -Np0 -i ../polkit-0.114-make-innetgr-optional.patch
+sed -e '/JS_ReportWarningUTF8/s/,/, "%s",/'  \
+        -i  src/polkitbackend/polkitbackendjsauthority.cpp
+sed -e 's,/sys/fs/cgroup/systemd/,/sys/fs/cgroup,g' -i configure
+./configure --prefix=/usr                    \
+            --sysconfdir=/etc                \
+            --localstatedir=/var             \
+            --disable-static                 \
+            --enable-libsystemd-login=no     \
+            --enable-libelogind=no           \
+            --with-authfw=pam             \
+            --disable-systemd \
+            --with-os-type=xerinium &&
+make && make install
+cat > /etc/pam.d/polkit-1 << "EOF"
+# Begin /etc/pam.d/polkit-1
+
+auth     include        system-auth
+account  include        system-account
+password include        system-password
+session  include        system-session
+
+# End /etc/pam.d/polkit-1
+EOF
+
+################################
+# Colord-1.4.3
+groupadd -g 71 colord &&
+useradd -c "Color Daemon Owner" -d /var/lib/colord -u 71 \
+        -g colord -s /bin/false colord
+mv po/fur.po po/ur.po &&
+sed -i 's/fur/ur/' po/LINGUAS
+mkdir build && cd build &&
+CFLAGS="-fno-stack-protector" \
+meson --prefix=/usr            \
+      --sysconfdir=/etc        \
+      --localstatedir=/var     \
+      -Ddaemon_user=colord     \
+      -Dvapi=true              \
+      -Dsystemd=false          \
+      -Dlibcolordcompat=true   \
+      -Dargyllcms_sensor=false \
+      -Dbash_completion=false  \
+      -Ddocs=false             \
+      -Dman=false ..           &&
+ninja && ninja install
+
+################################
+# Sharutils-4.15.2
+./configure --prefix=/usr &&
+make && make install
+
+#################################
+# Zip-3.0
+make -f unix/Makefile generic_gcc
+make prefix=/usr MANDIR=/usr/share/man/man1 -f unix/Makefile install
+
+##############################
+# Lynx-2.8.8rel.2
+patch -p1 -i ../lynx-2.8.8rel.2-ncurses_6.1-1.patch
+patch -p0 -i ../lynx2.8.8rel.2-ssl-fix.patch
+./configure --prefix=/usr          \
+            --sysconfdir=/etc/lynx \
+            --datadir=/usr/share/doc/lynx-2.8.8rel.2 \
+            --with-zlib            \
+            --with-bzlib           \
+            --with-ssl             \
+            --with-screen=ncursesw \
+            --enable-locale-charset
+make && make install-full &&
+chgrp -v -R root /usr/share/doc/lynx-2.8.8rel.2/lynx_doc
+
+#####################
+# xdg-utils-1.1.3
+./configure --prefix=/usr --mandir=/usr/share/man &&
+make && make install
+
+#########################
+# libpaper-1.1.24+nmu5
+autoreconf -fi                &&
+./configure --prefix=/usr     \
+            --sysconfdir=/etc \
+            --disable-static
+make && make install &&
+mkdir -vp /etc/libpaper.d &&
+
+cat > /usr/bin/run-parts << "EOF"
+#!/bin/sh
+# run-parts:  Runs all the scripts found in a directory.
+# from Slackware, by Patrick J. Volkerding with ideas borrowed
+# from the Red Hat and Debian versions of this utility.
+
+# keep going when something fails
+set +e
+
+if [ $# -lt 1 ]; then
+  echo "Usage: run-parts <directory>"
+  exit 1
+fi
+
+if [ ! -d $1 ]; then
+  echo "Not a directory: $1"
+  echo "Usage: run-parts <directory>"
+  exit 1
+fi
+
+# There are several types of files that we would like to
+# ignore automatically, as they are likely to be backups
+# of other scripts:
+IGNORE_SUFFIXES="~ ^ , .bak .new .rpmsave .rpmorig .rpmnew .swp"
+
+# Main loop:
+for SCRIPT in $1/* ; do
+  # If this is not a regular file, skip it:
+  if [ ! -f $SCRIPT ]; then
+    continue
+  fi
+  # Determine if this file should be skipped by suffix:
+  SKIP=false
+  for SUFFIX in $IGNORE_SUFFIXES ; do
+    if [ ! "$(basename $SCRIPT $SUFFIX)" = "$(basename $SCRIPT)" ]; then
+      SKIP=true
+      break
+    fi
+  done
+  if [ "$SKIP" = "true" ]; then
+    continue
+  fi
+  # If we've made it this far, then run the script if it's executable:
+  if [ -x $SCRIPT ]; then
+    $SCRIPT || echo "$SCRIPT failed."
+  fi
+done
+
+exit 0
+EOF
+
+chmod -v 755 /usr/bin/run-parts
+
+# Cups-2.2.8
+useradd -c "Print Service User" -d /var/spool/cups -g lp -s /bin/false -u 9 lp
+groupadd -g 19 lpadmin
+sed -i 's:444:644:' Makedefs.in                                     &&
+sed -i '/MAN.EXT/s:.gz::' configure config-scripts/cups-manpages.m4 &&
+
+aclocal  -I config-scripts &&
+autoconf -I config-scripts &&
+
+CC=gcc CFLAGS="-fno-stack-protector" \
+./configure --libdir=/usr/lib            \
+            --disable-systemd            \
+            --with-rcdir=/tmp/cupsinit   \
+            --with-system-groups=lpadmin \
+            --with-docdir=/usr/share/cups/doc-2.2.8 \
+            --enable-acl \
+            --enable-dbus \
+            --enable-raw-printing \
+            --enable-libpaper \
+            --enable-pam \
+            --disable-launchd \
+            --without-java \
+            --without-php 
+sed -e '/.\/genstrings.*/d' -i ppdc/Makefile
+sed -e "s,./mantohtml,${wrksrc}/cross-tools/mantohtml,g" -i man/Makefile
+make && make install
+rm -rf /tmp/cupsinit &&
+ln -svnf ../cups/doc-2.2.8 /usr/share/doc/cups-2.2.8
+
+#########################
+# hicolor-icon-theme-0.17
+./configure --prefix=/usr
+make isntall
+
+########################
+# GTK+-2.24.32
+sed -e 's#l \(gtk-.*\).sgml#& -o \1#' \
+    -i docs/{faq,tutorial}/Makefile.in      &&
+
+./configure --prefix=/usr \
+            --sysconfdir=/etc \
+            --with-xinput=yes \
+            --enable-shm
+make && make install
+
+# cannot link
+# at-spi2-core-2.28.0
+mkdir build &&
+cd    build &&
+
+meson --prefix=/usr --sysconfdir=/etc  .. &&
+ninja
+
+#########################
+# at-spi2-core-2.26.2
+./configure --prefix=/usr \
+            --sysconfdir=/etc &&
+make && make install
+
+#########################
+# at-spi2-atk-2.26.2
+./configure --prefix=/usr &&
+make && make install
+
+#######################
+# Error
+cpan install Error
+
+######################
+# PCRE2-10.31
+./configure --prefix=/usr                       \
+            --docdir=/usr/share/doc/pcre2-10.31 \
+            --enable-unicode                    \
+            --enable-jit                        \
+            --enable-pcre2-16                   \
+            --enable-pcre2-32                   \
+            --enable-pcre2grep-libz             \
+            --enable-pcre2grep-libbz2           \
+            --enable-pcre2test-libreadline      \
+            --disable-static  --enable-jit
+make && make install
+
+######################
+# Git-2.17.1
+./configure --prefix=/usr --with-gitconfig=/etc/gitconfig \
+            --with-libpcre2 &&
+make && make install
+
+######################
+# libcroco-0.6.12
+./configure --prefix=/usr --disable-static &&
+make && make install
+
+#######################
+# librsvg-2.40.18
+sed -i 's/ --nogtkinit//' doc/Makefile.in &&
+./configure --prefix=/usr    \
+            --enable-vala    \
+            --disable-static &&
+make && make install
+
+########################
+# adwaita-icon-theme-3.26.1
+./configure --prefix=/usr &&
+make -j1 && make install
+
+########################
+# libxkbcommon-0.8.0
+./configure $XORG_CONFIG     \
+            --docdir=/usr/share/doc/libxkbcommon-0.8.0 &&
+make && make install
+
+########################
+# JSON-GLib-1.4.2
+mkdir build &&
+cd    build &&
+meson --prefix=/usr .. &&
+ninja && ninja install
+
+# GTK+-3.22.30
+./configure --prefix=/usr             \
+            --sysconfdir=/etc         \
+            --enable-broadway-backend \
+            --enable-x11-backend      \
+            --enable-wayland-backend &&
+make && make install

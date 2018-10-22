@@ -1,0 +1,4 @@
+#! /bin/bash
+
+make -j2 &&
+read -p "Install? " && porg -lD "make -j1 install"

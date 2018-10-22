@@ -1,0 +1,12 @@
+#! /bin/bash
+patch -Np1 -i ../porg-0.10-musl-fix-32.diff &&
+ac_cv_func_creat64=no     \
+ac_cv_func_fopen64=no     \
+ac_cv_func_freopen64=no   \
+ac_cv_func_open64=no      \
+ac_cv_func_openat64=no    \
+./configure --prefix=/usr \
+            --sysconfdir=/etc \
+            --disable-grop  &&
+read -p "Compile? " && make -j2 && 
+read -p "Install? " && porg -lD "make install -j1" 

@@ -1,0 +1,7 @@
+#! /bin/bash
+sed -i 's/test-lock..EXEEXT.//' tests/Makefile.in &&
+./configure --prefix=/usr --localstatedir=/var/lib/locate  &&
+read -p "Compile? " && make -j2 && 
+read -p "Install? " && porg -lD "make install -j1" &&
+porg -lD+ "mv -v /usr/bin/find /bin" &&
+sed -i 's|find:=${BINDIR}|find:=/bin|' /usr/bin/updatedb

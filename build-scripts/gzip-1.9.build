@@ -1,0 +1,6 @@
+#! /bin/bash
+DEFS=NO_ASM gl_cv_func_fflush_stdin=yes \
+./configure --prefix=/usr  &&
+read -p "Compile? " && make -j2 && sed -i '1721,1727d;1447d' tests/Makefile && 
+read -p "Install? " && porg -lD "make install -j1" &&
+porg -lD+ "mv -v /usr/bin/gzip /bin" 

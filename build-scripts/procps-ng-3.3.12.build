@@ -1,0 +1,13 @@
+#! /bin/bash
+autoreconf -fi &&
+./configure --prefix=/usr \
+            --exec-prefix=                           \
+            --libdir=/usr/lib                        \
+            --docdir=/usr/share/doc/procps-ng-3.3.15 \
+            --disable-static                         \
+            --disable-kill \
+            --without-systemd --disable-modern-top &&
+read -p "Compile? " && make -j2 && 
+read -p "Install? " && porg -lD "make install -j1" &&
+porg -lD+ "mv -v /usr/lib/libprocps.so.* /lib" &&
+porg -lD+ "ln -sfv ../../lib/$(readlink /usr/lib/libprocps.so) /usr/lib/libprocps.so"

@@ -1,0 +1,17 @@
+#! /bin/bash
+
+cp -v ../elfutils-0.173-missingfile-error.h lib/error.h &
+cp -v ../elfutils-0.173-missingfile-error.h src/error.h &
+patch -Np0 -i ../elfutils-0.173-fix-uninitialized.patch &
+patch -Np0 -i ../elfutils-0.173-musl-cdefs.patch &&
+patch -Np0 -i ../elfutils-0.173-musl-fts-obstack.patch &&
+patch -Np0 -i ../elfutils-0.173-musl-macros.patch &&
+patch -Np0 -i ../elfutils-0.173-musl-qsort_r.patch &&
+patch -Np0 -i ../elfutils-0.173-musl-strerror_r.patch &&
+patch -Np0 -i ../elfutils-0.173-musl-strndupa.patch &&
+autoreconf -if &&
+CFLAGS="-Wno-error" \
+./configure --prefix=/usr --build=i686-linux-musl && 
+read -p "Compile? " && make -j2 &&
+read -p "Install? " && porg -lp libelf-0.173 "make -C libelf install -j1" &&
+porg -lp+ libelf-0.173 "install -vm644 config/libelf.pc /usr/lib/pkgconfig"
