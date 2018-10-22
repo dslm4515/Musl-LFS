@@ -11,7 +11,9 @@ Goals:
 <li> [ ] Currently, I only have computers with 32 and 64 bit x86 CPUs (i.e. Intel Core Duo). In the future, I would like this project to expand to the ARM architecture </li>
 <li> [x] Stack Smashing Protection (SSP) will be enabled since using a patch from Void Linux should solve the previous issues of packages failing to compile when SSP is enabled by default.
 <li> [ ] Properly name patches to reflect origin (i.e. Alpine or void) </li>
+<li> [ ] Create a list for wget to download sources.
 <li> [ ] Transition from Runit to S6 </li>
+<li> [ ] Generate HTML 'book' like LFS</li>
 </ul>
 
 Supported Architectures
@@ -59,9 +61,10 @@ https://code.foxkit.us/adelie/gcompat</li>
 Layout
 
 <ul>
-<li>build-scripts - Build scripts to use when building the final system with the toolchain (/tools) that was cross-compiled with the small cross-toolchain (/cross-tools)</li>
-<li>extra - Scripts to mount, chroot, and umount a MLFS build. Also includes some build instructions for some BLFS packages... mostly to get Xorg setup.</li>
-<li>files - Files that will be needed during the build</li>
-<li>patches - All patches used to patch sources to work/recognize Musl C Library</li>
-<li>plain-text - Build instructions to build a LFS installation that uses Musl instead of Glibc and Runit instead of SysVint. Instructions differ slightly for i686 and x86_64.</li>
+  <li>build-scripts - Build scripts to use when building the final system with the toolchain (/tools) that was cross-compiled with the small cross-toolchain (/cross-tools)</li>
+  <li>extra - Scripts to mount, chroot, and umount a MLFS build. Also includes some build instructions for some BLFS packages... mostly to get Xorg setup.</li>
+  <li>files - Files that will be needed during the build</li>
+  <li>patches - All patches used to patch sources to work/recognize Musl C Library</li>
+  <li>plain-text - Build instructions to build a LFS installation that uses Musl instead of Glibc and Runit instead of SysVint. Instructions differ slightly for i686 and x86_64.</li>
+  <li>sources - Modified or hard to find/download sources</li>
 </ul>
