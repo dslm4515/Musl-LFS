@@ -1,0 +1,9 @@
+# Cross-Tools: Musl-1.1.19
+# Build and install as mlfs
+
+./configure \
+  CROSS_COMPILE=${MLFS_TARGET}- \
+  --prefix=/ \
+  --target=${MLFS_TARGET} 
+make && DESTDIR=/cross-tools make install
+cd /cross-tools && mkdir usr -v && ln -sv ../include usr/include

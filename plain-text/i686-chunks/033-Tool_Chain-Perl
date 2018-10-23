@@ -1,0 +1,21 @@
+# Build and install as mlfs
+
+export CC="${MLFS_TARGET}-gcc"
+export CXX="${MLFS_TARGET}-g++"
+export AR="${MLFS_TARGET}-ar"
+export AS="${MLFS_TARGET}-as"
+export RANLIB="${MLFS_TARGET}-ranlib"
+export LD="${MLFS_TARGET}-ld"
+export STRIP="${MLFS_TARGET}-strip"
+
+#use perl-cross, cp over perl source
+#OR use patch -Np1 -i ../perl-5.26.1-cross-1.2.patch
+
+./configure --prefix=/tools \
+            --target=${MLFS_TARGET}
+
+make
+
+cp -v perl cpan/podlators/scripts/pod2man /tools/bin
+mkdir -pv /tools/lib/perl5/5.28.0
+cp -Rv lib/* /tools/lib/perl5/5.28.0

@@ -1,0 +1,6 @@
+#This section is done in Chroot environment
+
+./configure --prefix=/usr
+
+make && make install
+

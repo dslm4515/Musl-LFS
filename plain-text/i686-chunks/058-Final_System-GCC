@@ -1,0 +1,57 @@
+#This section is done in Chroot environment
+
+tar -xf ../isl-0.18.tar.bz2
+mv -v isl-0.18 isl
+patch -Np0 -i ../gcc-7.3.0-fix-cxxflags-passing.patch
+patch -Np0 -i ../gcc-7.3.0-fix-musl-execinfo.patch
+patch -Np0 -i ../gcc-7.3.0-no-stack_chk_fail_local.patch
+
+rm -vf /usr/lib/gcc
+rm -vrf libmpx
+
+mkdir -v build && cd build
+SED=sed  libat_cv_have_ifunc=no       \
+../configure --prefix=/usr            \
+             --enable-languages=c,c++ \
+             --disable-multilib       \
+             --disable-bootstrap      \
+             --with-system-zlib       \
+             --enable-shared \
+             --enable-threads=posix \
+             --enable-__cxa_atexit \
+             --enable-c99 \
+             --enable-long-long \
+             --enable-clocale=generic \
+             --enable-languages=c,c++ \
+             --disable-libstdcxx-pch \
+             --enable-tls \
+             --enable-nls \
+             --enable-lto \
+             --enable-libstdcxx-time \
+             --enable-checking=release \
+             --enable-fully-dynamic-string \
+             --disable-symvers \
+             --disable-gnu-indirect-function \
+             --disable-libmudflap \
+             --disable-libsanitizer \
+             --enable-default-pie \
+             --enable-default-ssp \
+             --enable-vtable-verify \
+             --with-default-libstdcxx-abi=gcc4-compatible \
+             --disable-target-libiberty \
+             --disable-libunwind-exceptions \
+             --with-isl \
+             --enable-linker-build-id \
+             --enable-fast-character \
+             --with-linker-hash-style=gnu \
+             --build=i686-linux-musl \
+
+make && make install
+
+ln -sv ../usr/bin/cpp /lib
+ln -sv gcc /usr/bin/cc
+install -v -dm755 /usr/lib/bfd-plugins
+ln -sfv ../../libexec/gcc/$(gcc -dumpmachine)/7.3.0/liblto_plugin.so \
+        /usr/lib/bfd-plugins/
+mkdir -pv /usr/share/gdb/auto-load/usr/lib
+mv -v /usr/lib/*gdb.py /usr/share/gdb/auto-load/usr/lib

@@ -1,0 +1,7 @@
+# Cross-Tools: File-5.33
+# Build and install as mlfs
+
+./configure --prefix=/cross-tools
+make && make install
+
+# Optional: Backup cross-tools

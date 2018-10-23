@@ -1,0 +1,24 @@
+#This section is done in Chroot environment
+
+mkdir -v build && cd build
+
+../configure --prefix=/usr       \
+             --enable-gold       \
+             --enable-ld=default \
+             --enable-plugins    \
+             --enable-shared     \
+             --disable-werror    \
+             --enable-64-bit-bfd \
+             --with-system-zlib  \
+             --enable-relro \
+             --enable-lto \
+             --enable-nls \
+             --enable-deterministic-archives \
+             --enable-threads \
+             --enable-install-libiberty \
+             --disable-compressed-debug-sections \
+             --enable-targets=i386-efi-pe,x86_64-pep
+
+make tooldir=/usr
+
+make tooldir=/usr install
