@@ -1,0 +1,60 @@
+#This section is done in Chroot environment
+
+###############################
+##Creating the /etc/fstab File
+cat > /etc/fstab << "EOF"
+# Begin /etc/fstab
+
+# file system  mount-point  type     options             dump  fsck
+#                                                              order
+/dev/sda1      /boot        auto     defaults            0     0
+/dev/sda2      /            ext4     defaults            1     1
+/dev/sda5      swap         swap     pri=1               0     0
+proc           /proc        proc     nosuid,noexec,nodev 0     0
+sysfs          /sys         sysfs    nosuid,noexec,nodev 0     0
+devpts         /dev/pts     devpts   gid=5,mode=620      0     0
+tmpfs          /run         tmpfs    defaults            0     0
+devtmpfs       /dev         devtmpfs mode=0755,nosuid    0     0
+tmpfs          /dev/shm      tmpfs    rw,nosuid,nodev,noexec 0 0
+EOF
+
+##############
+##Linux Kernel
+
+#Unpack linux kernel and cd into it
+
+#Clean directory:
+make mrproper
+
+#Configure sources:
+make menuconfig
+
+#Compile:
+make
+
+#Install kernel modules, if any:
+make modules_install
+
+#Install kernel
+cp -iv arch/x86/boot/bzImage /boot/vmlinuz
+cp -v .config /boot/config
+cp -v System.map /boot/
+
+#Install Grub as bootloader:
+grub-install /dev/sda
+
+#Create GRUB configuration:
+
+cat > /boot/grub/grub.cfg << "EOF"
+# Begin /boot/grub/grub.cfg
+set default=0
+set timeout=5
+
+insmod ext2
+set root=(hd0,2)
+
+menuentry "GNU/Linux, Linux 4.18.5-mlfs-3.00" {
+        linux   /boot/vmlinuz root=/dev/sda2 ro
+}
+EOF
+

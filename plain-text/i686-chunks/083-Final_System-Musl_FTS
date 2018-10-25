@@ -1,0 +1,8 @@
+#This section is done in Chroot environment
+
+sed -i "/pkgconfig_DATA/i pkgconfigdir=/usr/lib/pkgconfig" Makefile.am
+./bootstrap.sh
+./configure --prefix=/usr
+make & make install
+mv -v /usr/bin/{hostname,ping,ping6,traceroute} /bin
+mv -v /usr/bin/ifconfig /sbin

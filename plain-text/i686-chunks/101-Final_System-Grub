@@ -1,0 +1,19 @@
+#This section is done in Chroot environment
+
+#for BIOS-based PCs:
+./configure --prefix=/usr          \
+            --sbindir=/sbin        \
+            --sysconfdir=/etc      \
+            --disable-efiemu       \
+            --disable-werror
+
+#for UEFI-based PCs:
+#./configure --prefix=/usr          \
+#            --target=x86_64        \
+#            --with-platform=efi    \
+#            --sbindir=/sbin        \
+#            --sysconfdir=/etc      \
+#            --disable-werror
+
+make && make install
+
