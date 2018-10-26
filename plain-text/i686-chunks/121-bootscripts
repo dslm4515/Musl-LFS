@@ -1,0 +1,6 @@
+#This section is done in Chroot environment
+
+#Runit-for-LFS
+
+cd lfs-servicescripts
+make && make install

@@ -1,0 +1,32 @@
+# Build and install as mlfs
+
+export CC="${MLFS_TARGET}-gcc"
+export CXX="${MLFS_TARGET}-g++"
+export AR="${MLFS_TARGET}-ar"
+export AS="${MLFS_TARGET}-as"
+export RANLIB="${MLFS_TARGET}-ranlib"
+export LD="${MLFS_TARGET}-ld"
+export STRIP="${MLFS_TARGET}-strip"
+
+autoreconf -vif
+
+cat > config.cache << EOF
+fu_cv_sys_stat_statfs2_bsize=yes
+gl_cv_func_rename_trailing_slash_bug=no
+gl_cv_func_mbrtowc_incomplete_state=yes
+gl_cv_func_mbrtowc_nul_retval=yes
+gl_cv_func_mbrtowc_null_arg=yes
+gl_cv_func_mbrtowc_retval=yes
+gl_cv_func_btowc_eof=yes
+gl_cv_func_wcrtomb_retval=yes
+gl_cv_func_wctob_works=yes
+EOF
+
+sed -i '/test.lock/s/^/#/' gnulib-tests/gnulib.mk
+
+./configure --build=${MLFS_HOST} \
+            --host=${MLFS_TARGET} \
+            --prefix=/tools \
+            --cache-file=config.cache 
+
+make && make install

@@ -1,0 +1,8 @@
+#This section is done in Chroot environment
+
+./configure --prefix=/usr        \
+            --disable-static     \
+            --enable-thread-safe \
+            --docdir=/usr/share/doc/mpfr-4.0.1
+
+make && make install

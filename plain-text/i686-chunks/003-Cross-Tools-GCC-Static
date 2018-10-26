@@ -1,0 +1,28 @@
+# Cross-Tools: GCC-7.3.0 STATIC
+# Build and install as mlfs
+
+tar -xf ../mpfr-4.0.1.tar.xz
+mv -v mpfr-4.0.1 mpfr
+tar -xf ../gmp-6.1.2.tar.xz
+mv -v gmp-6.1.2 gmp
+tar -xf ../mpc-1.1.0.tar.gz
+mv -v mpc-1.1.0 mpc
+mkdir -v build && cd  build
+../configure \
+	  --prefix=/cross-tools --build=${MLFS_HOST} \
+	  --host=${MLFS_HOST}   --target=${MLFS_TARGET} \
+	  --with-sysroot=/cross-tools/${MLFS_TARGET} \
+	  --disable-nls  --with-newlib --without-ppl \
+	  --without-cloog      --disable-libmpx \
+	  --disable-libitm     --disable-libvtv \
+	  --disable-libssp     --disable-shared \
+	  --disable-libgomp    --without-headers \
+	  --disable-threads    --disable-multilib \
+	  --disable-libatomic  --disable-libstdcxx \
+	  --disable-libmudflap --disable-libcilkrts \
+	  --enable-languages=c --disable-libquadmath \
+	  --disable-libsanitizer --with-arch=${MLFS_CPU} \
+	  --disable-decimal-float --enable-clocale=generic \
+	  --disable-gnu-indirect-function  
+make all-gcc all-target-libgcc
+make install-gcc install-target-libgcc

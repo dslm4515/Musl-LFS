@@ -1,0 +1,20 @@
+# Build and install as mlfs
+
+export CC="${MLFS_TARGET}-gcc"
+export CXX="${MLFS_TARGET}-g++"
+export AR="${MLFS_TARGET}-ar"
+export AS="${MLFS_TARGET}-as"
+export RANLIB="${MLFS_TARGET}-ranlib"
+export LD="${MLFS_TARGET}-ld"
+export STRIP="${MLFS_TARGET}-strip"
+
+cp Makefile{,.orig}
+sed -e "/^all:/s/ test//" Makefile.orig > Makefile
+sed -i 's@\(ln -s -f \)$(PREFIX)/bin/@\1@' Makefile
+sed -i "s@(PREFIX)/man@(PREFIX)/share/man@g" Makefile
+
+make -f Makefile-libbz2_so CC="${CC}" AR="${AR}" RANLIB="${RANLIB}"
+make clean
+make CC="${CC}" AR="${AR}" RANLIB="${RANLIB}"
+
+make PREFIX=/tools install

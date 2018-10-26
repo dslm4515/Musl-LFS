@@ -1,0 +1,10 @@
+#This section is done in Chroot environment
+
+ABI=32 \
+./configure --prefix=/usr    \
+            --enable-cxx     \
+            --disable-static \
+            --build=i686-linux-musl \
+            --docdir=/usr/share/doc/gmp-6.1.2
+
+make && make install

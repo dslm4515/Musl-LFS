@@ -1,0 +1,5 @@
+#This section is done in Chroot environment
+
+python3 setup.py build
+python3 setup.py install --root=dest
+cp -rv dest/* /

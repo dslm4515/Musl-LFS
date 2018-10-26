@@ -1,0 +1,13 @@
+#This section is done in Chroot environment
+
+cd src
+echo "gcc -s -no-pie" > config-ld 
+make
+install -v runit runit-init /sbin
+install -v runsvdir runsv chpst svlogd sv /usr/bin
+install -v runsvchdir utmpset /usr/sbin
+cp -v ../man/* /usr/share/man/man8
+ln -svf /sbin/runit-init /sbin/init
+mkdir -pv /etc/sv
+mkdir -pv /etc/runit/runsvdir/single
+mkdir -pv /etc/runit/runsvdir/multi

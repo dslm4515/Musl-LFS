@@ -1,0 +1,28 @@
+# Build and install as mlfs
+# Optional for package management
+
+export CC="${MLFS_TARGET}-gcc"
+export CXX="${MLFS_TARGET}-g++"
+export AR="${MLFS_TARGET}-ar"
+export AS="${MLFS_TARGET}-as"
+export RANLIB="${MLFS_TARGET}-ranlib"
+export LD="${MLFS_TARGET}-ld"
+export STRIP="${MLFS_TARGET}-strip"
+
+patch -Np1 -i ../porg-0.10-musl-fix-32.diff
+cat > config.cache << "EOF"
+ac_cv_func_creat64=no
+ac_cv_func_fopen64=no
+ac_cv_func_freopen64=no
+ac_cv_func_open64=no
+ac_cv_func_openat64=no
+EOF
+
+./configure --build=${MLFS_HOST} \
+            --host=${MLFS_TARGET} \
+            --prefix=/tools \
+            --sysconfdir=/tools/etc \
+            --disable-grop \
+            --cache-file=config.cache
+
+make && make install

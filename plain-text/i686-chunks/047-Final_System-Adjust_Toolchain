@@ -1,0 +1,26 @@
+#This section is done in Chroot environment
+
+#Change to $MLFS_TARGET used by mlfs user
+#Otherwise should match the triplet under /tools
+export MLFS_TARGET="i686-mlfs-linux-musl"
+
+mv -v /tools/bin/{ld,ld-old}
+mv -v /tools/$MLFS_TARGET/bin/{ld,ld-old}
+mv -v /tools/bin/{ld-new,ld}
+ln -sv /tools/bin/ld /tools/$MLFS_TARGET/bin/ld
+
+export SPECFILE=`dirname $(gcc -print-libgcc-file-name)`/specs
+gcc -dumpspecs | sed -e 's@/tools@@g'                   \
+    -e '/\*startfile_prefix_spec:/{n;s@.*@/usr/lib/ @}' \
+    -e '/\*cpp:/{n;s@$@ -isystem /usr/include@}' >  tempspecfile
+
+#check file for every occurance of /tools/lib/ld-musl-i386.so.1 to /lib/ld-musl-i386.so.1
+#check so that this line looks like this:
+#*startfile_prefix_spec:
+#/usr/lib
+#and this line:
+#*cpp:
+#%{posix:-D_POSIX_SOURCE} %{pthread:-D_REENTRANT} -isystem /usr/include
+
+mv -vf tempspecfile $SPECFILE &&
+unset SPECFILE
