@@ -1,0 +1,60 @@
+# perform as root:
+export MLFS=/mnt/mlfs
+mkdir -pv $MLFS
+mkdir -v $MLFS/sources
+chmod -v a+wt $MLFS/sources
+
+#download sources + patches
+
+mkdir -v $MLFS/cross-tools
+mkdir -v $MLFS/tools
+ln -sv   $MLFS/cross-tools /
+ln -sv   $MLFS/tools /
+
+groupadd mlfs
+useradd -s /bin/bash -g mlfs -m -k /dev/null mlfs
+passwd mlfs
+
+chown -v mlfs $MLFS/cross-tools
+chown -v mlfs $MLFS/sources
+chown -v mlfs $MLFS/tools
+
+# Now run as mlfs user
+su - mlfs
+
+cat > ~/.bash_profile << "EOF"
+exec env -i HOME=$HOME TERM=$TERM PS1='\u:\w\n\$ ' /bin/bash
+EOF
+
+cat > ~/.bashrc << "EOF"
+set +h
+umask 022
+MLFS=/mnt/mlfs
+LC_ALL=POSIX
+PATH=/cross-tools/bin:/tools/bin:/bin:/usr/bin
+export MLFS LC_ALL MLFS_TGT PATH
+EOF
+
+source ~/.bash_profile
+
+#CFLAGS and CXXFLAGS must not be set during the building of cross-tools. 
+unset CFLAGS
+unset CXXFLAGS
+cat >> ~/.bashrc << EOF
+unset CFLAGS
+unset CXXFLAGS
+EOF
+
+#Build Variables:
+export MLFS_HOST="$(echo $MACHTYPE | \
+    sed "s/$(echo $MACHTYPE | cut -d- -f2)/cross/")"
+export MLFS_TARGET="x86_64-linux-musl"
+cat >> ~/.bashrc << EOF
+export MLFS_HOST="${MLFS_HOST}"
+export MLFS_TARGET="${MLFS_TARGET}"
+export MLFS_ARCH=x86
+export MLFS_CPU=x86-64
+EOF
+source ~/.bashrc
+
+# the next are done as mlfs user
