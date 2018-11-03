@@ -1,0 +1,26 @@
+# Tool Chain: Binutils PASS 2 of 2
+# Build and install as mlfs
+
+export CC="${MLFS_TARGET}-gcc"
+export CXX="${MLFS_TARGET}-g++"
+export AR="${MLFS_TARGET}-ar"
+export AS="${MLFS_TARGET}-as"
+export RANLIB="${MLFS_TARGET}-ranlib"
+export LD="${MLFS_TARGET}-ld"
+export STRIP="${MLFS_TARGET}-strip"
+mkdir -v build && cd build
+../configure                   \
+    --target=${MLFS_TARGET}    \
+    --build=${MLFS_HOST}       \
+    --host=${MLFS_TARGET}      \
+    --prefix=/tools            \
+    --disable-nls              \
+    --disable-werror           \
+    --with-lib-path=/tools/lib \
+    --with-sysroot
+
+PATH=/bin:/usr/bin:/cross-tools/bin:/tools/bin make 
+make install
+make -C ld clean
+make -C ld LIB_PATH=/usr/lib:/lib
+cp -v ld/ld-new /tools/bin

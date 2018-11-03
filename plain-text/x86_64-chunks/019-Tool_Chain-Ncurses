@@ -1,0 +1,23 @@
+# Toolchain: Ncurses
+# Build and install as mlfs
+
+export CC="${MLFS_TARGET}-gcc"
+export CXX="${MLFS_TARGET}-g++"
+export AR="${MLFS_TARGET}-ar"
+export AS="${MLFS_TARGET}-as"
+export RANLIB="${MLFS_TARGET}-ranlib"
+export LD="${MLFS_TARGET}-ld"
+export STRIP="${MLFS_TARGET}-strip"
+
+sed -i '/LIBTOOL_INSTALL/d' c++/Makefile.in
+./configure --prefix=/tools \
+    --build=${MLFS_HOST} \
+    --host=${MLFS_TARGET} \
+    --with-shared   \
+    --without-debug \
+    --without-ada   \
+    --enable-widec  \
+    --enable-overwrite     \
+    --with-build-cc="gcc -D_GNU_SOURCE"
+
+make && make install
