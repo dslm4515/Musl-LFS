@@ -56,6 +56,7 @@ Projects of Interest
 <ul>
 <li>gCompat - "The gcompat project provides a glibc-compatible runtime environment for distributions that use musl libc."
 https://code.foxkit.us/adelie/gcompat</li>
+  <li> Locales - https://github.com/rilian-la-te/musl-locales </li>
 </ul>
 
 Layout
