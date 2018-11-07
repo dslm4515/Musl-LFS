@@ -1,0 +1,6 @@
+# Final System: Skalibs
+# This section is done in Chroot environment
+
+./configure
+make
+make install 

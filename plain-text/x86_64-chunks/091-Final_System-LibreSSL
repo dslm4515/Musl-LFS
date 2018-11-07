@@ -1,0 +1,8 @@
+# Final System: LibreSSL-2.8.2
+# This section is done in Chroot environment
+
+patch -Np0 -i ../libressl-2.8.2-void-fail-instead-of-trying-fallback.patch
+./config --prefix=/usr       \
+            --with-openssldir=/etc/ssl
+
+make && make install 
