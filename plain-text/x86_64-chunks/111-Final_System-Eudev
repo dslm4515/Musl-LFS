@@ -1,0 +1,22 @@
+# Final System: Eudev
+# This section is done in Chroot environment
+
+cat > config.cache << "EOF"
+HAVE_BLKID=1
+BLKID_LIBS="-lblkid"
+BLKID_CFLAGS="-I/tools/include"
+EOF
+./configure --prefix=/usr           \
+            --bindir=/sbin          \
+            --sbindir=/sbin         \
+            --libdir=/usr/lib       \
+            --sysconfdir=/etc       \
+            --libexecdir=/lib       \
+            --with-rootprefix=      \
+            --with-rootlibdir=/lib  \
+            --enable-manpages       \
+            --disable-static        \
+            --config-cache
+LIBRARY_PATH=/tools/lib make && make LD_LIBRARY_PATH=/tools/lib install
+tar -xvf ../udev-lfs-20171102.tar.bz2
+make -f udev-lfs-20171102/Makefile.lfs install

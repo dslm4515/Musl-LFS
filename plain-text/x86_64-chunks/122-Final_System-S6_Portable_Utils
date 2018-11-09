@@ -1,0 +1,6 @@
+# Final System: S6-Portable-Utils 
+# This section is done in Chroot environment
+
+./configure
+make
+make install 
