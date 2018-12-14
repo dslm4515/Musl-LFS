@@ -73,9 +73,6 @@ mkdir -v build && cd build
     --disable-libmudflap \
     --disable-libsanitizer \
     --disable-libcilkrts
-## Will not build unless $PATH is switched from /cross-tools/bin:/tools/bin:/bin:/usr/bin to 
-## /bin:/usr/bin:/cross-tools/bin:/tools/bin
-export PATH=/bin:/usr/bin:/cross-tools/bin:/tools/bin
+
 make &&  make install
 
-export PATH=/cross-tools/bin:/tools/bin:/bin:/usr/bin

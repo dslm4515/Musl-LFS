@@ -72,3 +72,10 @@ PATH=/bin:/usr/bin:/cross-tools/bin:/tools/bin make
 
 make install
 ln -sv gcc /tools/bin/cc
+
+# Move misplaced libraries
+mv -v /tools/lib64/* /tools/lib/
+
+# For compatibility:
+rm -rf /tools/lib64
+ln -sv ../lib /tools/lib64

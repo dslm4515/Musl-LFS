@@ -32,7 +32,7 @@ umask 022
 MLFS=/mnt/mlfs
 LC_ALL=POSIX
 PATH=/cross-tools/bin:/tools/bin:/bin:/usr/bin
-export MLFS LC_ALL MLFS_TGT PATH
+export MLFS LC_ALL PATH
 EOF
 
 source ~/.bash_profile
@@ -48,7 +48,7 @@ EOF
 #Build Variables:
 export MLFS_HOST="$(echo $MACHTYPE | \
     sed "s/$(echo $MACHTYPE | cut -d- -f2)/cross/")"
-export MLFS_TARGET="x86_64-linux-musl"
+export MLFS_TARGET="x86_64-mlfs-linux-musl"
 cat >> ~/.bashrc << EOF
 export MLFS_HOST="${MLFS_HOST}"
 export MLFS_TARGET="${MLFS_TARGET}"
