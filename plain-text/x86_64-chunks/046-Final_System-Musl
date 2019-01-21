@@ -5,3 +5,12 @@
 
 make && make install
 
+# Create link for ldd
+ln -sv /lib/ld-musl-x86_64.so.1 /bin/ldd
+
+# Create config for dynamic library loading:
+cat > /etc/ld-musl-x86_64.path << "EOF"
+/lib
+/usr/local/lib
+/usr/lib
+EOF
