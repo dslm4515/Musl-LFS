@@ -14,3 +14,8 @@ cat > /etc/ld-musl-x86_64.path << "EOF"
 /usr/local/lib
 /usr/lib
 EOF
+
+# If desired, install legacy compatability headers:
+cp -v musl-legacy-compat-void/cdefs.h /usr/include/sys/
+cp -v musl-legacy-compat-void/queue.h /usr/include/sys/
+cp -v musl-legacy-compat-void/tree.h /usr/include/sys/
