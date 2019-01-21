@@ -1,0 +1,25 @@
+# Final System: Binutils
+# This section is done in Chroot environment
+
+mkdir -v build && cd build
+
+../configure --prefix=/usr       \
+             --enable-gold       \
+             --enable-ld=default \
+             --enable-plugins    \
+             --enable-shared     \
+             --disable-werror    \
+             --enable-64-bit-bfd \
+             --with-system-zlib  \
+             --enable-relro \
+             --enable-lto \
+             --disable-nls \
+             --enable-deterministic-archives \
+             --enable-threads \
+             --disable-compressed-debug-sections \
+             --enable-targets=i386-efi-pe,x86_64-pep \
+             --with-mmap   
+
+make tooldir=/usr
+
+make tooldir=/usr install

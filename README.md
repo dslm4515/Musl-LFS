@@ -11,8 +11,8 @@ Goals:
 <li> [ ] Currently, I only have computers with 32 and 64 bit x86 CPUs (i.e. Intel Core Duo). In the future, I would like this project to expand to the ARM architecture </li>
 <li> [x] Stack Smashing Protection (SSP) will be enabled since using a patch from Void Linux should solve the previous issues of packages failing to compile when SSP is enabled by default.
 <li> [ ] Properly name patches to reflect origin (i.e. Alpine or void) </li>
-<li> [ ] Create a list for wget to download sources.
-<li> [ ] Transition from Runit to S6 </li>
+<li> [X] Create a list for wget to download sources.
+<li> [X] Transition from Runit to S6 </li>
 <li> [ ] Generate HTML 'book' like LFS</li>
 </ul>
 
@@ -44,13 +44,13 @@ https://github.com/jahrome/argp-standalone</li>
 </ul>
 
 Optional Packages:
+<ul>
+<li>LibreSSL (instead of OpenSSL)
+https://www.libressl.org/</li>
 
-LibreSSL (instead of OpenSSL)
-https://www.libressl.org/
-
-Porg
-http://porg.sourceforge.net/
-
+<li>Porg
+http://porg.sourceforge.net/</li>
+</ul>
 Projects of Interest
 
 <ul>

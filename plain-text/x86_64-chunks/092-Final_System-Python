@@ -1,0 +1,17 @@
+# Final System: Python 3
+# This section is done in Chroot environment
+patch -Np1 -i ../Python-3.7.0-void-libressl-2.7.patch 
+patch -Np1 -i ../Python-3.7.0-void-musl-find_library.patch 
+rm -r Modules/zlib
+rm -r Modules/expat
+rm -r Modules/_ctypes/{darwin,libffi}*
+./configure --prefix=/usr       \
+            --enable-shared     \
+            --with-system-expat \
+            --with-system-ffi   \
+            --with-ensurepip=yes \
+            --enable-ipv6 \
+            --with-threads
+make && make install 
+chmod -v 755 /usr/lib/libpython3.7m.so
+chmod -v 755 /usr/lib/libpython3.so

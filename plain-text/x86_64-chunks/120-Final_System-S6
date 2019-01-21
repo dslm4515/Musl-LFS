@@ -1,0 +1,13 @@
+# Final System: S6 
+# This section is done in Chroot environment
+
+./configure  --prefix=/usr \
+             --bindir=/bin \
+             --with-lib=/usr/lib/skalibs \
+             --with-lib=/usr/lib/libexec \
+             --with-lib=/usr/lib/execline \
+             --with-dynlib=/usr/lib \
+             --enabled-shared 
+
+make
+make install 

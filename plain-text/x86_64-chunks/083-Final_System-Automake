@@ -1,0 +1,5 @@
+# Final System: Automake
+# This section is done in Chroot environment
+
+./configure --prefix=/usr --docdir=/usr/share/doc/automake-1.16.1
+make && make install

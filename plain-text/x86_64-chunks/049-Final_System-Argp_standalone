@@ -1,0 +1,11 @@
+# Final System: Argp-Standalone
+# This section is done in Chroot environment
+
+patch -Np0 -i ../argp-standalone-1.3-void-musl-fix-inline.patch
+
+CFLAGS=" -fPIC" ./configure --prefix=/usr --disable-static
+
+make
+
+cp -v libargp.a /usr/lib/
+cp -v argp.h    /usr/include/

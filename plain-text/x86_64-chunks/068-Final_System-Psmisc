@@ -1,0 +1,7 @@
+# Final System: Psmisc
+# This section is done in Chroot environment
+
+./configure --prefix=/usr && make && make install
+mv -v /usr/bin/fuser   /bin
+mv -v /usr/bin/killall /bin
+

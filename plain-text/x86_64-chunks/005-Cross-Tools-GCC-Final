@@ -1,0 +1,48 @@
+# Cross-Tools: GCC-8.2.0 Final
+# Build and install as mlfs
+
+tar -xf ../mpfr-4.0.1.tar.xz
+mv -v mpfr-4.0.1 mpfr
+tar -xf ../gmp-6.1.2.tar.xz
+mv -v gmp-6.1.2 gmp
+tar -xf ../mpc-1.1.0.tar.gz
+mv -v mpc-1.1.0 mpc
+
+# Apply patches [from void-linux]
+patch -Np0 -i ../gcc-8.2.0-void-0016-invalid_tls_model.diff
+patch -Np0 -i ../gcc-8.2.0-void-fix-cxxflags-passing.patch
+patch -Np0 -i ../gcc-8.2.0-void-fix-musl-execinfo.patch	
+patch -Np0 -i ../gcc-8.2.0-void-no-stack_chk_fail_local.patch
+
+mkdir build && cd  build
+AR=ar LDFLAGS="-Wl,-rpath,/cross-tools/lib" \
+../configure \
+    --prefix=/cross-tools \
+    --build=${MLFS_HOST} \
+    --host=${MLFS_HOST} \
+    --target=${MLFS_TARGET} \
+    --disable-multilib \
+    --with-sysroot=/cross-tools \
+    --disable-nls \
+    --enable-shared \
+    --enable-languages=c,c++ \
+    --enable-__cxa_atexit \
+    --enable-c99 \
+    --enable-long-long \
+    --enable-threads=posix \
+    --enable-clocale=generic \
+    --enable-libstdcxx-time \
+    --enable-checking=release \
+    --enable-fully-dynamic-string \
+    --disable-symvers \
+    --disable-gnu-indirect-function \
+    --disable-libmudflap \
+    --disable-libsanitizer \
+    --disable-libmpx \
+    --disable-lto-plugin \
+    --disable-libssp 
+
+make AS_FOR_TARGET="${MLFS_TARGET}-as" \
+    LD_FOR_TARGET="${MLFS_TARGET}-ld"
+
+make install

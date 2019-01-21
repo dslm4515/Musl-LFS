@@ -1,0 +1,10 @@
+# Toolchain: GMP
+# This section is done in Chroot environment
+
+./configure --prefix=/usr    \
+            --enable-cxx     \
+            --disable-static \
+            --build=x86_64-linux-musl \
+            --docdir=/usr/share/doc/gmp-6.1.2
+
+make && make install

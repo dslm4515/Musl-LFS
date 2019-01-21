@@ -1,0 +1,81 @@
+# Tool Chain: GCC-8.2.0 PASS 2 of 2
+# Build and install as mlfs
+
+export CC="${MLFS_TARGET}-gcc"
+export CXX="${MLFS_TARGET}-g++"
+export AR="${MLFS_TARGET}-ar"
+export AS="${MLFS_TARGET}-as"
+export RANLIB="${MLFS_TARGET}-ranlib"
+export LD="${MLFS_TARGET}-ld"
+export STRIP="${MLFS_TARGET}-strip"
+
+tar -xf ../mpfr-4.0.1.tar.xz
+mv -v mpfr-4.0.1 mpfr
+tar -xf ../gmp-6.1.2.tar.xz
+mv -v gmp-6.1.2 gmp
+tar -xf ../mpc-1.1.0.tar.gz
+mv -v mpc-1.1.0 mpc
+
+# Apply patches from Void-Linux
+patch -Np0 -i ../gcc-8.2.0-void-0016-invalid_tls_model.diff
+patch -Np0 -i ../gcc-8.2.0-void-fix-cxxflags-passing.patch
+patch -Np0 -i ../gcc-8.2.0-void-fix-musl-execinfo.patch
+patch -Np0 -i ../gcc-8.2.0-void-no-stack_chk_fail_local.patch
+
+cat gcc/limitx.h gcc/glimits.h gcc/limity.h > \
+  `dirname $($MLFS_TARGET-gcc -print-libgcc-file-name)`/include-fixed/limits.h
+for file in gcc/config/{linux,i386/linux{,64}}.h
+do
+  cp -uv $file{,.orig}
+  sed -e 's@/lib\(64\)\?\(32\)\?/ld@/tools&@g' \
+      -e 's@/usr@/tools@g' $file.orig > $file
+  echo '
+#undef STANDARD_STARTFILE_PREFIX_1
+#undef STANDARD_STARTFILE_PREFIX_2
+#define STANDARD_STARTFILE_PREFIX_1 "/tools/lib/"
+#define STANDARD_STARTFILE_PREFIX_2 ""' >> $file
+  touch $file.orig
+done
+
+case $(uname -m) in
+  x86_64)
+    sed -e '/m64=/s/lib64/lib/' \
+        -i.orig gcc/config/i386/t-linux64
+ ;;
+esac
+
+mkdir -v build && cd build
+../configure                                       \
+    --target=${MLFS_TARGET}    \
+    --build=${MLFS_HOST}       \
+    --host=${MLFS_TARGET}      \
+    --prefix=/tools                                \
+    --with-local-prefix=/tools                     \
+    --with-native-system-header-dir=/tools/include \
+    --enable-languages=c,c++                       \
+    --disable-libstdcxx-pch                        \
+    --disable-multilib                             \
+    --disable-bootstrap                            \
+    --disable-libgomp \
+    --disable-libmpx                               \
+    --disable-libquadmath                          \
+    --disable-libssp                               \
+    --disable-libvtv                               \
+    --disable-symvers \
+    --disable-libitm \
+    --disable-gnu-indirect-function \
+    --disable-libmudflap \
+    --disable-libsanitizer \
+    --disable-libcilkrts
+
+PATH=/bin:/usr/bin:/cross-tools/bin:/tools/bin make 
+
+make install
+ln -sv gcc /tools/bin/cc
+
+# Move misplaced libraries
+mv -v /tools/lib64/* /tools/lib/
+
+# For compatibility:
+rm -rf /tools/lib64
+ln -sv ../lib /tools/lib64
