@@ -4,6 +4,10 @@
 echo "127.0.0.1 localhost $(hostname)" > /etc/hosts
 export BUILD_ZLIB=False
 export BUILD_BZIP2=0
+export CF_OLD=$CFLAGS
+export CFLAGS+=" -DNO_POSIX_2008_LOCALE" 
+export CFLAGS+=" -D_GNU_SOURCE"
+
 sh Configure -des -Dprefix=/usr                 \
                   -Dvendorprefix=/usr           \
                   -Dman1dir=/usr/share/man/man1 \
@@ -12,5 +16,6 @@ sh Configure -des -Dprefix=/usr                 \
                   -Duseshrplib                  \
                   -Dusethreads
 make && make install
-unset BUILD_ZLIB BUILD_BZIP2
+export CFLAGS=$CF_OLD 
+unset BUILD_ZLIB BUILD_BZIP2 CF_OLD 
 

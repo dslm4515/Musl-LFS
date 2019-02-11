@@ -7,5 +7,11 @@ sed -e '/AppData/{N;N;p;s/\.appdata\./.metainfo./}' \
     -i gettext-tools/its/appdata.loc
 ./configure --prefix=/usr    \
             --disable-static \
-            --docdir=/usr/share/doc/gettext-0.19.8.1
+            --docdir=/usr/share/doc/gettext-0.19.8.1 \
+            --disable-java --disable-native-java --disable-csharp \
+            --disable-libasprintf --enable-threads=posix --disable-rpath --without-emacs \
+            --disable-acl --with-included-glib --with-included-libcroco --without-git \
+            --with-included-libxml --with-included-libunistring --disable-openmp \
+            --disable-curses --without-examples --enable-nls --with-included-gettext &&
+
 make && make install
