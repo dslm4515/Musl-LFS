@@ -1,5 +1,6 @@
 # Cross-Tools: Kernel Headers
-# build & install as user mlfs
+# Build & install as user mlfs
+# Source: https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.1.16.tar.xz
 
 make mrproper
 make ARCH=${MLFS_ARCH} headers_check

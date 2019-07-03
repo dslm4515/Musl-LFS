@@ -24,7 +24,7 @@ Supported Architectures
 
 Additional Required Packages 
 
-Intial issue with just following the LFS book verbatium is that pkg-config and libelf, will not compile. Additionally, if pursuing BLFS, some packages will fail to compile due certian implementions left out in the Musl C Library.
+If pursuing BLFS, some packages will fail to compile due certian implementions left out in the Musl C Library.
 
 <ul>
 <li>Musl C Library
