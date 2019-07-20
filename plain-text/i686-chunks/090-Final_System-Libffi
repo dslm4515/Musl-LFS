@@ -1,0 +1,19 @@
+# Final System: Libffi
+# Source: ftp://sourceware.org/pub/libffi/libffi-3.2.1.tar.gz
+# This section is done in Chroot environment
+
+# Modify the Makefile to install headers into the standard 
+# /usr/include directory instead of /usr/lib/libffi-3.2.1/include.
+sed -e '/^includesdir/ s/$(libdir).*$/$(includedir)/' \
+    -i include/Makefile.in
+sed -e '/^includedir/ s/=.*$/=@includedir@/' \
+    -e 's/^Cflags: -I${includedir}/Cflags:/' \
+    -i libffi.pc.in
+
+# Configure source. If host and target are the same machine, 
+# use  -with-gcc-arch=native instead  
+./configure --prefix=/usr --disable-static --with-gcc-arch=i686
+
+# Build and install
+make && make install
+

@@ -1,0 +1,30 @@
+# Final System: Libelf 0.176
+# Source: https://sourceware.org/ftp/elfutils/0.176/elfutils-0.176.tar.bz2
+# This section is done in Chroot environment
+
+# Add missing files
+cp -vr ../files/error.h lib/
+cp -vr ../files/error.h src/
+
+# Patch source for musl
+patch -Np0 -i ../patches/elfutils-176-void-fix-aarch64_fregs.patch
+patch -Np0 -i ../patches/elfutils-176-void-fix-musl-cdefs.patch
+patch -Np0 -i ../patches/elfutils-176-void-fix-musl-fts-obstack.patch
+patch -Np0 -i ../patches/elfutils-176-void-fix-musl-macros.patch
+patch -Np0 -i ../patches/elfutils-176-void-fix-musl-qsort_r.patch
+patch -Np0 -i ../patches/elfutils-176-void-fix-musl-strerror_r.patch
+patch -Np0 -i ../patches/elfutils-176-void-fix-musl-strndupa.patch
+patch -Np0 -i ../patches/elfutils-176-void-fix-uninitialized.patch
+
+# Re-create configure script
+autoreconf -ifv
+
+# Configure source & build
+CFLAGS="-Wno-error" \
+./configure --prefix=/usr --build=i686-linux-musl && make
+
+# Install library
+make -C libelf install
+
+# Install pkgconfig file for library
+install -vm644 config/libelf.pc /usr/lib/pkgconfig

@@ -1,0 +1,21 @@
+# Final System: Readline 8.0
+# Source: http://ftp.gnu.org/gnu/readline/readline-8.0.tar.gz
+# This section is done in Chroot environment
+
+# To avoid a rare possibility of a linking bug in ldconfig
+sed -i '/MV.*old/d' Makefile.in
+sed -i '/{OLDSUFF}/c:' support/shlib-install
+
+# Configure source
+./configure --prefix=/usr    \
+            --disable-static \
+            --docdir=/usr/share/doc/readline-8.0
+
+# Build
+make SHLIB_LIBS="-L/tools/lib -lncursesw"
+
+# Install and fix misplaced files
+make SHLIB_LIBS="-L/tools/lib -lncurses" install
+mv -v /usr/lib/lib{readline,history}.so.* /lib
+ln -sfv ../../lib/$(readlink /usr/lib/libreadline.so) /usr/lib/libreadline.so
+ln -sfv ../../lib/$(readlink /usr/lib/libhistory.so ) /usr/lib/libhistory.so

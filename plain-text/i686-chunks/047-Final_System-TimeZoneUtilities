@@ -1,0 +1,19 @@
+# Final System: TimeZone Utilites & Data
+# Source: https://data.iana.org/time-zones/releases/tzdb-2019b.tar.lz
+# This section is done in Chroot environment
+# https://www.iana.org/time-zones
+
+make TZDIR=/usr/share/zoneinfo
+cp -v zic zdump /usr/sbin
+cp -v tzselect  /usr/bin
+mkdir -pv /usr/share/zoneinfo/{posix,right}
+install -m444 -t /usr/share/zoneinfo iso3166.tab zone1970.tab zone.tab
+export timezones="africa antarctica asia australasia europe northamerica \
+                southamerica pacificnew etcetera backward systemv factory"
+zic -y ./yearistype -d /usr/share/zoneinfo ${timezones}
+zic -y ./yearistype -d /usr/share/zoneinfo/posix ${timezones}
+zic -y ./yearistype -d /usr/share/zoneinfo/right -L leapseconds ${timezones}
+zic -y ./yearistype -d /usr/share/zoneinfo -p America/New_York
+unset timezones
+#use tzselect to determine <xxx>
+cp -v /usr/share/zoneinfo/<xxx> /etc/localtime

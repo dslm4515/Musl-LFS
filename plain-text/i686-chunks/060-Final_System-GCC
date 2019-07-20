@@ -1,0 +1,134 @@
+# Toolchain: GCC-9.1.0
+# Source: http://ftp.gnu.org/gnu/gcc/gcc-9.1.0/gcc-9.1.0.tar.xz
+# Source: http://isl.gforge.inria.fr/isl-0.19.tar.xz
+# This section is done in Chroot environment
+
+# Add isl source
+tar -xf ../isl-0.19.tar.xz
+mv -v isl-0.19 isl
+
+# Apply patches [from void-linux]
+patch -Np0 -i ../patches/gcc-9.1.0-void-patches/0010-ldbl128-config.patch
+patch -Np0 -i ../patches/gcc-9.1.0-void-patches/ada-shared.patch
+patch -Np0 -i ../patches/gcc-9.1.0-void-patches/fix-cxxflags-passing.patch
+patch -Np0 -i ../patches/gcc-9.1.0-void-patches/fix-musl-execinfo.patch
+patch -Np0 -i ../patches/gcc-9.1.0-void-patches/libgcc-musl-ldbl128-config.patch
+patch -Np0 -i ../patches/gcc-9.1.0-void-patches/musl-ada.patch
+patch -Np0 -i ../patches/gcc-9.1.0-void-patches/no-stack_chk_fail_local.patch
+patch -Np0 -i ../patches/gcc-9.1.0-void-patches/non-nullness.patch
+
+# _FORTIFY_SOURCE needs an optimization level.
+sed -i "/ac_cpp=/s/\$CPPFLAGS/\$CPPFLAGS -O2/" {gcc,libiberty}/configure
+
+# Configure source
+mkdir -v build && cd build
+SED=sed  libat_cv_have_ifunc=no       \
+../configure --prefix=/usr            \
+             --build=i686-linux-musl \
+             --with-system-zlib       \
+             --with-isl \
+             --with-linker-hash-style=gnu \
+             --enable-languages=c,c++ \
+             --enable-shared \
+             --enable-threads=posix \
+             --enable-__cxa_atexit \
+             --enable-c99 \
+             --enable-long-long \
+             --enable-clocale=generic \
+             --enable-languages=c,c++ \
+             --enable-plugins \
+             --enable-tls \
+             --enable-lto \
+             --enable-libstdcxx-time \
+             --enable-checking=release \
+             --enable-fully-dynamic-string \
+             --enable-default-pie \
+             --enable-default-ssp \
+             --enable-vtable-verify \
+             --enable-linker-build-id \
+             --enable-fast-character \
+             --disable-libstdcxx-pch \
+             --disable-nls \
+             --disable-multilib       \
+             --disable-bootstrap      \
+             --disable-symvers \
+             --disable-gnu-indirect-function \
+             --disable-libmudflap \
+             --disable-libsanitizer \
+             --disable-target-libiberty \
+             --disable-libunwind-exceptions \
+             --disable-libmpx  
+
+# Build
+make
+
+# Test GCC:
+ulimit -s 32768
+# Remove one test known to cause a problem
+rm ../gcc/testsuite/g++.dg/pr83239.C
+# Test the results as a non-privileged user, but do not stop at errors
+chown -Rv nobody . 
+su nobody -s /bin/bash -c "PATH=$PATH make -k check"
+# To receive a summary of the test suite results, run:
+../contrib/test_summary
+# Or, For only the summaries, pipe the output through grep -A7 Summ"
+../contrib/test_summary | grep -A7 Summ
+
+# Install
+make install
+
+# Create a symlink required by the FHS for "historical" reasons
+ln -sv ../usr/bin/cpp /lib
+# Many packages use the name cc to call the C compiler. To 
+# satisfy those packages, create a symlink
+ln -sv gcc /usr/bin/cc
+# Add a compatibility symlink to enable building programs with 
+# Link Time Optimization (LTO): 
+install -v -dm755 /usr/lib/bfd-plugins
+ln -sfv ../../libexec/gcc/$(gcc -dumpmachine)/9.1.0/liblto_plugin.so \
+        /usr/lib/bfd-plugins/
+mkdir -pv /usr/share/gdb/auto-load/usr/lib
+mv -v /usr/lib/*gdb.py /usr/share/gdb/auto-load/usr/lib
+
+# Modify specsfile:
+# First dump current specfile to a file
+export SPECFILE=`dirname $(gcc -print-libgcc-file-name)`/specs
+gcc -dumpspecs > specs
+# Modify specs file to match this:
+# *cpp:
+# %{posix:-D_POSIX_SOURCE} %{pthread:-D_REENTRANT} -I /usr/lib/gcc/i686-linux-musl/9.1.0/include -I /usr/lib/gcc/i686-linux-musl/9.1.0/include-fixed
+# Install new specs file:
+cp -v specs $SPECFILE
+unset SPECFILE
+
+# Test final system's toolchain:
+echo 'int main(){}' > dummy.c
+cc dummy.c -v -Wl,--verbose &> dummy.log
+readelf -l a.out | grep ': /lib'
+# Should output:
+# [Requesting program interpreter: /lib/ld-musl-i386.so.1]
+grep  'crt[1in].o succeeded' dummy.log
+# Should output:
+# attempt to open /usr/lib/gcc/i686-linux-musl/9.1.0/../../../../lib/Scrt1.o succeeded
+# attempt to open /usr/lib/gcc/i686-linux-musl/9.1.0/../../../../lib/crti.o succeeded
+# attempt to open /usr/lib/gcc/i686-linux-musl/9.1.0/../../../../lib/crtn.o succeeded
+grep -B2 '^ /usr/lib/gcc' dummy.log
+# Should output:
+# #include <...> search starts here:
+# /usr/lib/gcc/i686-linux-musl/9.1.0/include-fixed
+# /usr/local/include
+# /usr/include
+# /usr/lib/gcc/i686-linux-musl/9.1.0/include
+grep 'SEARCH.*/usr/lib' dummy.log |sed 's|; |\n|g'
+# Should output:
+# SEARCH_DIR("/usr/i686-pc-linux-musl/lib32")
+# SEARCH_DIR("/usr/local/lib32")
+# SEARCH_DIR("/lib32")
+# SEARCH_DIR("/usr/lib32")
+# SEARCH_DIR("/usr/i686-pc-linux-musl/lib")
+# SEARCH_DIR("/usr/local/lib")
+# SEARCH_DIR("/lib")
+# SEARCH_DIR("/usr/lib");
+
+# If all is well, remove test files:
+rm -v dummy.c a.out dummy.log

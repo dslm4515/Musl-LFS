@@ -1,0 +1,9 @@
+# Final System: GDBM 1.18.1
+# Source: http://ftp.gnu.org/gnu/gdbm/gdbm-1.18.1tar.gz
+# This section is done in Chroot environment
+
+./configure --prefix=/usr \
+            --disable-static \
+            --enable-libgdbm-compat
+make && make install
+

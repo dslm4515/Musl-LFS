@@ -1,0 +1,30 @@
+diff -uNr porg-0.10.orig/lib/porg-log/log.c porg-0.10/lib/porg-log/log.c
+--- porg-0.10.orig/lib/porg-log/log.c	2015-11-06 11:43:07.000000000 -0600
++++ porg-0.10/lib/porg-log/log.c	2018-06-24 09:38:46.559713286 -0500
+@@ -51,15 +51,15 @@
+ static char* porg_tmpfile;
+ static char* porg_debug;
+ 
+-
+ /* Fake declarations of libc's internal __open and __open64 */
++/*
+ #if !HAVE_DECL___OPEN
+ int __open(const char*, int, ...);
+ #endif
+ #if !HAVE_DECL___OPEN64
+ int __open64(const char*, int, ...);
+ #endif
+-
++*/
+ 
+ static void porg_vprintf(const char* fmt, va_list ap)
+ {
+@@ -279,7 +279,7 @@
+ 	/* this fixes a bug when the installer program calls jemalloc 
+ 	   (thanks Masahiro Kasahara) */
+ 	if (!porg_tmpfile && path && !strncmp(path, "/proc/", 6))
+-		return __open(path, flags);
++		return open(path, flags);
+ 
+ 	porg_init();
+ 	

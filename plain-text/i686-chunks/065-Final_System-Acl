@@ -1,0 +1,13 @@
+# Final System: ACL 2.2.53
+# Source: http://download.savannah.gnu.org/releases/acl/acl-2.2.53.tar.gz
+# This section is done in Chroot environment
+
+./configure --prefix=/usr         \
+            --bindir=/bin         \
+            --disable-static      \
+            --libexecdir=/usr/lib \
+            --docdir=/usr/share/doc/acl-2.2.53
+
+make && make install
+mv -v /usr/lib/libacl.so.* /lib
+ln -sfv ../../lib/$(readlink /usr/lib/libacl.so) /usr/lib/libacl.so

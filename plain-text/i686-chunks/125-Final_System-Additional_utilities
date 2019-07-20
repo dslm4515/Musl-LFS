@@ -1,0 +1,19 @@
+# Final System: Additional Utilities from Alpine/NetBSD
+# This section is done in Chroot environment
+
+cd /sources
+
+# Build
+cc -fpie files/musl_files/getent.c  -o getent
+cc -fpie files/musl_files/getconf.c -o getconf
+cc -fpie files/musl_files/iconv.c   -o iconv
+
+# Install
+cp -v iconv   /bin/
+cp -v getent  /bin/
+cp -v getconf /bin/
+
+# Copy documentation
+cp -v files/musl_files/getent.1 /usr/share/man/man1/
+cp -v files/musl_files/getconf.1 /usr/share/man/man1/
+

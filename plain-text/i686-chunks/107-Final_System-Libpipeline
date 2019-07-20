@@ -1,0 +1,6 @@
+# Final System: Libpipeline
+# Source: http://download.savannah.gnu.org/releases/libpipeline/libpipeline-1.5.1.tar.gz
+# This section is done in Chroot environment
+
+./configure --prefix=/usr && make && make install
+

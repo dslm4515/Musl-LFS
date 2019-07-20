@@ -1,0 +1,89 @@
+# $LFS can be set to where the final system will be. For this guide, the
+# default is /mn/mlfs
+#
+# perform as root:
+export MLFS=/mnt/mlfs
+mkdir -pv $MLFS
+mkdir -v $MLFS/sources
+chmod -v a+wt $MLFS/sources
+
+# Download sources + patches
+#  Use the list in sources folder with wget to download sources. Some sources 
+#  may not download or are hard to find. Copy such sources from sources folder.
+# 
+# Source directory should have this structure:
+#  source
+#  |
+#  +-patches
+#  +-files
+#
+# Source tarballs should in root of $LFS/sources
+# Patches & files can be symbolically linked to root of $LFS/sources to avoid 
+# adding "../{patches,files}" to path
+#
+# For bootscripts:
+# S6 - Go to https://github.com/dslm4515/MLFS-S6-Bootscripts
+# Runit - copy source from sources folder
+
+# Create the directories and links for our tool chains
+mkdir -v $MLFS/cross-tools
+mkdir -v $MLFS/tools
+ln -sv   $MLFS/cross-tools /
+ln -sv   $MLFS/tools /
+
+# Create user and group
+groupadd mlfs
+useradd -s /bin/bash -g mlfs -m -k /dev/null mlfs
+passwd mlfs
+
+# Change ownership to allow installation of tools
+chown -v mlfs $MLFS/cross-tools
+chown -v mlfs $MLFS/sources
+chown -v mlfs $MLFS/tools
+
+# Now run as mlfs user. All toolchain software should be built as this user, unless specified.
+su - mlfs
+
+# Set up the environment.
+cat > ~/.bash_profile << "EOF"
+exec env -i HOME=$HOME TERM=$TERM PS1='\u:\w\n\$ ' /bin/bash
+EOF
+
+cat > ~/.bashrc << "EOF"
+set +h
+umask 022
+MLFS=/mnt/mlfs
+LC_ALL=POSIX
+PATH=/cross-tools/bin:/tools/bin:/bin:/usr/bin
+export MLFS LC_ALL PATH
+EOF
+
+# Load the stored environment
+source ~/.bash_profile
+
+# CFLAGS and CXXFLAGS must not be set during the building of cross-tools. 
+unset CFLAGS
+unset CXXFLAGS
+cat >> ~/.bashrc << EOF
+unset CFLAGS
+unset CXXFLAGS
+EOF
+
+# Build Variables
+# For 64 bit x86 CPUs:
+#  ARCH=x86
+#  CPU=x86-64
+# For 32-bit CPUs:
+#  ARCH=x86
+#  CPU=i686
+export MLFS_HOST="$(echo $MACHTYPE | \
+    sed "s/$(echo $MACHTYPE | cut -d- -f2)/cross/")"
+export MLFS_TARGET="i686-mlfs-linux-musl"
+cat >> ~/.bashrc << EOF
+export MLFS_HOST="${MLFS_HOST}"
+export MLFS_TARGET="${MLFS_TARGET}"
+export MLFS_ARCH=x86
+export MLFS_CPU=i686
+EOF
+source ~/.bashrc
+

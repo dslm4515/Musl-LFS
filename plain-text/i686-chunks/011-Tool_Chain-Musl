@@ -1,0 +1,20 @@
+# Tool Chain: Musl
+# Source: https://www.musl-libc.org/releases/musl-1.1.22.tar.gz
+# Build and install as mlfs
+
+# Fix rounding issue for some software like Palemoon and SeaMonkey
+patch -Np1 -i ../patches/musl-1.1.22-i686_fix_rounding.patch
+
+# Configure
+./configure \
+  CROSS_COMPILE=${MLFS_TARGET}- \
+  --prefix=/ \
+  --target=${MLFS_TARGET}
+
+# Build & Install
+make && make DESTDIR=/tools install
+
+# Fix symlink as it points to host's libc and 
+# not the libc in /tools/lib
+rm -v /tools/lib/ld-musl-i386.so.1
+ln -sv libc.so /tools/lib/ld-musl-i386.so.1

@@ -1,0 +1,8 @@
+# Final System: Skalibs
+# Source: https://www.skarnet.org/software/skalibs/skalibs-2.8.1.0.tar.gz
+# This section is done in Chroot environment
+
+./configure --prefix=/usr      \
+            --enable-force-devr
+make
+make install 

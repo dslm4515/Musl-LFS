@@ -1,0 +1,13 @@
+# Toolchain: GMP 6.1.2
+# Source: http://ftp.gnu.org/gnu/gmp/gmp-6.1.2.tar.xz
+# This section is done in Chroot environment
+
+# Configure source
+./configure --prefix=/usr    \
+            --enable-cxx     \
+            --disable-static \
+            --build=i686-linux-musl \
+            --docdir=/usr/share/doc/gmp-6.1.2
+
+# Build and install
+make && make install

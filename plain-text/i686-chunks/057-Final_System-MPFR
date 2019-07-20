@@ -1,0 +1,13 @@
+# Toolchain: MPFR 4.0.2
+# Souce: http://www.mpfr.org/mpfr-4.0.2/mpfr-4.0.2.tar.xz
+# This section is done in Chroot environment
+
+# Configure source
+./configure --prefix=/usr        \
+            --disable-static     \
+            --enable-thread-safe \
+            --docdir=/usr/share/doc/mpfr-4.0.1 \
+            --build=i686-linux-musl
+
+# Build and install
+make && make install
