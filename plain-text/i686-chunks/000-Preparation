@@ -1,5 +1,5 @@
 # $LFS can be set to where the final system will be. For this guide, the
-# default is /mn/mlfs
+# default is /mnt/mlfs
 #
 # perform as root:
 export MLFS=/mnt/mlfs
