@@ -1,13 +1,13 @@
 # Musl-LFS
-Linux From Scratch using Musl as Libc and Runit as init system
+Linux From Scratch using Musl as Libc and S6+S6-rc as init system
 
 This is based on the works of Linux From Scratch (http://www.linuxfromscratch.org), which use GLibc and SysVinit/systemD. Additional work was derived from Void Linux (https://voidlinux.org), Alpine Linux (https://alpinelinux.org), and Dragora Linux (https://dragora.org). Runit scripts were used from (https://github.com/inthecloud247/runit-for-lfs). For logging, I used porg from http://porg.sourceforge.net/.
 
-The aim of this project is to create a create a Linux system using Musl (www.musl-libc.org) instead of GNU's Glibc and Runit (http://smarden.org/runit/) instead SysVinit.
+The aim of this project is to create a create a Linux system using Musl (www.musl-libc.org) instead of GNU's Glibc and Runit/S6 (http://smarden.org/runit/) instead SysVinit.
 
 Goals:
 <ul>
-<li> [x] Version 2.xx now compiles all packages under chroot by cross-compiling the toolchain. </li>
+<li> [x] Version 2.xx+ now compiles all packages under chroot by cross-compiling the toolchain. </li>
 <li> [ ] Currently, I only have computers with 32 and 64 bit x86 CPUs (i.e. Intel Core Duo). In the future, I would like this project to expand to the ARM architecture </li>
 <li> [x] Stack Smashing Protection (SSP) will be enabled since using a patch from Void Linux should solve the previous issues of packages failing to compile when SSP is enabled by default.
 <li> [ ] Properly name patches to reflect origin (i.e. Alpine or void) </li>
@@ -20,6 +20,15 @@ Supported Architectures
 <ul>
 <li>32bit - i686/i586 : Stable and tested. Stable enough to build Xorg, Qt5 (without QT-webengine), and Midori.</li>
 <li>64bit - x86_64 : Stable and tested. Stable enough to build Xorg, Qt5, Rust, and Firefox.
+<li>ARM - Pending 
+</ul>
+
+Tested Builds
+<ul>
+  <li> Host(i686-musl)/Target(i686-musl) ....... PASS
+  <li> Host(i686-glibc)/Target(i686-musl)....... Pending
+  <li> Host(x86_64-musl)/Target(x86_64-musl).... Pending
+  <li> Host(x86_64-glibc)/Target(x86_64-musl)... FAIL (Check Issues: Pending Fix)
 </ul>
 
 Additional Required Packages 
@@ -62,10 +71,10 @@ https://code.foxkit.us/adelie/gcompat</li>
 Layout
 
 <ul>
-  <li>build-scripts - Build scripts to use when building the final system with the toolchain (/tools) that was cross-compiled with the small cross-toolchain (/cross-tools)</li>
-  <li>extra - Scripts to mount, chroot, and umount a MLFS build. Also includes some build instructions for some BLFS packages... mostly to get Xorg setup.</li>
+  <li>build-scripts - Build scripts to use to semi-automate building `/cross-tools`, `/tools`, and the final system</li>
+  <li>extra - Scripts to mount, chroot, and umount a MLFS build.</li>
   <li>files - Files that will be needed during the build</li>
   <li>patches - All patches used to patch sources to work/recognize Musl C Library</li>
-  <li>plain-text - Build instructions to build a LFS installation that uses Musl instead of Glibc and Runit instead of SysVint. Instructions differ slightly for i686 and x86_64.</li>
-  <li>sources - Modified or hard to find/download sources</li>
+  <li>plain-text - Build instructions to build a LFS installation that uses Musl instead of Glibc and S6 instead of SysVint.</li>
+  <li>contrib - Modified or hard to find/download sources</li>
 </ul>
