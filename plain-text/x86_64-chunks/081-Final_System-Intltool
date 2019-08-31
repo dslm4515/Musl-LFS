@@ -1,5 +1,0 @@
-# Final System: Intltool
-# This section is done in Chroot environment
-
-sed -i 's:\\\${:\\\$\\{:' intltool-update.in
-./configure --prefix=/usr && make && make install

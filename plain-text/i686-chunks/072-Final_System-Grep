@@ -1,5 +1,0 @@
-# Final System: Grep 3.3
-# Source: http://ftp.gnu.org/gnu/grep/grep-3.3.tar.xz
-# This section is done in Chroot environment
-
-./configure --prefix=/usr --bindir=/bin && make && make install

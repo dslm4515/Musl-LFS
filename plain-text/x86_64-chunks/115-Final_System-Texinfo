@@ -1,7 +1,0 @@
-# Final System: Texinfo
-# This section is done in Chroot environment
-
-sed -i '5481,5485 s/({/(\\{/' tp/Texinfo/Parser.pm
-./configure --prefix=/usr --disable-static
-make && make install
-

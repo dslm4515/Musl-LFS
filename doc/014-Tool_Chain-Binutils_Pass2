@@ -1,0 +1,28 @@
+# Tool Chain: Binutils PASS 2 of 2
+# Source: http://ftp.gnu.org/gnu/binutils/binutils-2.32.tar.xz
+# Build and install as mlfs
+
+# Set environment for corss-compiling
+export CC="${MLFS_TARGET}-gcc"
+export CXX="${MLFS_TARGET}-g++"
+export AR="${MLFS_TARGET}-ar"
+export AS="${MLFS_TARGET}-as"
+export RANLIB="${MLFS_TARGET}-ranlib"
+export LD="${MLFS_TARGET}-ld"
+export STRIP="${MLFS_TARGET}-strip"
+
+# Configure source
+mkdir -v build && cd build
+../configure                   \
+    --target=${MLFS_TARGET}    \
+    --build=${MLFS_HOST}       \
+    --host=${MLFS_TARGET}      \
+    --prefix=/tools            \
+    --disable-nls              \
+    --disable-werror           \
+    --with-lib-path=/tools/lib \
+    --with-sysroot
+
+# Build & Install to toolchain
+make && make install
+

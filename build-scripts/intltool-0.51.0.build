@@ -1,5 +1,0 @@
-#! /bin/bash
-sed -i 's:\\\${:\\\$\\{:' intltool-update.in &&
-./configure --prefix=/usr  &&
-read -p "Compile? " && make -j2 && 
-read -p "Install? " && porg -lD "make install -j1" 

@@ -25,10 +25,10 @@ Supported Architectures
 
 Tested Builds
 <ul>
-  <li> Host(i686-musl)/Target(i686-musl) ....... PASS
+  <li> Host(i686-musl)/Target(i686-musl) ....... Pending
   <li> Host(i686-glibc)/Target(i686-musl)....... Pending
   <li> Host(x86_64-musl)/Target(x86_64-musl).... Pending
-  <li> Host(x86_64-glibc)/Target(x86_64-musl)... FAIL (Check Issues: Pending Fix)
+  <li> Host(x86_64-glibc)/Target(x86_64-musl)... Pending
 </ul>
 
 Additional Required Packages 
@@ -72,9 +72,10 @@ Layout
 
 <ul>
   <li>build-scripts - Build scripts to use to semi-automate building `/cross-tools`, `/tools`, and the final system</li>
-  <li>extra - Scripts to mount, chroot, and umount a MLFS build.</li>
+  <li>contrib - Additional sources that are hard to find or re-packed
+  <li>doc - Build instructions to build a LFS installation that uses Musl instead of Glibc and S6 instead of SysVint.</li>
+  <li>extra - Helpful scripts to mount, chroot, and umount a MLFS build.</li>
   <li>files - Files that will be needed during the build</li>
   <li>patches - All patches used to patch sources to work/recognize Musl C Library</li>
-  <li>plain-text - Build instructions to build a LFS installation that uses Musl instead of Glibc and S6 instead of SysVint.</li>
-  <li>contrib - Modified or hard to find/download sources</li>
+  <li>sources.list - List of sources to download
 </ul>

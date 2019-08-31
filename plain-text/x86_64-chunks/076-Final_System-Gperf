@@ -1,5 +1,0 @@
-# Final System: Gperf
-# This section is done in Chroot environment
-
-./configure --prefix=/usr --docdir=/usr/share/doc/gperf-3.1 
-make && make install

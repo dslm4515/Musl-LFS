@@ -1,5 +1,0 @@
-#! /bin/bash
-PAGE=letter \
-./configure --prefix=/usr  &&
-read -p "Compile? " && make -j2 && 
-read -p "Install? " && porg -lD "make install -j1" 

@@ -1,8 +1,0 @@
-# Final System: Expat
-# This section is done in Chroot environment
-
-sed -i 's|usr/bin/env |bin/|' run.sh.in
-./configure --prefix=/usr    \
-            --disable-static \
-            --docdir=/usr/share/doc/expat-2.2.6
-make && make install

@@ -1,8 +1,0 @@
-#! /bin/bash
-
-./configure --prefix=/usr \
-            --disable-static     \
-            --enable-thread-safe \
-            --docdir=/usr/share/doc/mpfr-4.0.1  &&
-read -p "Compile? " && make -j2 && 
-read -p "Install? " && porg -lD "make install -j1" 

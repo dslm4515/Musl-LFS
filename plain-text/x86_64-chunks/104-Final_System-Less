@@ -1,6 +1,0 @@
-# Final System: Less
-# This section is done in Chroot environment
-
-./configure --prefix=/usr --sysconfdir=/etc &&
-make && make install
-

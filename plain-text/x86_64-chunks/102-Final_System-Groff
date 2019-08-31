@@ -1,5 +1,0 @@
-# Final System: Groff
-# This section is done in Chroot environment
-
-PAGE=letter ./configure --prefix=/usr
-make -j1 && make install

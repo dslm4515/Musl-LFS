@@ -1,7 +1,0 @@
-# Final System: Meson
-# Source: https://github.com/mesonbuild/meson/releases/download/0.50.1/meson-0.50.1.tar.gz
-# This section is done in Chroot environment
-
-python3 setup.py build
-python3 setup.py install --root=dest
-cp -rv dest/* /

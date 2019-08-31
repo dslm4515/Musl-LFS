@@ -1,6 +1,0 @@
-# Final System: Gawk
-# This section is done in Chroot environment
-
-sed -i 's/extras//' Makefile.in
-./configure --prefix=/usr  
-make && make install

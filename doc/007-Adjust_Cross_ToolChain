@@ -1,0 +1,27 @@
+# Adjust Cross Tool Chain
+#
+# Adjustment is needed when Host has a different libc than target.
+# Otherwise GCC Pass1 of /tools will fail to build
+
+# Dump current cross-gcc specs 
+export SPECFILE=`dirname $(${MLFS_TARGET}-gcc -print-libgcc-file-name)`/specs
+${MLFS_TARGET}-gcc -dumpspecs > specs
+
+# Modify dumped specs file for every instance of: 
+# /lib/ld-musl-i386.so.1 to /tools/lib/ld-musl-i386.so.1 (32bit)
+# /lib/ld-musl-x86_64.so.1 to /tools/lib/ld-musl-x86_64.so.1 (64bit)
+vim specs
+
+# Move modified specs to the cross toolchain
+mv -v specs $SPECFILE
+unset SPECFILE
+
+# Quick check the tool chain:
+echo 'int main(){}' > dummy.c
+${MLFS_TARGET}-gcc dummy.c
+${MLFS_TARGET}-readelf -l a.out | grep Requesting
+
+# Output should be:
+# [Requesting program interpreter: /tools/lib/ld-musl-x86_64.so.1]
+# or
+# [Requesting program interpreter: /tools/lib/ld-musl-i386.so.1]

@@ -1,7 +1,0 @@
-#! /bin/bash
-
-patch -Np1 -i ../sysklogd-1.5_musl.patch &&
-sed -i '/Error loading kernel symbols/{n;n;d}' ksym_mod.c &&
-sed -i 's/union wait/int/' syslogd.c &&
-read -p "Compile? " && make -j2 && 
-read -p "Install? " && porg -lD "make BINDIR=/sbin install -j1"  

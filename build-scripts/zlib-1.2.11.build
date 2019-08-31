@@ -1,7 +1,0 @@
-#! /bin/bash
-
-./configure --prefix=/usr && 
-read -p "Compile? " && make -j2 && 
-read -p "Install? " && porg -lD "make install -j1" &&
-porg -lD+ "mv -v /usr/lib/libz.so.* /lib" &&
-porg -lD+ "ln -sfv ../../lib/$(readlink /usr/lib/libz.so) /usr/lib/libz.so"

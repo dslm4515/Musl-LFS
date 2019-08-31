@@ -1,7 +1,0 @@
-# Final System: S6-Linux-Utils 
-# Source: https://github.com/skarnet/s6-linux-utils/archive/v2.5.0.0.tar.gz
-# This section is done in Chroot environment
-
-./configure
-make
-make install 

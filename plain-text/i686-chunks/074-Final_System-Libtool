@@ -1,5 +1,0 @@
-# Final System: Libtool 2.4.6
-# Source: http://ftp.gnu.org/gnu/libtool/libtool-2.4.6.tar.xz
-# This section is done in Chroot environment
-
-./configure --prefix=/usr && make && make install

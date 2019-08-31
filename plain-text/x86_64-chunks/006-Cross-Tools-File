@@ -1,7 +1,0 @@
-# Cross-Tools: File
-# Build and install as mlfs
-
-./configure --prefix=/cross-tools --disable-libseccomp
-make && make install
-
-# Optional: Backup cross-tools

@@ -1,0 +1,57 @@
+# Cross-Tools: GCC-9.1.0 Final
+# Source: http://ftp.gnu.org/gnu/gcc/gcc-9.1.0/gcc-9.1.0.tar.xz
+# Build and install as mlfs
+
+# Additional sources to add as GCC requires them 
+tar -xf ../mpfr-4.0.2.tar.xz
+mv -v mpfr-4.0.2 mpfr
+tar -xf ../gmp-6.1.2.tar.xz
+mv -v gmp-6.1.2 gmp
+tar -xf ../mpc-1.1.0.tar.gz
+mv -v mpc-1.1.0 mpc
+
+# Apply patches [from void-linux]
+patch -Np0 -i ../patches/gcc-9.1.0-void-patches/0010-ldbl128-config.patch
+patch -Np0 -i ../patches/gcc-9.1.0-void-patches/ada-shared.patch
+patch -Np0 -i ../patches/gcc-9.1.0-void-patches/fix-cxxflags-passing.patch
+patch -Np0 -i ../patches/gcc-9.1.0-void-patches/fix-musl-execinfo.patch
+patch -Np0 -i ../patches/gcc-9.1.0-void-patches/libgcc-musl-ldbl128-config.patch
+patch -Np0 -i ../patches/gcc-9.1.0-void-patches/musl-ada.patch
+patch -Np0 -i ../patches/gcc-9.1.0-void-patches/no-stack_chk_fail_local.patch
+patch -Np0 -i ../patches/gcc-9.1.0-void-patches/non-nullness.patch
+
+# Configure in a dedicated build directory
+mkdir build && cd  build
+AR=ar LDFLAGS="-Wl,-rpath,/cross-tools/lib" \
+../configure \
+    --prefix=/cross-tools \
+    --build=${MLFS_HOST} \
+    --host=${MLFS_HOST} \
+    --target=${MLFS_TARGET} \
+    --disable-multilib \
+    --with-sysroot=/cross-tools \
+    --disable-nls \
+    --enable-shared \
+    --enable-languages=c,c++ \
+    --enable-__cxa_atexit \
+    --enable-c99 \
+    --enable-long-long \
+    --enable-threads=posix \
+    --enable-clocale=generic \
+    --enable-libstdcxx-time \
+    --enable-checking=release \
+    --enable-fully-dynamic-string \
+    --disable-symvers \
+    --disable-gnu-indirect-function \
+    --disable-libmudflap \
+    --disable-libsanitizer \
+    --disable-libmpx \
+    --disable-lto-plugin \
+    --disable-libssp 
+
+# Build
+make AS_FOR_TARGET="${MLFS_TARGET}-as" \
+    LD_FOR_TARGET="${MLFS_TARGET}-ld"
+
+# Install
+make install

@@ -1,4 +1,0 @@
-# Final System: Man Pages
-# This section is done in Chroot environment
-
-make install
