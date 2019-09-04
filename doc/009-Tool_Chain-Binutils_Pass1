@@ -31,3 +31,7 @@ esac
 # Install
 make install
 
+# Build & Install 2nd linker for adjusting toolchain later
+make -C ld clean
+make -C ld LIB_PATH=/tools/lib
+cp -v ld/ld-new /tools/bin

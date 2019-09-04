@@ -26,3 +26,8 @@ mkdir -v build && cd build
 # Build & Install to toolchain
 make && make install
 
+# Build & Install Linker to toolchain 
+# for adjusting toolchain later
+make -C ld clean
+make -C ld LIB_PATH=/usr/lib:/lib
+cp -v ld/ld-new /tools/bin

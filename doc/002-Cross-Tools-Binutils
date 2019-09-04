@@ -7,9 +7,11 @@ mkdir -v build && cd build
 
 # configure source
 ../configure \
-   --prefix=/cross-tools --target=${MLFS_TARGET} \
+   --prefix=/cross-tools \
+   --target=${MLFS_TARGET} \
    --with-sysroot=/cross-tools/${MLFS_TARGET} \
-   --disable-nls --disable-multilib \
+   --disable-nls \
+   --disable-multilib \
    --disable-werror \
    --disable-ppl-version-check \
    --disable-cloog-version-check \

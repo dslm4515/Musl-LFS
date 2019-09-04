@@ -12,7 +12,7 @@ ${MLFS_TARGET}-gcc -dumpspecs > specs
 # /lib/ld-musl-x86_64.so.1 to /tools/lib/ld-musl-x86_64.so.1 (64bit)
 vim specs
 
-# Move modified specs to the cross toolchain
+# Install modified specs to the cross toolchain
 mv -v specs $SPECFILE
 unset SPECFILE
 
