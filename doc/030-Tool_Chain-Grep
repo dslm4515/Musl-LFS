@@ -1,5 +1,5 @@
 # Toolchain: Grep 3.3
-# Source: http://ftp.gnu.org/gnu/grep/grep-3.1.tar.xz
+# Source: http://ftp.gnu.org/gnu/grep/grep-3.3.tar.xz
 # Build and install as mlfs
 
 # Set the environment for cross-compiling if not done already.
