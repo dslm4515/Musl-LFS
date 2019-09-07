@@ -3,8 +3,17 @@
 # Source: https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.2.11.tar.xz
 # This section is done in Chroot environment
 
+# Clean source tree
 make mrproper
+
+# Extract headers
 make INSTALL_HDR_PATH=dest headers_install
+
+# There are also some hidden files used by the kernel 
+# developers and not needed by MLFS that are removed 
+# from the intermediate directory.
 find dest/include \( -name .install -o -name ..install.cmd \) -delete
+
+# Install Headers
 cp -rv dest/include/* /usr/include
 

@@ -1,6 +1,7 @@
 # Create Directories
 # This section is done in Chroot environment
 
+# Create a standard directory tree by issuing the following commands: 
 mkdir -pv /{bin,boot,etc/{opt,sysconfig},home,lib/firmware,mnt,opt}
 mkdir -pv /{media/{floppy,cdrom},sbin,srv,var}
 install -dv -m 0750 /root
