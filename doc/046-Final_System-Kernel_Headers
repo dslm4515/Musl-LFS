@@ -1,6 +1,6 @@
 # Final System: Kernel Headers
 # Use latest kernel version when possible
-# Source: https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.1.16.tar.xz
+# Source: https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.2.11.tar.xz
 # This section is done in Chroot environment
 
 make mrproper

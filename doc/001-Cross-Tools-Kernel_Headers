@@ -1,6 +1,6 @@
 # Cross-Tools: Kernel Headers
 # Build & install as user mlfs
-# Source: https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.1.16.tar.xz
+# Source: https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.2.11.tar.xz
 
 # Clean sources
 make mrproper

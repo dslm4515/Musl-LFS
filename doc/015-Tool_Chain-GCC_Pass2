@@ -90,6 +90,8 @@ readelf -l a.out | grep ': /tools'
 # If everything is working correctly, there should be no errors, and the output of 
 # the last command will be of the form: 
 # [Requesting program interpreter: /tools/lib/ld-musl-i386.so.1]
+# or
+# [Requesting program interpreter: /tools/lib/ld-musl-x86_64.so.1]
 
 # Clean up after testing
 rm -v dummy.c a.out
