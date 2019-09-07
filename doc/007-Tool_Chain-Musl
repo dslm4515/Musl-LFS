@@ -11,7 +11,7 @@
 make && make DESTDIR=/tools install
 
 # Make sure symlink is valid: 
-# /tools/lib/ld-musl-x86_64.so.1 to /tools/lib/libc.so
+# /tools/lib/ld-musl-$ARCH.so.1 to /tools/lib/libc.so
 
 case $(uname -m) in
   x86_64)  rm -v  /tools/lib/ld-musl-x86_64.so.1
@@ -20,5 +20,7 @@ case $(uname -m) in
   i686)    rm -v  /tools/lib/ld-musl-i686.so.1
            ln -sv libc.so /tools/lib/ld-musl-i686.so.1
            ;;
+  arm*)    rm -v  /tools/lib/ld-musl-arm.so.1
+           ln -sv libc.so /tools/lib/ld-musl-arm.so.1
 esac
 

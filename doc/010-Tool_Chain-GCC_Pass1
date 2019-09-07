@@ -30,6 +30,8 @@ patch -Np0 -i ../patches/gcc-9.1.0-void-patches/no-stack_chk_fail_local.patch
 patch -Np0 -i ../patches/gcc-9.1.0-void-patches/non-nullness.patch
 
 # change the location of GCC's default dynamic linker to use the one installed in /tools
+#
+# For i686/x86_64:
 for file in gcc/config/{linux,i386/linux{,64}}.h
 do
   cp -uv $file{,.orig}
@@ -49,6 +51,20 @@ case $(uname -m) in
         -i.orig gcc/config/i386/t-linux64
  ;;
 esac
+
+# For ARM
+for file in gcc/config/arm/linux-eabi.h
+do
+  cp -uv $file{,.orig}
+  sed -e 's@/lib\(64\)\?\(32\)\?/ld@/tools&@g' \
+      -e 's@/usr@/tools@g' $file.orig > $file
+  echo '
+#undef STANDARD_STARTFILE_PREFIX_1
+#undef STANDARD_STARTFILE_PREFIX_2
+#define STANDARD_STARTFILE_PREFIX_1 "/tools/lib/"
+#define STANDARD_STARTFILE_PREFIX_2 ""' >> $file
+  touch $file.orig
+done
 
 # Configure in dedicated build directory
 mkdir -v build && cd build
@@ -83,7 +99,7 @@ mkdir -v build && cd build
     --disable-libcilkrts
 
 # Build 
-PATH=/bin:/usr/bin:/cross-tools/bin:/tools/bin make
+make
 
 # Install
 make install

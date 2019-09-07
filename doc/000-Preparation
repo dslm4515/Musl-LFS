@@ -79,10 +79,28 @@ EOF
 # For 32-bit CPUs:
 #  ARCH=x86
 #  CPU=i686
+# For ARM CPUs:
+#  ARCH=arm
+#  CPU= # depends on ARM SoC or CPU of target machine
+#  CPU=cortex-a15   # Odroid xu4
+#  CPU=arm1176jzf-s # Raspberry Pi Zero or 1
+
+
+case $(uname -m) in
+   x86_64) export MLFS_TARGET="x86_64-mlfs-linux-musl"
+           ;;
+   i686)   export MLFS_TARGET="i686-mlfs-linux-musl"
+           ;;
+   armv7l) export MLFS_TARGET="armv7l-mlfs-linux-musl"
+           ;;
+   armv6l) export MLFS_TARGET="armv6l-,lfs-linux-musl"
+           ;;
+esac
+
 export MLFS_HOST="$(echo $MACHTYPE | \
     sed "s/$(echo $MACHTYPE | cut -d- -f2)/cross/")"
-export MLFS_TARGET="x86_64-mlfs-linux-musl"
-# for 32bit use: export MLFS_TARGET="i686-mlfs-linux-musl"
+
+
 cat >> ~/.bashrc << EOF
 export MLFS_HOST="${MLFS_HOST}"
 export MLFS_TARGET="${MLFS_TARGET}"

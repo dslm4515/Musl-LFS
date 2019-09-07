@@ -6,7 +6,7 @@
 make mrproper
 
 # Build Headers
-make ARCH=${MLFS_ARCH} headers_check
+ARCH=${MLFS_ARCH} make headers_check
 
 # Install
-make ARCH=${MLFS_ARCH} INSTALL_HDR_PATH=/cross-tools/${MLFS_TARGET} headers_install
+ARCH=${MLFS_ARCH} INSTALL_HDR_PATH=/cross-tools/${MLFS_TARGET} make headers_install
