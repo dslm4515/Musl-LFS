@@ -1,0 +1,11 @@
+# Final System: MPC 1.1.0
+# Source: https://ftp.gnu.org/gnu/mpc/mpc-1.1.0.tar.gz
+# This section is done in Chroot environment
+
+# Configure source
+./configure --prefix=/usr    \
+            --disable-static \
+            --docdir=/usr/share/doc/mpc-1.1.0 
+
+# Build and install
+make && make install

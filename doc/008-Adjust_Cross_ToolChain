@@ -21,6 +21,7 @@ case $(uname -m) in
   arm*)   sed -i 's/\/lib\/ld-musl-arm.so.1/\/tools\/lib\/ld-musl-arm.so.1/g' specs
           # check with
           grep "/tools/lib/ld-musl-arm.so.1" specs  --color=auto
+          ;;
 esac
 
 # Install modified specs to the cross toolchain
@@ -40,4 +41,4 @@ ${MLFS_TARGET}-readelf -l a.out | grep Requesting
 # [Requesting program interpreter: /tools/lib/ld-musl-arm.so.1]
 
 # If all went well, remove:
-rm -v a.out dummy.c dummy.log
+rm -v a.out dummy.c 

@@ -1,0 +1,57 @@
+# Final System: Musl Libc
+# Source: https://www.musl-libc.org/releases/musl-1.1.23.tar.gz
+# This section is done in Chroot environment
+
+# Apply a patch to prevent a crash with a NULL pointer 
+# dereference when dcngettext() is called with 
+# NULL msgid[12] arguments.
+patch -Np0 -i ../patches/musl-1.1.23-void-mo_lookup.patch
+
+# For i686(32 bit), there is a rounding error that
+# causes fonts to not display for SeaMonkey and 
+# Palemoon browsers:
+patch -Np1 -i ../patches/musl-1.1.23-i686-fix-rounding.patch
+
+# Configure 
+./configure --prefix=/usr -disable-gcc-wrapper
+
+# Build and install 
+make && make  install
+
+case $(uname -m) in
+  x86_64) export ARCH="x86_64"
+          ;;
+  i686)   export ARCH="i386"
+          ;;
+  arm*)   export ARCH="arm"
+          ;;
+esac
+
+# Create link for ldd:
+ ln -sv /lib/ld-musl-$ARCH.so.1 /bin/ldd
+
+# Create config for dynamic library loading:
+
+cat > /etc/ld-musl-$ARCH.path << "EOF"
+/lib
+/usr/local/lib
+/usr/lib
+EOF
+
+unset ARCH
+
+# Build useful utilities
+cc -fpie ../files/musl/getent.c -o getent
+cc -fpie ../files/musl/getconf.c -o getconf
+cc -fpie ../files/musl/iconv.c -o iconv
+
+cp -v ../files/musl/getent.1   /usr/share/man/man1/
+cp -v ../files/musl/getconf.1  /usr/share/man/man1/
+
+# Fake ldconfig
+ln -s true /usr/bin/ldconfig
+
+# If desired, install legacy compatability headers:
+cp -v ../files/musl-legacy-compat-void/cdefs.h /usr/include/sys/
+cp -v ../files/musl-legacy-compat-void/queue.h /usr/include/sys/
+cp -v ../files/musl-legacy-compat-void/tree.h /usr/include/sys/
