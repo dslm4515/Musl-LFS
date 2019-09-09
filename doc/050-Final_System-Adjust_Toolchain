@@ -35,3 +35,45 @@ gcc -dumpspecs | sed -e 's@/tools@@g'                   \
 mv -vf tempspecfile $SPECFILE &&
 unset SPECFILE
 unset ARCH
+
+# Check the basic functions (compiling and linking) of 
+# the adjusted toolchain are working as expected. To do 
+# this, perform the following sanity checks:
+echo 'int main(){}' > dummy.c
+cc dummy.c -v -Wl,--verbose &> dummy.log
+readelf -l a.out | grep ': /lib'
+# Should output:
+# [Requesting program interpreter: /lib/ld-musl-x86_64.so.1]
+# or
+# [Requesting program interpreter: /lib/ld-musl-i386.so.1]
+# or
+# [Requesting program interpreter: /lib/ld-musl-arm.so.1]
+
+# Make sure that we're setup to use the correct start files: 
+grep -o '/usr/lib.*/crt[1in].*succeeded' dummy.log
+# Should output:
+# /usr/lib/crt1.o succeeded
+# /usr/lib/crti.o succeeded
+# /usr/lib/crtn.o succeeded
+
+# Verify that the compiler is searching for the correct 
+# header files: 
+grep -B1 '^ /usr/include' dummy.log
+# Should output:
+# #include <...> search starts here:
+# /usr/include
+
+# Verify that the new linker is being used with the 
+# correct search paths: 
+grep 'SEARCH.*/usr/lib' dummy.log |sed 's|; |\n|g'
+# Should output:
+# SEARCH_DIR("=/tools/x86_64-mlfs-linux-musl/lib64")
+# SEARCH_DIR("/usr/lib")
+# SEARCH_DIR("/lib")
+# SEARCH_DIR("=/tools/x86_64-mlfs-linux-musl/lib")
+# ^ first and last line can be ignored
+
+# Once everything is working correctly, clean up 
+# the test files:
+rm -v dummy.c a.out dummy.log
+
