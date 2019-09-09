@@ -45,6 +45,9 @@ cc -fpie ../files/musl/getent.c -o getent
 cc -fpie ../files/musl/getconf.c -o getconf
 cc -fpie ../files/musl/iconv.c -o iconv
 
+cp -v getent  /usr/bin/
+cp -v getconf /usr/bin/
+cp -v iconv   /usr/bin/
 cp -v ../files/musl/getent.1   /usr/share/man/man1/
 cp -v ../files/musl/getconf.1  /usr/share/man/man1/
 
