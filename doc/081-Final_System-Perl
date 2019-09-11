@@ -1,0 +1,21 @@
+# Final System: Perl 5.30.0
+# Source: https://www.cpan.org/src/5.0/perl-5.30.0.tar.xz
+# This section is done in Chroot environment
+
+echo "127.0.0.1 localhost $(hostname)" > /etc/hosts
+export BUILD_ZLIB=False
+export BUILD_BZIP2=0
+export CF_OLD=$CFLAGS
+export CFLAGS+=" -DNO_POSIX_2008_LOCALE"
+export CFLAGS+=" -D_GNU_SOURCE"
+
+sh Configure -des -Dprefix=/usr                 \
+                  -Dvendorprefix=/usr           \
+                  -Dman1dir=/usr/share/man/man1 \
+                  -Dman3dir=/usr/share/man/man3 \
+                  -Dpager="/usr/bin/less -isR"  \
+                  -Duseshrplib                  \
+                  -Dusethreads
+make && make install
+export CFLAGS=$CF_OLD
+unset BUILD_ZLIB BUILD_BZIP2 CF_OLD

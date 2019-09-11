@@ -1,0 +1,7 @@
+# Final System: Psmisc
+# Source: https://sourceforge.net/projects/psmisc/files/psmisc/psmisc-23.2.tar.xz
+# This section is done in Chroot environment
+
+./configure --prefix=/usr && make && make install
+mv -v /usr/bin/fuser   /bin
+mv -v /usr/bin/killall /bin

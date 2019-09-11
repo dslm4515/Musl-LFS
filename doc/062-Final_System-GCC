@@ -28,6 +28,15 @@ patch -Np0 -i ../patches/gcc-9.1.0-void-patches/musl-ada.patch
 patch -Np0 -i ../patches/gcc-9.1.0-void-patches/no-stack_chk_fail_local.patch
 patch -Np0 -i ../patches/gcc-9.1.0-void-patches/non-nullness.patch
 
+# If building on x86_64, change the default 
+# directory name for 64-bit libraries to “lib”:
+case $(uname -m) in
+  x86_64)
+    sed -e '/m64=/s/lib64/lib/' \
+        -i.orig gcc/config/i386/t-linux64
+  ;;
+esac
+
 # _FORTIFY_SOURCE needs an optimization level.
 sed -i "/ac_cpp=/s/\$CPPFLAGS/\$CPPFLAGS -O2/" {gcc,libiberty}/configure
 
@@ -143,7 +152,7 @@ grep 'SEARCH.*/usr/lib' dummy.log |sed 's|; |\n|g'
 # SEARCH_DIR("/usr/local/lib32")
 # SEARCH_DIR("/lib32")
 # SEARCH_DIR("/usr/lib32")
-# SEARCH_DIR("/usr/i$ARCH-pc-linux-musl/lib")
+# SEARCH_DIR("/usr/$ARCH-pc-linux-musl/lib")
 # SEARCH_DIR("/usr/local/lib")
 # SEARCH_DIR("/lib")
 # SEARCH_DIR("/usr/lib");
