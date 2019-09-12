@@ -1,0 +1,8 @@
+# Final System: Intltool 0.51.0
+# Source: https://launchpad.net/intltool/trunk/0.51.0/+download/intltool-0.51.0.tar.gz
+# This section is done in Chroot environment
+
+sed -i 's:\\\${:\\\$\\{:' intltool-update.in
+
+./configure --prefix=/usr && make && make install
+

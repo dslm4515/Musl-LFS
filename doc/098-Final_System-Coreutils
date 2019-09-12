@@ -1,0 +1,31 @@
+# Final System: Coreutils 8.31
+# Source: http://ftp.gnu.org/gnu/coreutils/coreutils-8.31.tar.xz
+# This section is done in Chroot environment
+
+# Apply patches
+patch -Np1 -i ../patches/coreutils-8.31-i18n-1.patch
+# Fix a issue related to non-glibc builds
+patch -Np1 -i ../patches/coreutils-8.31-fix-strtod.patch
+
+# Recreate configure script
+autoreconf -vfi
+
+# Suppress a test which on some machines can loop forever
+sed -i '/test.lock/s/^/#/' gnulib-tests/gnulib.mk
+
+# Configure
+FORCE_UNSAFE_CONFIGURE=1 ./configure \
+            --prefix=/usr            \
+            --enable-no-install-program=kill,uptime
+# Build and install
+FORCE_UNSAFE_CONFIGURE=1 make && make install
+
+# Fix file locations
+/tools/bin/mv -v /usr/bin/{cat,chgrp,chmod,chown,cp,date,dd,df,echo} /bin
+/tools/bin/mv -v /usr/bin/{false,ln,ls,mkdir,mknod,mv,pwd,rm} /bin
+/tools/bin/mv -v /usr/bin/{rmdir,stty,sync,true,uname} /bin
+/tools/bin/mv -v /usr/bin/chroot /usr/sbin
+/tools/bin/mv -v /usr/share/man/man1/chroot.1 /usr/share/man/man8/chroot.8
+sed -i s/\"1\"/\"8\"/1 /usr/share/man/man8/chroot.8
+/tools/bin/mv -v /usr/bin/{head,sleep,nice} /bin
+
