@@ -6,10 +6,10 @@
 sed -i 's/test-lock..EXEEXT.//' tests/Makefile.in
 
 # Apply patches:
-patch -Np0 -i ../patches/findutils-4.6.0/gnulib-freadahead.patch
-patch -Np0 -i ../patches/findutils-4.6.0/gnulib-fseeko.patch
-patch -Np0 -i ../patches/findutils-4.6.0/gnulib-mountlist.patch
-patch -Np0 -i ../patches/findutils-4.6.0/gnulib-stdio-impl.patch
+patch -Np0 -i ../patches/findutils-4.6.0-void/gnulib-freadahead.patch
+patch -Np0 -i ../patches/findutils-4.6.0-void/gnulib-fseeko.patch
+patch -Np0 -i ../patches/findutils-4.6.0-void/gnulib-mountlist.patch
+patch -Np0 -i ../patches/findutils-4.6.0-void/gnulib-stdio-impl.patch
 
 # Configure source
 ./configure --prefix=/usr --localstatedir=/var/lib/locate
