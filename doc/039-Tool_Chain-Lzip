@@ -13,9 +13,12 @@ export LD="${MLFS_TARGET}-ld"
 export STRIP="${MLFS_TARGET}-strip"
 
 # Configure source
-./configure --build=${MLFS_HOST} \
-            --host=${MLFS_TARGET} \
-            --prefix=/tools 
+# configure doesn't accept --host and --build flags
+./configure --prefix=/tools 
+
+# configure doesn't update g++ and tries to build with host g++
+# run sed to fix it
+sed -i 's/CXX = g++/CXX = ${MLFS_TARGET}-g++/g'
 
 # Build and Install to toolchain
 make && make install
