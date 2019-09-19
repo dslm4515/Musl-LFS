@@ -23,6 +23,7 @@ case $(uname -m) in
            sed -i 's/\/lib\/ld-musl-arm.so.1/\/tools\/lib\/ld-musl-arm.so.1/g' tempspecfile
            # check with
            grep "/tools/lib/ld-musl-arm.so.1" tempspecfile --color=auto
+esac
 
 mv -vf tempspecfile $SPECFILE &&
 unset SPECFILE

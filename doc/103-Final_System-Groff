@@ -2,6 +2,9 @@
 # Source: http://ftp.gnu.org/gnu/groff/groff-1.22.4.tar.gz
 # This section is done in Chroot environment
 
-PAGE=letter ./configure --prefix=/usr
+#For users in the United States, PAGE=letter is appropriate. Elsewhere, PAGE=A4 may be more suitable.
+#It can be overridden later by echoing either `A4` or `letter` to the `/etc/papersize` file.
+
+PAGE=<paper_size> ./configure --prefix=/usr
 
 make -j1 && make install

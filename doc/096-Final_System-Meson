@@ -8,4 +8,3 @@ python3 setup.py build
 # Install
 python3 setup.py install --root=dest
 cp -rv dest/* /
-~                   
