@@ -64,16 +64,12 @@ mkdir -v build && cd build &&
     --disable-multilib                             \
     --disable-bootstrap                            \
     --disable-libgomp \
-    --disable-libmpx                               \
     --disable-libquadmath                          \
     --disable-libssp                               \
     --disable-libvtv                               \
     --disable-symvers \
     --disable-libitm \
-    --disable-gnu-indirect-function \
-    --disable-libmudflap \
-    --disable-libsanitizer \
-    --disable-libcilkrts &&
+    --disable-libsanitizer &&
 read -p "Compile? " &&
 PATH=/bin:/usr/bin:/cross-tools/bin:/tools/bin make -j4 &&
 #make -j2 &&
