@@ -82,18 +82,26 @@ EOF
 # For ARM CPUs:
 #  ARCH=arm
 #  CPU= # depends on ARM SoC or CPU of target machine
-#  CPU=cortex-a15   # Odroid xu4
-#  CPU=arm1176jzf-s # Raspberry Pi Zero or 1
+#  CPU=armv7-a   # Odroid xu4 (cortex-a15)
+#  CPU=armv6 # Raspberry Pi Zero or 1 (arm1176jzf-s)
 
 
 case $(uname -m) in
    x86_64) export MLFS_TARGET="x86_64-mlfs-linux-musl"
+           export MLFS_ARCH="x86"
+           export MLFS_CPU="x86-64"
            ;;
    i686)   export MLFS_TARGET="i686-mlfs-linux-musl"
+           export MLFS_ARCH="x86"
+           export MLFS_CPU="i686"
            ;;
    armv7l) export MLFS_TARGET="armv7l-mlfs-linux-musl"
+           export MLFS_ARCH="arm"
+           export MLFS_CPU="armv7-a"
            ;;
-   armv6l) export MLFS_TARGET="armv6l-,lfs-linux-musl"
+   armv6l) export MLFS_TARGET="armv6l-lfs-linux-musl"
+           export MLFS_ARCH="arm"
+           export MLFS_CPU="armv6"
            ;;
 esac
 
@@ -104,8 +112,8 @@ export MLFS_HOST="$(echo $MACHTYPE | \
 cat >> ~/.bashrc << EOF
 export MLFS_HOST="${MLFS_HOST}"
 export MLFS_TARGET="${MLFS_TARGET}"
-export MLFS_ARCH=x86
-export MLFS_CPU=x86-64
+export MLFS_ARCH="${MLFS_ARCH}"
+export MLFS_CPU="${MLFS_ARCH}"
 EOF
 source ~/.bashrc
 
