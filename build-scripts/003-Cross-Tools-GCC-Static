@@ -14,17 +14,14 @@ mkdir -v build && cd  build &&
 	  --prefix=/cross-tools --build=${MLFS_HOST} \
 	  --host=${MLFS_HOST}   --target=${MLFS_TARGET} \
 	  --with-sysroot=/cross-tools/${MLFS_TARGET} \
-	  --disable-nls  --with-newlib --without-ppl \
-	  --without-cloog      --disable-libmpx \
+	  --disable-nls  --with-newlib \
 	  --disable-libitm     --disable-libvtv \
 	  --disable-libssp     --disable-shared \
 	  --disable-libgomp    --without-headers \
 	  --disable-threads    --disable-multilib \
 	  --disable-libatomic  --disable-libstdcxx \
-	  --disable-libmudflap --disable-libcilkrts \
 	  --enable-languages=c --disable-libquadmath \
 	  --disable-libsanitizer --with-arch=${MLFS_CPU} \
-	  --disable-decimal-float --enable-clocale=generic \
-	  --disable-gnu-indirect-function &&
+	  --disable-decimal-float --enable-clocale=generic &&
 make all-gcc all-target-libgcc -j2 &&
 make install-gcc install-target-libgcc
