@@ -18,9 +18,9 @@ case $(uname -m) in
           # check with
           grep "/tools/lib/ld-musl-i386.so.1" specs  --color=auto
           ;;
-  arm*)   sed -i 's/\/lib\/ld-musl-arm.so.1/\/tools\/lib\/ld-musl-arm.so.1/g' specs
+  arm*)   sed -i 's/\/lib\/ld-musl-arm/\/tools\/lib\/ld-musl-arm/g' specs
           # check with
-          grep "/tools/lib/ld-musl-arm.so.1" specs  --color=auto
+          grep "/tools/lib/ld-musl-arm" specs  --color=auto
           ;;
 esac
 
