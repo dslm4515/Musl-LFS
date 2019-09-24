@@ -20,9 +20,10 @@ case $(uname -m) in
            grep "/tools/lib/ld-musl-x86_64.so.1" tempspecfile --color=auto
            ;;
    arm*)   # for arm
-           sed -i 's/\/lib\/ld-musl-arm.so.1/\/tools\/lib\/ld-musl-arm.so.1/g' tempspecfile
+           sed -i 's/\/lib\/ld-musl-arm/\/tools\/lib\/ld-musl-arm/g' tempspecfile
            # check with
-           grep "/tools/lib/ld-musl-arm.so.1" tempspecfile --color=auto
+           grep "/tools/lib/ld-musl-arm" tempspecfile --color=auto
+           ;;
 esac
 
 mv -vf tempspecfile $SPECFILE &&
