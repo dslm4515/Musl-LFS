@@ -34,7 +34,6 @@ AR=ar LDFLAGS="-Wl,-rpath,/cross-tools/lib" \
     --disable-nls \
     --enable-shared \
     --enable-languages=c,c++ \
-    --enable-__cxa_atexit \
     --enable-c99 \
     --enable-long-long \
     --enable-threads=posix \
@@ -43,10 +42,7 @@ AR=ar LDFLAGS="-Wl,-rpath,/cross-tools/lib" \
     --enable-checking=release \
     --enable-fully-dynamic-string \
     --disable-symvers \
-    --disable-gnu-indirect-function \
-    --disable-libmudflap \
     --disable-libsanitizer \
-    --disable-libmpx \
     --disable-lto-plugin \
     --disable-libssp &&
 
