@@ -3,7 +3,13 @@
 # This package is optional
 # This section is done in Chroot environment
 
-patch -Np0 -i ../patches/porg-0.10-musl-fix-32.patch
+# Apply patch for Musl support
+case $(uname -m) in
+  x86_64)  patch -Np0 -i ../patches/porg-0.10-musl-fix-64.patch
+           ;;
+  i686)    patch -Np0 -i ../patches/porg-0.10-musl-fix-32.patch
+           ;;
+esac
 
 cat > config.cache << "EOF"
 ac_cv_func_creat64=no
