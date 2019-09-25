@@ -92,7 +92,6 @@ mkdir -v build && cd build
     --disable-libstdcxx-pch \
     --disable-symvers \
     --disable-libitm \
-    --disable-libmudflap \
     --disable-libsanitizer 
 
 # Build 

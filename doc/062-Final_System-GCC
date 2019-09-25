@@ -71,7 +71,6 @@ SED=sed  libat_cv_have_ifunc=no       \
              --disable-multilib       \
              --disable-bootstrap      \
              --disable-symvers \
-             --disable-libmudflap \
              --disable-libsanitizer \
              --disable-target-libiberty \
              --disable-libunwind-exceptions \
