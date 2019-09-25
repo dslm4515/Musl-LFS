@@ -1,5 +1,5 @@
 # Final System: S6 
-# Source: https://github.com/skarnet/s6/archive/v2.7.2.2.tar.g
+# Source: https://github.com/skarnet/s6/archive/v2.7.2.2.tar.gz
 # This section is done in Chroot environment
 
 ./configure  --prefix=/usr \
