@@ -5,16 +5,7 @@
 make mrproper
 
 # Extract headers
-# For arm-glibc host, reverse $PATH for avoid errors:
-case $(uname -m) in
-  arm*) export OLD_PATH=$PATH
-        export PATH=/bin:/usr/bin:/cross-tools/bin:/tools/bin
-        ;;
-esac
-
 ARCH=${MLFS_ARCH} make INSTALL_HDR_PATH=dest headers_install
-
-export PATH=$OLD_PATH && unset OLD_PATH   
 
 find dest/include \( -name .install -o -name ..install.cmd \) -delete
 
