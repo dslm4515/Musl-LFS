@@ -13,8 +13,6 @@ mkdir -v build && cd build
    --disable-nls \
    --disable-multilib \
    --disable-werror \
-   --disable-ppl-version-check \
-   --disable-cloog-version-check \
    --enable-deterministic-archives \
    --disable-compressed-debug-sections 
 
