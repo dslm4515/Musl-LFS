@@ -84,7 +84,6 @@ mkdir -v build && cd build
     --disable-threads                              \
     --disable-libatomic                            \
     --disable-libgomp                              \
-    --disable-libmpx                               \
     --disable-libquadmath                          \
     --disable-libssp                               \
     --disable-libvtv                               \
@@ -93,10 +92,8 @@ mkdir -v build && cd build
     --disable-libstdcxx-pch \
     --disable-symvers \
     --disable-libitm \
-    --disable-gnu-indirect-function \
     --disable-libmudflap \
-    --disable-libsanitizer \
-    --disable-libcilkrts
+    --disable-libsanitizer 
 
 # Build 
 make
