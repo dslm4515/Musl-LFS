@@ -51,7 +51,6 @@ SED=sed  libat_cv_have_ifunc=no       \
              --enable-languages=c,c++ \
              --enable-shared \
              --enable-threads=posix \
-             --enable-__cxa_atexit \
              --enable-c99 \
              --enable-long-long \
              --enable-clocale=generic \
@@ -72,12 +71,10 @@ SED=sed  libat_cv_have_ifunc=no       \
              --disable-multilib       \
              --disable-bootstrap      \
              --disable-symvers \
-             --disable-gnu-indirect-function \
              --disable-libmudflap \
              --disable-libsanitizer \
              --disable-target-libiberty \
              --disable-libunwind-exceptions \
-             --disable-libmpx  
 
 # Build
 make
@@ -119,7 +116,7 @@ gcc -dumpspecs > specs
 
 # Modify specs file to match this:
 # *cpp:
-# %{posix:-D_POSIX_SOURCE} %{pthread:-D_REENTRANT} -I /usr/lib/gcc/$ARCH-linux-musl/9.1.0/include -I /usr/lib/gcc/$ARCH-linux-musl/9.1.0/include-fixed
+# %{posix:-D_POSIX_SOURCE} %{pthread:-D_REENTRANT} -I /usr/lib/gcc/$ARCH-linux-musl/9.1.0/include-fixed
 # Install new specs file:
 cp -v specs $SPECFILE
 unset SPECFILE
