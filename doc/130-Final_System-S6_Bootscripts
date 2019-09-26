@@ -3,7 +3,7 @@
 # This section is done in Chroot environment
 
 # Install bootscripts
-cp -rv s6 /etc/
+cp -rav s6 /etc/
 
 # Compile the 'basic' database.
 s6-rc-compile /etc/s6/db/basic /etc/s6/db-src/basic
