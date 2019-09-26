@@ -28,3 +28,4 @@ cp -iv .config /boot/config
 # i.e.  /lib/modules/5.2.11
 mkinitramfs <kernel name>
 # i.e.  mkinitramfs 5.2.11
+cp -va initrd.img-<kernel name> /boo/initrd.img
