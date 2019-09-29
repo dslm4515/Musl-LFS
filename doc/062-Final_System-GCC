@@ -4,13 +4,13 @@
 # This section is done in Chroot environment
 
 case $(uname -m) in
-  x86_64) export ARCH="x86_64"
+  x86_64) export TRUPLE="x86_64-linux-musl"
           ;;
-  i686)   export ARCH="i686"
+  i686)   export TRUPLE="i686-linux-musl"
           ;;
-  armv7l) export ARCH="armv7l"
+  armv7l) export TRUPLE="armv7l-linux-musleabihf"
           ;;
-  armv6l) export ARCH="armv6l"
+  armv6l) export TRUPLE="armv6l-linux-musleabihf"
           ;;
 esac
 
@@ -44,7 +44,7 @@ sed -i "/ac_cpp=/s/\$CPPFLAGS/\$CPPFLAGS -O2/" {gcc,libiberty}/configure
 mkdir -v build && cd build
 SED=sed  libat_cv_have_ifunc=no       \
 ../configure --prefix=/usr            \
-             --build="$ARCH-linux-musl"\
+             --build="${TRUPLE}"\
              --with-system-zlib       \
              --with-isl \
              --with-linker-hash-style=gnu \
@@ -73,7 +73,7 @@ SED=sed  libat_cv_have_ifunc=no       \
              --disable-symvers \
              --disable-libsanitizer \
              --disable-target-libiberty \
-             --disable-libunwind-exceptions \
+             --disable-libunwind-exceptions 
 
 # Build
 make
