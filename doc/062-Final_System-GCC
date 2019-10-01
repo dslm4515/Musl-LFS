@@ -52,7 +52,6 @@ SED=sed  libat_cv_have_ifunc=no       \
              --enable-threads=posix \
              --enable-clocale=generic \
              --enable-languages=c,c++ \
-             --enable-plugins \
              --enable-tls \
              --enable-libstdcxx-time \
              --enable-fully-dynamic-string \
