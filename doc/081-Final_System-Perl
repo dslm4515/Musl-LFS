@@ -9,6 +9,10 @@ export CF_OLD=$CFLAGS
 export CFLAGS+=" -DNO_POSIX_2008_LOCALE"
 export CFLAGS+=" -D_GNU_SOURCE"
 
+# Apply patch from Alpine to fix locale.c errors
+# in programs such as rxvt-unicode
+patch -p1 < ../patches/perl-5.30-alpine/musl-locale.patch
+
 sh Configure -des -Dprefix=/usr                 \
                   -Dvendorprefix=/usr           \
                   -Dman1dir=/usr/share/man/man1 \
