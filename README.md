@@ -27,9 +27,9 @@ Tested Builds
 <ul>
   <li> Host(i686-musl)/Target(i686-musl) ..................... PASS
   <li> Host(i686-glibc)/Target(i686-musl)..................... Pending
-  <li> Host(x86_64-musl)/Target(x86_64-musl).................. Pending
+  <li> Host(x86_64-musl)/Target(x86_64-musl).................. PASS
   <li> Host(x86_64-glibc)/Target(x86_64-musl)................. PASS
-  <li> Host(x86_64-armv7l-glibc)/Target(x86_64-armv7l-musl) .. Pending
+  <li> Host(x86_64-armv7l-glibc)/Target(x86_64-armv7l-musl) .. PASS
 </ul>
 
 Additional Required Packages 
