@@ -3,7 +3,6 @@
 # This section is done in Chroot environment
 
 # Apply patches
-patch -Np1 -i ../patches/coreutils-8.31-i18n-1.patch
 # Fix a issue related to non-glibc builds
 patch -Np1 -i ../patches/coreutils-8.31-fix-strtod.patch
 
