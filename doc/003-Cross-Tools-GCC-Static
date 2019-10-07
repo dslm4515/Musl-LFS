@@ -16,6 +16,8 @@ mv -v mpc-1.1.0 mpc
 mkdir -v build && cd  build
 
 # Configure source 
+CFLAGS='-g0 -O0' \
+CXXFLAGS='-g0 -O0' \
 ../configure \
 	  --prefix=/cross-tools --build=${MLFS_HOST} \
 	  --host=${MLFS_HOST}   --target=${MLFS_TARGET} \

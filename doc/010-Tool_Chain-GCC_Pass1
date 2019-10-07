@@ -68,6 +68,8 @@ done
 
 # Configure in dedicated build directory
 mkdir -v build && cd build
+CFLAGS='-g0 -O0' \
+CXXFLAGS='-g0 -O0' \
 ../configure                                       \
     --target=${MLFS_TARGET}                        \
     --build=${MLFS_HOST} \
