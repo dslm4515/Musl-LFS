@@ -1,8 +1,0 @@
-#! /bin/bash
-# Cross-Tools: File
-# Build and install as mlfs
-# ftp://ftp.astron.com/pub/file/file-5.37.tar.gz
-
-./configure --prefix=/cross-tools --disable-libseccomp
-make -j2 && make install
-

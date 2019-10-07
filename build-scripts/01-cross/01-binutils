@@ -1,0 +1,26 @@
+#! /bin/bash
+
+
+if [ "$1" != "" ]; then
+        export MJ="-j$1"
+else
+        export MJ=""
+fi
+export PACKAGE=$(basename -- "$PWD")
+read -p "Number of make jobs: $MJ" &&
+
+echo "[ $PACKAGE ] Configuring ..." && 
+mkdir -v build && cd build
+../configure \
+   --prefix=/cross-tools \
+   --target=${MLFS_TARGET} \
+   --with-sysroot=/cross-tools/${MLFS_TARGET} \
+   --disable-nls \
+   --disable-multilib \
+   --disable-werror \
+   --enable-deterministic-archives \
+   --disable-compressed-debug-sections
+read -p "[ $PACKAGE ] Compile?" &&
+time { make $MJ ; } && 
+read -p "[ $PACKAGE ] Install?" && make install
+
