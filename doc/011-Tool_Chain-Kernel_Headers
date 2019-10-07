@@ -17,4 +17,7 @@ find usr/include \( -name .install -o -name ..install.cmd \) -delete
 rm usr/include/Makefile
 
 # Install
-cp -rv dest/include/* /tools/include
+cp -rv usr/include/* /tools/include
+# for kernels up to 5.2.x:
+# cp -rv dest/include/* /tools/include
+
