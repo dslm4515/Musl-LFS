@@ -1,0 +1,36 @@
+#! /bin/bash
+# step 15 originally
+if [ "$1" != "" ]; then
+        export MJ="-j$1"
+else
+        export MJ=""
+fi
+export PACKAGE=$(basename -- "$PWD")
+read -p "Number of make jobs: $MJ" &&
+
+export CC="${MLFS_TARGET}-gcc"
+export CXX="${MLFS_TARGET}-g++"
+export AR="${MLFS_TARGET}-ar"
+export AS="${MLFS_TARGET}-as"
+export RANLIB="${MLFS_TARGET}-ranlib"
+export LD="${MLFS_TARGET}-ld"
+export STRIP="${MLFS_TARGET}-strip"
+
+sed -i '/LIBTOOL_INSTALL/d' c++/Makefile.in
+
+echo "[ TC - $PACKAGE ] Configure source ..." &&
+./configure --prefix=/tools \
+    --build=${MLFS_HOST} \
+    --host=${MLFS_TARGET} \
+    --with-shared   \
+    --without-debug \
+    --without-ada   \
+    --enable-widec  \
+    --enable-overwrite     \
+    --with-build-cc="gcc -D_GNU_SOURCE" &&
+
+read -p "[ TC - $PACKAGE ] Compile?" &&
+time { make $MJ ; } &&
+
+read -p "[ TC - $PACKAGE ] Install?" &&
+make install

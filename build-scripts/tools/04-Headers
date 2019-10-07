@@ -1,0 +1,20 @@
+#! /bin/bash
+# step 15 originally
+if [ "$1" != "" ]; then
+        export MJ="-j$1"
+else
+        export MJ=""
+fi
+export PACKAGE=$(basename -- "$PWD")
+read -p "Number of make jobs: $MJ" &&
+
+echo "[ TC - $PACKAGE ] Clean source ..." &&
+make mrproper $MJ &&
+
+echo "[ TC - $PACKAGE ] Extract headers ..." &&
+ARCH=${MLFS_ARCH} make headers $MJ
+find usr/include \( -name .install -o -name ..install.cmd \) -delete
+
+read -p "[ TC - $PACKAGE ] Install?" &&
+cp -rv usr/include/* /tools/include
+rm -v /tools/include/Makefile
