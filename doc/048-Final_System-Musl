@@ -52,7 +52,7 @@ cp -v ../files/musl/getent.1   /usr/share/man/man1/
 cp -v ../files/musl/getconf.1  /usr/share/man/man1/
 
 # Fake ldconfig
-ln -s true /usr/bin/ldconfig
+ln -s /bin/true /usr/bin/ldconfig
 
 # If desired, install legacy compatability headers:
 cp -v ../files/musl-legacy-compat-void/cdefs.h /usr/include/sys/
