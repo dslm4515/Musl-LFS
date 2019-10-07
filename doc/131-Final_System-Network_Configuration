@@ -20,7 +20,7 @@ DHCP_STOP="-k"
 EOF
 
 # For a ethernet card with static ip address:
-cat /etc/sysconfig/ifconfig.eth0 << "EOF"
+cat > /etc/sysconfig/ifconfig.eth0 << "EOF"
 ONBOOT=yes
 IFACE=eth0
 SERVICE=ipv4-static
