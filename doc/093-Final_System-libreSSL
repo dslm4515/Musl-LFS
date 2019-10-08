@@ -3,10 +3,14 @@
 # Source: https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-2.9.2.tar.gz
 # If building Rustc-1.28.0, use LibreSSL-2.7.5 instead
 
-# Apply patches:
-patch -Np0 -i ../patches/libressl-2.9.2-void-fail-instead-of-trying-fallback.patch
-# restore non-glibc support:
-patch -Np1 -i ../patches/libressl-2.9.2-gentoo-musl.patch
+# Apply patches (from alpine):
+patch -Np1 -i ../patches/libressl-2.9.2/fix-getprogname.patch
+patch -Np1 -i ../patches/libressl-2.9.2/s_client-add-options-verify_.patch
+patch -Np1 -i ../patches/libressl-2.9.2/ssl-libcompat.patch
+patch -Np1 -i ../patches/libressl-2.9.2/starttls-ldap.patch
+
+# Run autoreconf
+autoreconf -vif
 
 # Configure source
 case $(uname -m) in
@@ -15,8 +19,13 @@ case $(uname -m) in
    i686)   export EXTRACONFIG="--disable-hardening"
            ;;
 esac
-./config --prefix=/usr       \
-            --with-openssldir=/etc/ssl $EXTRACONFIG
+
+./configure \
+ --prefix=/usr \
+ --sysconfdir=/etc \
+ --mandir=/usr/share/man \
+ --localstatedir=/var $EXTRACONFIG
+
 unset EXTRACONFIG
 
 # Build and install
