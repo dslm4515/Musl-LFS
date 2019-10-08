@@ -102,18 +102,6 @@ ln -sfv ../../libexec/gcc/$(gcc -dumpmachine)/9.1.0/liblto_plugin.so \
 mkdir -pv /usr/share/gdb/auto-load/usr/lib
 mv -v /usr/lib/*gdb.py /usr/share/gdb/auto-load/usr/lib
 
-# Modify specsfile:
-# First dump current specfile to a file
-export SPECFILE=`dirname $(gcc -print-libgcc-file-name)`/specs
-gcc -dumpspecs > specs
-
-# Modify specs file to match this:
-# *cpp:
-# %{posix:-D_POSIX_SOURCE} %{pthread:-D_REENTRANT} -I /usr/lib/gcc/$ARCH-linux-musl/9.1.0/include-fixed
-# Install new specs file:
-cp -v specs $SPECFILE
-unset SPECFILE
-
 # Test final system's toolchain:
 echo 'int main(){}' > dummy.c
 cc dummy.c -v -Wl,--verbose &> dummy.log
