@@ -1,0 +1,25 @@
+# Clean up of final system
+
+# While in chroot...
+rm -rvf /tmp/*
+exit
+
+# Re-enter chroot:
+export MLFS=/mnt/mlfs
+
+chroot "$MLFS" /usr/bin/env -i          \
+    HOME=/root TERM="$TERM"            \
+    PS1='(Mlfs chroot) \u:\w\$ '        \
+    PATH=/bin:/usr/bin:/sbin:/usr/sbin \
+    /bin/bash --login
+
+# Now remove unecessary files:
+rm -fv /usr/lib/lib{bfd,opcodes}.a
+rm -fv /usr/lib/libbz2.a
+rm -fv /usr/lib/lib{com_err,e2p,ext2fs,ss}.a
+rm -fv /usr/lib/libltdl.a
+rm -fv /usr/lib/libfl.a
+rm -fv /usr/lib/libz.a
+find /usr/lib /usr/libexec -name \*.la -delete
+
+# It is also safe to remove /tools and /cross-tools directories as they're not required anymore

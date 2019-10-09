@@ -1,0 +1,29 @@
+# Final System: Fstab
+# This section is done in Chroot environment
+
+# The /etc/fstab file is used by some programs to determine where file systems 
+# are to be mounted by default, in which order, and which must be checked (for 
+# integrity errors) prior to mounting. Create a new file systems table like thisi and modify accordingly: 
+
+cat > /etc/fstab << "EOF"
+# Begin /etc/fstab
+
+# file system    mount-point   type     options             dump  fsck
+#                                                                 order
+
+/dev/<xxx>       /             <fff>    defaults            1     1
+/dev/<yyy>       swap          swap     pri=1               0     0
+none            /dev/shm      tmpfs   rw,nosuid,nodev,noexec 0 0
+# S6 boot mounts these at startup
+#proc            /proc          proc     nosuid,noexec,nodev 0     0
+#sysfs           /sys           sysfs    nosuid,noexec,nodev 0     0
+#devpts          /dev/pts       devpts   gid=5,mode=620      0     0
+#tmpfs           /run           tmpfs    defaults            0     0
+#devtmpfs        /dev           devtmpfs mode=0755,nosuid    0     0
+
+# On a EFI system, may need to mount the EFI parition
+#/dev/sda1       /mnt/uefi       vfat            defaults                0 0
+#/mnt/uefi/EFI   /boot/efi       none            defaults,bind           0 0
+
+# End /etc/fstab
+EOF

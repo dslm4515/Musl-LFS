@@ -1,18 +1,19 @@
 # Musl-LFS
-Linux From Scratch using Musl as Libc and Runit as init system
+Linux From Scratch using Musl as Libc and S6+S6-rc as init system
 
 This is based on the works of Linux From Scratch (http://www.linuxfromscratch.org), which use GLibc and SysVinit/systemD. Additional work was derived from Void Linux (https://voidlinux.org), Alpine Linux (https://alpinelinux.org), and Dragora Linux (https://dragora.org). Runit scripts were used from (https://github.com/inthecloud247/runit-for-lfs). For logging, I used porg from http://porg.sourceforge.net/.
 
-The aim of this project is to create a create a Linux system using Musl (www.musl-libc.org) instead of GNU's Glibc and Runit (http://smarden.org/runit/) instead SysVinit.
+The aim of this project is to create a create a Linux system using Musl (www.musl-libc.org) instead of GNU's Glibc and Runit/S6 (http://smarden.org/runit/) instead SysVinit.
 
 Goals:
 <ul>
-<li> [x] Version 2.xx now compiles all packages under chroot by cross-compiling the toolchain. </li>
-<li> [ ] Currently, I only have computers with 32 and 64 bit x86 CPUs (i.e. Intel Core Duo). In the future, I would like this project to expand to the ARM architecture </li>
+<li> [x] Version 2.xx+ now compiles all packages under chroot by cross-compiling the toolchain. </li>
+<li> [x] Currently, I only have computers with 32 and 64 bit x86 CPUs (i.e. Intel Core Duo). In the future, I would like this project to expand to the ARM architecture </li>
 <li> [x] Stack Smashing Protection (SSP) will be enabled since using a patch from Void Linux should solve the previous issues of packages failing to compile when SSP is enabled by default.
 <li> [ ] Properly name patches to reflect origin (i.e. Alpine or void) </li>
-<li> [ ] Create a list for wget to download sources.
-<li> [ ] Transition from Runit to S6 </li>
+<li> [X] Create a list for wget to download sources.
+<li> [X] Transition from Runit to S6 </li>
+<li> [ ] Redesign build to avoid two build passes of binutils and GCC
 <li> [ ] Generate HTML 'book' like LFS</li>
 </ul>
 
@@ -20,11 +21,27 @@ Supported Architectures
 <ul>
 <li>32bit - i686/i586 : Stable and tested. Stable enough to build Xorg, Qt5 (without QT-webengine), and Midori.</li>
 <li>64bit - x86_64 : Stable and tested. Stable enough to build Xorg, Qt5, Rust, and Firefox.
+<li>ARM - Builds fine. Requires modification to suit target hardware.
 </ul>
+
+Tested Builds
+
+| Host         | Target      | Build Status   |
+| ------------ | ----------- | -------------- | 
+| i686-musl    | i686-musl   | Pass |
+| i686-glibc   | i686-musl   | Pending |
+| x86_64-musl  | x86_64-musl | Pass |
+| x86_64-glibc | x86_64-musl | Pass |
+| armv7l-glibc | armv7l-musl | Pass |
+| armv7l-musl  | armv7l-musl | Pending |
+| armv6-glibc  | armv6-musl  | Pending |
+| armv6-musl   | armv6-musl  | Pending |
+
+*ARM builds will need some modification based on specific hardware*
 
 Additional Required Packages 
 
-Intial issue with just following the LFS book verbatium is that pkg-config and libelf, will not compile. Additionally, if pursuing BLFS, some packages will fail to compile due certian implementions left out in the Musl C Library.
+If pursuing BLFS, some packages will fail to compile due certian implementions left out in the Musl C Library.
 
 <ul>
 <li>Musl C Library
@@ -44,13 +61,13 @@ https://github.com/jahrome/argp-standalone</li>
 </ul>
 
 Optional Packages:
+<ul>
+<li>LibreSSL (instead of OpenSSL)
+https://www.libressl.org/</li>
 
-LibreSSL (instead of OpenSSL)
-https://www.libressl.org/
-
-Porg
-http://porg.sourceforge.net/
-
+<li>Porg
+http://porg.sourceforge.net/</li>
+</ul>
 Projects of Interest
 
 <ul>
@@ -62,10 +79,11 @@ https://code.foxkit.us/adelie/gcompat</li>
 Layout
 
 <ul>
-  <li>build-scripts - Build scripts to use when building the final system with the toolchain (/tools) that was cross-compiled with the small cross-toolchain (/cross-tools)</li>
-  <li>extra - Scripts to mount, chroot, and umount a MLFS build. Also includes some build instructions for some BLFS packages... mostly to get Xorg setup.</li>
+  <li>build-scripts - Build scripts to use to semi-automate building `/cross-tools`, `/tools`, and the final system</li>
+  <li>contrib - Additional sources that are hard to find or re-packed
+  <li>doc - Build instructions to build a LFS installation that uses Musl instead of Glibc and S6 instead of SysVint.</li>
+  <li>extra - Helpful scripts to mount, chroot, and umount a MLFS build.</li>
   <li>files - Files that will be needed during the build</li>
   <li>patches - All patches used to patch sources to work/recognize Musl C Library</li>
-  <li>plain-text - Build instructions to build a LFS installation that uses Musl instead of Glibc and Runit instead of SysVint. Instructions differ slightly for i686 and x86_64.</li>
-  <li>sources - Modified or hard to find/download sources</li>
+  <li>sources.list - List of sources to download
 </ul>

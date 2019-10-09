@@ -1,5 +1,0 @@
-#! /bin/bash
-
-./configure --prefix=/usr --docdir=/usr/share/doc/gperf-3.1 &&
-read -p "Compile? " && make -j2 && 
-read -p "Install? " && porg -lD "make install -j1" 

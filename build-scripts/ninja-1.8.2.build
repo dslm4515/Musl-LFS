@@ -1,8 +1,0 @@
-#! /bin/bash
-
-patch -Np1 -i ../ninja-1.8.2-add_NINJAJOBS_var-1.patch &&
-read -p "Compile? " && python3 configure.py --bootstrap &&
-read -p "Install? " &&
-porg -lD  "install -vm755 ninja /usr/bin/" &&
-porg -lD+ "install -vDm644 misc/bash-completion /usr/share/bash-completion/completions/ninja" &&
-porg -lD+ "install -vDm644 misc/zsh-completion  /usr/share/zsh/site-functions/_ninja"

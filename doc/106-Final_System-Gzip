@@ -1,0 +1,14 @@
+# Final System: Gzip
+# Source: http://ftp.gnu.org/gnu/gzip/gzip-1.10.tar.xz
+# This section is done in Chroot environment
+
+# Configure source
+DEFS=NO_ASM gl_cv_func_fflush_stdin=yes \
+./configure --prefix=/usr
+
+# Build and install
+make && make install
+
+# Move to proper path
+mv -v /usr/bin/gzip /bin
+

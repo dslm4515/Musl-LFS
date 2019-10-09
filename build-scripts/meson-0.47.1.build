@@ -1,4 +1,0 @@
-#! /bin/bash
-read -p "Compile? " && python3 setup.py build &&
-python3 setup.py install --root=dest &&
-read -p "Install? " && porg -lD "cp -rv dest/* /"

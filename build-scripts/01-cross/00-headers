@@ -1,0 +1,25 @@
+#! /bin/bash
+
+if [ "$1" != "" ]; then
+	export MJ="-j$1"
+else
+	export MJ=""
+fi
+export PACKAGE=$(basename -- "$PWD")
+
+read -p "Number of make jobs: $MJ" &&
+
+echo "[$PACKAGE] Clean source..." &&
+make mrproper $MJ
+
+echo "[$PACKAGE] Extract headers.." &&
+read -p "Press Enter to continue" &&
+make ARCH=${MLFS_ARCH} headers_check $MJ
+make ARCH=${MLFS_ARCH} headers $MJ
+rm -v usr/include/Makefile
+
+echo "[$PACKAGE] Install headers.." &&
+read -p "Press Enter to continue" &&
+mkdir -pv /cross-tools/${MLFS_TARGET}/include
+cp -rv usr/include/* /cross-tools/${MLFS_TARGET}/include
+

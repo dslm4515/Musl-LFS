@@ -1,5 +1,0 @@
-#! /bin/bash
-sed -i '5481,5485 s/({/(\\{/' tp/Texinfo/Parser.pm
-./configure --prefix=/usr --disable-static  &&
-read -p "Compile? " && make -j2 && 
-read -p "Install? " && porg -lD "make install -j1" 

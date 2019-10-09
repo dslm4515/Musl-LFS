@@ -1,0 +1,6 @@
+# Final System: Automake 1.16.1
+# Source: http://ftp.gnu.org/gnu/automake/automake-1.16.1.tar.xz
+# This section is done in Chroot environment
+
+./configure --prefix=/usr --docdir=/usr/share/doc/automake-1.16.1
+make && make install

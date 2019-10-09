@@ -1,5 +1,0 @@
-#! /bin/bash
-FORCE_UNSAFE_CONFIGURE=1  \
-./configure --prefix=/usr --bindir=/bin  &&
-read -p "Compile? " && make -j2 && 
-read -p "Install? " && porg -lD "make install -j1" 

@@ -1,0 +1,15 @@
+# Final System: Inetutils 1.9.4
+# Source: http://ftp.gnu.org/gnu/inetutils/inetutils-1.9.4.tar.xz
+# This section is done in Chroot environment
+
+./configure --prefix=/usr        \
+            --localstatedir=/var \
+            --disable-logger     \
+            --disable-whois      \
+            --disable-rcp        \
+            --disable-rexec      \
+            --disable-rlogin     \
+            --disable-rsh        \
+            --disable-servers
+
+make && make install

@@ -1,0 +1,33 @@
+# Final System: LibreSSL 2.9.2
+# This section is done in Chroot environment
+# Source: https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-2.9.2.tar.gz
+# If building Rustc-1.28.0, use LibreSSL-2.7.5 instead
+
+# Apply patches (from alpine):
+patch -Np1 -i ../patches/libressl-2.9.2/fix-getprogname.patch
+patch -Np1 -i ../patches/libressl-2.9.2/s_client-add-options-verify_.patch
+patch -Np1 -i ../patches/libressl-2.9.2/ssl-libcompat.patch
+patch -Np1 -i ../patches/libressl-2.9.2/starttls-ldap.patch
+
+# Run autoreconf
+autoreconf -vif
+
+# Configure source
+case $(uname -m) in
+   x86_64) export EXTRACONFIG=""
+           ;;
+   i686)   export EXTRACONFIG="--disable-hardening"
+           ;;
+esac
+
+./configure \
+ --prefix=/usr \
+ --sysconfdir=/etc \
+ --mandir=/usr/share/man \
+ --localstatedir=/var $EXTRACONFIG
+
+unset EXTRACONFIG
+
+# Build and install
+make && make install
+

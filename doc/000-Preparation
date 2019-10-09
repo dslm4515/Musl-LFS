@@ -1,0 +1,119 @@
+# Final System can be built in a directory and later copied to a partition.
+# If building on a seperate partition, create the file system and mount it.
+# Set #MLFS to the mount point. Example:
+# Perform as root:
+mkfs.etx4 /dev/sda4
+mkdir -pv /mnt/mlfs
+mount /dev/sda4 /mnt/mlfs
+export MLFS=/mnt/mlfs
+
+# Create directories to build tools and link them to host's root directory:
+mkdir -v $MLFS/cross-tools
+mkdir -v $MLFS/tools
+ln -sv   $MLFS/cross-tools /
+ln -sv   $MLFS/tools /
+
+# Create directories to hold patches, files, packages, and build area:
+mkdir -pv $MLFS/sources/{patches,files}
+
+# Download sources + patches
+#  Use the list in sources folder with wget to download sources. Some sources 
+#  may not download or are hard to find. Copy such sources from included 
+#  sources folder.
+# 
+# Source directory should have this structure:
+#  source
+#  |
+#  +-scripts
+#  +-patches
+#  +-files
+#  +-(packages)
+#
+# Source tarballs should in root of $LFS/sources
+# Patches & files can be symbolically linked to root of $LFS/sources to avoid 
+# adding "../{patches,files}" to path
+
+# Create user and group
+# Change ownership to allow installation of tools
+groupadd mlfs
+useradd -s /bin/bash -g mlfs -m -k /dev/null mlfs
+passwd mlfs
+
+chown -v  mlfs $MLFS/cross-tools
+chown -vR mlfs $MLFS/sources
+chmod -v  a+wt $MLFS/sources
+chown -v  mlfs $MLFS/tools
+
+# Now run as mlfs user. All toolchain software should be built as this user, unless specified.
+su - mlfs
+
+# Set up the environment.
+cat > ~/.bash_profile << "EOF"
+exec env -i HOME=$HOME TERM=$TERM PS1='\u:\w\n\$ ' /bin/bash
+EOF
+
+cat > ~/.bashrc << "EOF"
+set +h
+umask 022
+MLFS=/mnt/mlfs
+LC_ALL=POSIX
+PATH=/cross-tools/bin:/tools/bin:/bin:/usr/bin
+export MLFS LC_ALL PATH
+EOF
+
+# Load the stored environment
+source ~/.bash_profile
+
+# CFLAGS and CXXFLAGS must not be set during the building of cross-tools. 
+unset CFLAGS
+unset CXXFLAGS
+cat >> ~/.bashrc << EOF
+unset CFLAGS
+unset CXXFLAGS
+EOF
+
+# Build Variables
+# For 64 bit x86 CPUs:
+#  ARCH=x86
+#  CPU=x86-64
+# For 32-bit CPUs:
+#  ARCH=x86
+#  CPU=i686
+# For ARM CPUs:
+#  ARCH=arm
+#  CPU= # depends on ARM SoC or CPU of target machine
+#  CPU=armv7-a   # Odroid xu4 (cortex-a15)
+#  CPU=armv6 # Raspberry Pi Zero or 1 (arm1176jzf-s)
+
+
+case $(uname -m) in
+   x86_64) export MLFS_TARGET="x86_64-mlfs-linux-musl"
+           export MLFS_ARCH="x86"
+           export MLFS_CPU="x86-64"
+           ;;
+   i686)   export MLFS_TARGET="i686-mlfs-linux-musl"
+           export MLFS_ARCH="x86"
+           export MLFS_CPU="i686"
+           ;;
+   armv7l) export MLFS_TARGET="armv7l-mlfs-linux-musl"
+           export MLFS_ARCH="arm"
+           export MLFS_CPU="armv7-a"
+           ;;
+   armv6l) export MLFS_TARGET="armv6l-lfs-linux-musl"
+           export MLFS_ARCH="arm"
+           export MLFS_CPU="armv6"
+           ;;
+esac
+
+export MLFS_HOST="$(echo $MACHTYPE | \
+    sed "s/$(echo $MACHTYPE | cut -d- -f2)/cross/")"
+
+
+cat >> ~/.bashrc << EOF
+export MLFS_HOST="${MLFS_HOST}"
+export MLFS_TARGET="${MLFS_TARGET}"
+export MLFS_ARCH="${MLFS_ARCH}"
+export MLFS_CPU="${MLFS_ARCH}"
+EOF
+source ~/.bashrc
+

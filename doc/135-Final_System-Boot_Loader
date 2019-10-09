@@ -1,0 +1,61 @@
+# Final System: Bootloader Setup
+# This section is done in Chroot environment
+
+
+########################### If using GRUB as boot loader: ######################################
+
+# **** The following command will overwrite the current *****
+# **** boot loader. Do not run the command if this is not ***
+# **** desired, for example, if using a third party boot ****
+# **** manager to manage the Master Boot Record (MBR). ******
+# Example assumes MLFS is on /dev/sda2
+grub-install /dev/sda
+
+# OR install bootloader on a bootable partition
+grub-install /dev/sda1
+
+# Create the GRUB Configuration File:
+# Example assumes MLFS is on /dev/sda2 
+
+cat > /boot/grub/grub.cfg << "EOF"
+# Begin /boot/grub/grub.cfg
+set default=0
+set timeout=5
+
+insmod ext2
+set root=(hd0,2)
+
+menuentry "GNU/Linux, Musl Linux" {
+        linux   /boot/vmlinuz root=/dev/sda2 ro
+        initrd  initrd.img
+}
+EOF
+
+########################## If using rEFInd for UEFI systems: ##################################
+
+# You may need to unpack package under host and repackage it as a .xz, .tar, or .bz2
+#
+# Check http://www.rodsbooks.com/refind/ for more specific info on your target hardware
+#
+# Prebuilt binaries will be installed here. Building from source requires:
+#  * The TianoCore EDK2/UDK package (https://github.com/tianocore/edk2)
+#  or
+#  * The GNU-EFI package (http://sourceforge.net/projects/gnu-efi/)
+
+# Mount the efi partition
+# For example, if efi partition is /dev/sda1:
+mkdir -pv /mnt/efi
+mount -v /dev/sda1 /mnt/efi
+
+# Create required directories:
+mkdir -pv /mnt/efi/EFI/BOOT
+
+# Install rEFInd:
+cp -v   refind/refind_x64.efi      /mnt/efi/EFI/BOOT/
+cp -vr  refind/icons               /mnt/efi/EFI/BOOT/
+cp -vr  refind/drivers_x64         /mnt/efi/EFI/BOOT/
+cp -vr  refind/tools_x64           /mnt/efi/EFI/BOOT/
+cp -vr  refind/refind.conf-sample  /mnt/efi/EFI/BOOT/refind.conf
+
+########################## For ARM ##########################
+Depending on target, boot loader may be u-boot.

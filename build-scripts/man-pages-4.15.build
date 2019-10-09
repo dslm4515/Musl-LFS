@@ -1,3 +1,0 @@
-#! /bin/bash
-
-porg -lD "make -j1 install"

@@ -1,0 +1,25 @@
+diff -uNr Python-3.7.3.orig/Lib/test/test_ssl.py Python-3.7.3/Lib/test/test_ssl.py
+--- Python-3.7.3.orig/Lib/test/test_ssl.py	2019-03-25 15:21:05.000000000 -0500
++++ Python-3.7.3/Lib/test/test_ssl.py	2019-07-17 15:12:59.765344934 -0500
+@@ -30,6 +30,12 @@
+ PROTOCOLS = sorted(ssl._PROTOCOL_NAMES)
+ HOST = support.HOST
+ IS_LIBRESSL = ssl.OPENSSL_VERSION.startswith('LibreSSL')
++if IS_LIBRESSL:
++    LIBRESSL_VERSION = tuple(
++        int(s) for s in ssl.OPENSSL_VERSION.rsplit(' ')[-1].split('.')
++    )
++else:
++    LIBRESSL_VERSION = ()
+ IS_OPENSSL_1_1_0 = not IS_LIBRESSL and ssl.OPENSSL_VERSION_INFO >= (1, 1, 0)
+ IS_OPENSSL_1_1_1 = not IS_LIBRESSL and ssl.OPENSSL_VERSION_INFO >= (1, 1, 1)
+ PY_SSL_DEFAULT_CIPHERS = sysconfig.get_config_var('PY_SSL_DEFAULT_CIPHERS')
+@@ -3906,6 +3912,8 @@
+                                    sni_name=hostname)
+         self.assertIs(stats['client_alpn_protocol'], None)
+ 
++        @unittest.skipIf(IS_LIBRESSL and LIBRESSL_VERSION >= (2, 6, 1),
++                         "LibreSSL 2.6.1+ has broken NPN support")
+     @unittest.skipUnless(ssl.HAS_ALPN, "ALPN support required")
+     def test_selected_alpn_protocol_if_server_uses_alpn(self):
+         # selected_alpn_protocol() is None unless ALPN is used by the client.

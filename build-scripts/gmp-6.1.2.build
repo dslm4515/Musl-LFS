@@ -1,9 +1,0 @@
-#! /bin/bash
-ABI=32 \
-./configure --prefix=/usr  \
-            --enable-cxx     \
-            --disable-static \
-            --build=i686-linux-musl \
-            --docdir=/usr/share/doc/gmp-6.1.2  &&
-read -p "Compile? " && make -j2 && 
-read -p "Install? " && porg -lD "make install -j1" 
