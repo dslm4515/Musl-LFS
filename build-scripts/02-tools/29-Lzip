@@ -18,7 +18,7 @@ export STRIP="${MLFS_TARGET}-strip"
 
 echo "[ TC - $PACKAGE ] Configure source ..." &&
 ./configure --prefix=/tools &&
-sed -i 's/CXX = g++/CXX = ${MLFS_TARGET}-g++/g'
+sed -i 's/CXX = g++/CXX = ${MLFS_TARGET}-g++/g' Makefile
 
 read -p "[ TC - $PACKAGE ] Compile?" &&
 time { make $MJ ; } &&
