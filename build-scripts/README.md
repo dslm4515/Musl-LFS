@@ -20,6 +20,6 @@ Omiting the argument will run `make` without any specified number of jobs.
 
 Directory
 <ul>
-  <li>01-corss -- Build scripts to build `/cross-tools`</li>
+  <li>01-cross -- Build scripts to build `/cross-tools`</li>
   <li>02-tools -- Build scripts to build `/tools` </li>
 </ul>
