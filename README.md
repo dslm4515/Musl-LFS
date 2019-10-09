@@ -8,11 +8,12 @@ The aim of this project is to create a create a Linux system using Musl (www.mus
 Goals:
 <ul>
 <li> [x] Version 2.xx+ now compiles all packages under chroot by cross-compiling the toolchain. </li>
-<li> [ ] Currently, I only have computers with 32 and 64 bit x86 CPUs (i.e. Intel Core Duo). In the future, I would like this project to expand to the ARM architecture </li>
+<li> [x] Currently, I only have computers with 32 and 64 bit x86 CPUs (i.e. Intel Core Duo). In the future, I would like this project to expand to the ARM architecture </li>
 <li> [x] Stack Smashing Protection (SSP) will be enabled since using a patch from Void Linux should solve the previous issues of packages failing to compile when SSP is enabled by default.
 <li> [ ] Properly name patches to reflect origin (i.e. Alpine or void) </li>
 <li> [X] Create a list for wget to download sources.
 <li> [X] Transition from Runit to S6 </li>
+<li> [ ] Redesign build to avoid two build passes of binutils and GCC
 <li> [ ] Generate HTML 'book' like LFS</li>
 </ul>
 
@@ -20,17 +21,23 @@ Supported Architectures
 <ul>
 <li>32bit - i686/i586 : Stable and tested. Stable enough to build Xorg, Qt5 (without QT-webengine), and Midori.</li>
 <li>64bit - x86_64 : Stable and tested. Stable enough to build Xorg, Qt5, Rust, and Firefox.
-<li>ARM - Pending 
+<li>ARM - Builds fine. Requires modification to suit target hardware.
 </ul>
 
 Tested Builds
-<ul>
-  <li> Host(i686-musl)/Target(i686-musl) ..................... PASS
-  <li> Host(i686-glibc)/Target(i686-musl)..................... Pending
-  <li> Host(x86_64-musl)/Target(x86_64-musl).................. PASS
-  <li> Host(x86_64-glibc)/Target(x86_64-musl)................. PASS
-  <li> Host(x86_64-armv7l-glibc)/Target(x86_64-armv7l-musl) .. PASS
-</ul>
+
+| Host         | Target      | Build Status   |
+| ------------ | ----------- | -------------- | 
+| i686-musl    | i686-musl   | Pass |
+| i686-glibc   | i686-musl   | Pending |
+| x86_64-musl  | x86_64-musl | Pass |
+| x86_64-glibc | x86_64-musl | Pass |
+| armv7l-glibc | armv7l-musl | Pass |
+| armv7l-musl  | armv7l-musl | Pending |
+| armv6-glibc  | armv6-musl  | Pending |
+| armv6-musl   | armv6-musl  | Pending |
+
+*ARM builds will need some modification based on specific hardware*
 
 Additional Required Packages 
 
