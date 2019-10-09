@@ -1,4 +1,4 @@
-# Musl LFS Build SCripts
+# Musl LFS Build Scripts
 
 As a means of convenience, these buld scripts will automate building the cross tools and tool chain for x86 CPU's.
 
@@ -19,6 +19,7 @@ Omiting the argument will run `make` without any specified number of jobs.
 
 
 Directory
-
-01-corss -- Build scripts to build `/cross-tools`
-02-tools -- Build scripts to build `/tools`
+<ul>
+  <li>01-corss -- Build scripts to build `/cross-tools`</li>
+  <li>02-tools -- Build scripts to build `/tools` </li>
+</ul>
