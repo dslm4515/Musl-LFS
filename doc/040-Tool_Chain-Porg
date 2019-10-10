@@ -1,6 +1,6 @@
 # Toolchain: Porg-0.10
 # Build and install as mlfs
-# Can be optional: Package used for package management
+# Can be optional: Package used for tracking package installs
 
 # Set the environment for cross-compiling if not done already.
 export CC="${MLFS_TARGET}-gcc"
