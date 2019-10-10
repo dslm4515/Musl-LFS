@@ -95,11 +95,11 @@ case $(uname -m) in
            export MLFS_ARCH="x86"
            export MLFS_CPU="i686"
            ;;
-   armv7l) export MLFS_TARGET="armv7l-mlfs-linux-musl"
+   armv7l) export MLFS_TARGET="armv7l-mlfs-linux-musleabihf"
            export MLFS_ARCH="arm"
            export MLFS_CPU="armv7-a"
            ;;
-   armv6l) export MLFS_TARGET="armv6l-lfs-linux-musl"
+   armv6l) export MLFS_TARGET="armv6l-lfs-linux-musleabihf"
            export MLFS_ARCH="arm"
            export MLFS_CPU="armv6"
            ;;
