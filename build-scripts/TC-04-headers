@@ -1,0 +1,21 @@
+#! /bin/bash
+# syntax *.build <package.tar.xz> <number of make jobs>
+
+source $MLFS/sources/scripts/000-autobuild.config &&
+
+export PACKAGE=$(echo "$1" | sed -n '/\.tar\.xz$/s///p' )
+cd $PACKAGE &&
+############################################################
+echo "[ TC 4/31 - $PACKAGE ] Clean source ..." |& tee -a  ~/build.log &&
+make mrproper $MJ &&
+
+echo "[ TC 4/31 - $PACKAGE ] Extract headers ..." |& tee -a  ~/build.log &&
+ARCH=${MLFS_ARCH} make headers $MJ &&
+find usr/include \( -name .install -o -name ..install.cmd \) -delete &&
+
+echo "[ TC 4/31 - $PACKAGE ] Installing ..." |& tee -a  ~/build.log &&
+cp -rv usr/include/* /tools/include &&
+rm -v /tools/include/Makefile &&
+
+############################################################
+cd .. && rm -rf $PACKAGE

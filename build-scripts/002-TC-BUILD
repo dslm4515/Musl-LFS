@@ -1,0 +1,15 @@
+#! /bin/bash
+# Run script in $MLFS/sources
+# Syntax 002-TC_BUILD <number of make jobs>
+
+SRCPKG="$( ls musl-* )" &&
+sh scripts/TC-00-musl $SRCPKG $1 &&
+sh scripts/TC-01-adjust &&
+SRCPKG="$( ls binutils-* )" &&
+sh scripts/TC-02-binutils $SRCPKG $1 &&
+SRCPKG="$( ls gcc-* )" &&
+sh scripts/TC-03-gcc $SRCPKG $1 &&
+SRCPKG="$( ls linux-* )" &&
+sh scripts/TC-04-headers $SRCPKG $1 &&
+SRCPKG="$( ls gcc-* )" &&
+sh scripts/TC-05-libstcxx $SRCPKG $1
