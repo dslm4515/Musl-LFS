@@ -11,7 +11,7 @@ To build the cross-tools:
 cd $MLFS/sources
 sh scripts/001-CT-BUILD 4
 ```
-Syntax: `001-CT-BUILD <number of make jobs>
+Syntax: `001-CT-BUILD <number of make jobs>`
 
 ## Configuration
 
