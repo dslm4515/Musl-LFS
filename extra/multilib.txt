@@ -1,0 +1,532 @@
+###LFS - Multilib x86_64+i686
+## Based on LFS-9.x -- Skipped sections are assumed to be done verbatim from LFS book.
+## This is also based on notes from:
+## https://www.linuxquestions.org/questions/linux-from-scratch-13/%5Bguide%5D-howto-multilib-lfs-4175649832/
+
+## 5.4 Binutils-2.34 Pass1-----------------------------------------------------
+mkdir -v build
+cd           build
+../configure --prefix=/tools            \
+             --with-sysroot=$LFS        \
+             --with-lib-path=/tools/lib:/tools/lib32 \
+             --target=$LFS_TGT          \
+             --disable-nls              \
+             --disable-werror
+mkdir -p /tools/lib32
+make
+case $(uname -m) in
+  x86_64) mkdir -v /tools/lib && ln -sv lib /tools/lib64 ;;
+esac
+make install
+## -----------------------------------------------------------------------------------
+## 5.5 GCC-9.2.0 - Pass 1
+tar -xf ../mpfr-4.0.2.tar.xz
+mv -v mpfr-4.0.2 mpfr
+tar -xf ../gmp-6.2.0.tar.xz
+mv -v gmp-6.2.0 gmp
+tar -xf ../mpc-1.1.0.tar.gz
+mv -v mpc-1.1.0 mpc
+
+for file in gcc/config/{linux,i386/linux{,64}}.h
+do
+  cp -uv $file{,.orig}
+  sed -e 's@/lib\(64\)\?\(32\)\?/ld@/tools&@g' \
+      -e 's@/usr@/tools@g' $file.orig > $file
+  echo '
+#undef STANDARD_STARTFILE_PREFIX_1
+#undef STANDARD_STARTFILE_PREFIX_2
+#define STANDARD_STARTFILE_PREFIX_1 "/tools/lib/"
+#define STANDARD_STARTFILE_PREFIX_2 ""' >> $file
+  touch $file.orig
+done
+
+sed -i -e 's@/lib/ld-linux.so.2@/lib32/ld-linux.so.2@g' gcc/config/i386/linux64.h
+sed -i -e '/MULTILIB_OSDIRNAMES/d' gcc/config/i386/t-linux64
+echo "MULTILIB_OSDIRNAMES = m64=../lib m32=../lib32 mx32=../libx32" >> gcc/config/i386/t-linux64
+
+mkdir -v build
+cd       build
+
+../configure                                       \
+    --target=$LFS_TGT                              \
+    --prefix=/tools                                \
+    --with-glibc-version=2.11                      \
+    --with-sysroot=$LFS                            \
+    --with-newlib                                  \
+    --without-headers                              \
+    --with-local-prefix=/tools                     \
+    --with-native-system-header-dir=/tools/include \
+    --disable-nls                                  \
+    --disable-shared                               \
+    --with-multilib-list=m32,m64         \
+    --disable-decimal-float                        \
+    --disable-threads                              \
+    --disable-libatomic                            \
+    --disable-libgomp                              \
+    --disable-libquadmath                          \
+    --disable-libssp                               \
+    --disable-libvtv                               \
+    --disable-libstdcxx                            \
+    --enable-languages=c,c++
+
+make && make install
+## -----------------------------------------------------------------------------------
+## 5.6. Linux-5.5.3 API Headers
+make mrproper && make headers
+cp -rv usr/include/* /tools/include
+## -----------------------------------------------------------------------------------
+## 5.7. Glibc-2.31
+#build 32bit first
+mkdir -v build32
+cd       build32
+echo slibdir=/tools/lib32 > configparms
+../configure                             \
+  --prefix=/tools                    \
+  --host=i686-lfs-linux-gnu          \
+  --build=$(../scripts/config.guess) \
+  --libdir=/tools/lib32              \
+  --enable-kernel=3.2                \
+  --enable-add-ons                   \
+  --with-headers=/tools/include      \
+  libc_cv_forced_unwind=yes          \
+  libc_cv_c_cleanup=yes              \
+  CC="$LFS_TGT-gcc -m32"             \
+  CXX="$LFS_TGT-g++ -m32"
+make && make install
+# then 64bit 
+mkdir -v ../build
+cd       ../build
+
+../configure                             \
+      --prefix=/tools                    \
+      --host=$LFS_TGT                    \
+      --build=$(../scripts/config.guess) \
+      --enable-kernel=3.2                \
+      --with-headers=/tools/include
+
+make && make install
+# Sanity check:
+echo 'int main(){}' > dummy.c
+$LFS_TGT-gcc dummy.c
+readelf -l a.out | grep ': /tools'
+$LFS_TGT-gcc -m32 dummy.c
+readelf -l a.out | grep ': /tools'
+# Should output:
+#[Requesting program interpreter: /tools/lib64/ld-linux-x86-64.so.2]
+#[Requesting program interpreter: /tools/lib32/ld-linux.so.2]
+## -----------------------------------------------------------------------------------
+## 5.8. Libstdc++ from GCC-9.2.0
+# Build 32bit first
+mkdir -v build32
+cd       build32
+	
+../libstdc++-v3/configure           \
+	--host=i686-lfs-linux-gnu       \
+	--prefix=/tools                 \
+	--libdir=/tools/lib32           \
+	--disable-multilib              \
+	--disable-nls                   \
+	--disable-libstdcxx-threads     \
+	--disable-libstdcxx-pch         \
+	--with-gxx-include-dir=/tools/$LFS_TGT/include/c++/9.2.0 \
+	CC="$LFS_TGT-gcc -m32"          \
+	CXX="$LFS_TGT-g++ -m32"
+make && make install
+# ... Then 64bit
+mkdir -v ../build
+cd       ../build
+../libstdc++-v3/configure           \
+    --host=$LFS_TGT                 \
+    --prefix=/tools                 \
+    --disable-multilib              \
+    --disable-nls                   \
+    --disable-libstdcxx-threads     \
+    --disable-libstdcxx-pch         \
+    --with-gxx-include-dir=/tools/$LFS_TGT/include/c++/9.2.0
+make && make install
+## -----------------------------------------------------------------------------------
+## 5.9. Binutils-2.34 - Pass 2
+mkdir -v build
+cd       build
+CC=$LFS_TGT-gcc                \
+AR=$LFS_TGT-ar                 \
+RANLIB=$LFS_TGT-ranlib         \
+../configure                   \
+    --prefix=/tools            \
+    --disable-nls              \
+    --disable-werror           \
+    --with-lib-path=/tools/lib \
+    --with-sysroot
+make && make install
+make -C ld clean
+make -C ld LIB_PATH=/usr/lib:/lib:/usr/lib32:/lib32
+cp -v ld/ld-new /tools/bin
+## -----------------------------------------------------------------------------------
+## 5.10. GCC-9.2.0 - Pass 2
+cat gcc/limitx.h gcc/glimits.h gcc/limity.h > \
+  `dirname $($LFS_TGT-gcc -print-libgcc-file-name)`/include-fixed/limits.h
+
+for file in gcc/config/{linux,i386/linux{,64}}.h
+do
+  cp -uv $file{,.orig}
+  sed -e 's@/lib\(64\)\?\(32\)\?/ld@/tools&@g' \
+      -e 's@/usr@/tools@g' $file.orig > $file
+  echo '
+#undef STANDARD_STARTFILE_PREFIX_1
+#undef STANDARD_STARTFILE_PREFIX_2
+#define STANDARD_STARTFILE_PREFIX_1 "/tools/lib/"
+#define STANDARD_STARTFILE_PREFIX_2 ""' >> $file
+  touch $file.orig
+done
+
+sed -i -e 's@/lib/ld-linux.so.2@/lib32/ld-linux.so.2@g' gcc/config/i386/linux64.h
+sed -i -e '/MULTILIB_OSDIRNAMES/d' gcc/config/i386/t-linux64
+echo "MULTILIB_OSDIRNAMES = m64=../lib m32=../lib32 mx32=../libx32" >> gcc/config/i386/t-linux64
+
+tar -xf ../mpfr-4.0.2.tar.xz
+mv -v mpfr-4.0.2 mpfr
+tar -xf ../gmp-6.2.0.tar.xz
+mv -v gmp-6.2.0 gmp
+tar -xf ../mpc-1.1.0.tar.gz
+mv -v mpc-1.1.0 mpc
+
+sed -e '1161 s|^|//|' \
+    -i libsanitizer/sanitizer_common/sanitizer_platform_limits_posix.cc
+
+mkdir -v build
+cd       build
+
+CC=$LFS_TGT-gcc                                    \
+CXX=$LFS_TGT-g++                                   \
+AR=$LFS_TGT-ar                                     \
+RANLIB=$LFS_TGT-ranlib                             \
+../configure                                       \
+    --prefix=/tools                                \
+    --with-local-prefix=/tools                     \
+    --with-native-system-header-dir=/tools/include \
+    --enable-languages=c,c++                       \
+    --disable-libstdcxx-pch                        \
+    --with-multilib-list=m32,m64 \
+    --disable-bootstrap                            \
+    --disable-libgomp
+
+make && make install
+ln -sv gcc /tools/bin/cc
+>>>>
+## -----------------------------------------------------------------------------------
+## 5.11 to 5.34, no change
+## -----------------------------------------------------------------------------------
+## 5.35. Stripping
+strip --strip-debug /tools/lib/*
+/usr/bin/strip --strip-unneeded /tools/{,s}bin/*
+rm -rf /tools/{,share}/{info,man,doc}
+find /tools/{lib,libexec} -name \*.la -delete
+strip --strip-debug /tools/lib32/*
+find /tools/lib32 -name \*.la -delete
+## -----------------------------------------------------------------------------------
+## 5.36 to 6.6, No change
+## -----------------------------------------------------------------------------------
+## 6.7. Linux-5.5.3 API Headers, no change
+make mrproper
+make headers
+find usr/include -name '.*' -delete
+cp -rv usr/include/* /usr/include
+rm /usr/include/Makefile
+## -----------------------------------------------------------------------------------
+## 6.8. Man-pages-5.05, no change
+make install
+## -----------------------------------------------------------------------------------
+## 6.9. Glibc-2.31
+patch -Np1 -i ../glibc-2.31-fhs-1.patch
+sed -i '/asm.socket.h/a# include <linux/sockios.h>' \
+   sysdeps/unix/sysv/linux/bits/socket.h
+
+case $(uname -m) in
+    i?86)   ln -sfv ld-linux.so.2 /lib/ld-lsb.so.3
+    ;;
+    x86_64) ln -sfv ../lib/ld-linux-x86-64.so.2 /lib64
+            ln -sfv ../lib/ld-linux-x86-64.so.2 /lib64/ld-lsb-x86-64.so.3
+    ;;
+esac
+
+mkdir -v build
+cd       build
+
+CC="gcc -ffile-prefix-map=/tools=/usr" \
+../configure --prefix=/usr                          \
+             --disable-werror                       \
+             --enable-kernel=3.2                    \
+             --enable-stack-protector=strong        \
+             --with-headers=/usr/include            \
+             --enable-multi-arch --enable-obsolete-rpc \
+             libc_cv_slibdir=/lib
+
+make 
+
+case $(uname -m) in
+  i?86)   ln -sfnv $PWD/elf/ld-linux.so.2        /lib ;;
+  x86_64) ln -sfnv $PWD/elf/ld-linux-x86-64.so.2 /lib ;;
+esac
+
+make check
+
+touch /etc/ld.so.conf
+sed '/test-installation/s@$(PERL)@echo not running@' -i ../Makefile
+make install
+cp -v ../nscd/nscd.conf /etc/nscd.conf
+mkdir -pv /var/cache/nscd
+mkdir -pv /usr/lib/locale
+localedef -i POSIX -f UTF-8 C.UTF-8 2> /dev/null || true
+localedef -i cs_CZ -f UTF-8 cs_CZ.UTF-8
+localedef -i de_DE -f ISO-8859-1 de_DE
+localedef -i de_DE@euro -f ISO-8859-15 de_DE@euro
+localedef -i de_DE -f UTF-8 de_DE.UTF-8
+localedef -i el_GR -f ISO-8859-7 el_GR
+localedef -i en_GB -f UTF-8 en_GB.UTF-8
+localedef -i en_HK -f ISO-8859-1 en_HK
+localedef -i en_PH -f ISO-8859-1 en_PH
+localedef -i en_US -f ISO-8859-1 en_US
+localedef -i en_US -f UTF-8 en_US.UTF-8
+localedef -i es_MX -f ISO-8859-1 es_MX
+localedef -i fa_IR -f UTF-8 fa_IR
+localedef -i fr_FR -f ISO-8859-1 fr_FR
+localedef -i fr_FR@euro -f ISO-8859-15 fr_FR@euro
+localedef -i fr_FR -f UTF-8 fr_FR.UTF-8
+localedef -i it_IT -f ISO-8859-1 it_IT
+localedef -i it_IT -f UTF-8 it_IT.UTF-8
+localedef -i ja_JP -f EUC-JP ja_JP
+localedef -i ja_JP -f SHIFT_JIS ja_JP.SIJS 2> /dev/null || true
+localedef -i ja_JP -f UTF-8 ja_JP.UTF-8
+localedef -i ru_RU -f KOI8-R ru_RU.KOI8-R
+localedef -i ru_RU -f UTF-8 ru_RU.UTF-8
+localedef -i tr_TR -f UTF-8 tr_TR.UTF-8
+localedef -i zh_CN -f GB18030 zh_CN.GB18030
+localedef -i zh_HK -f BIG5-HKSCS zh_HK.BIG5-HKSCS
+
+cat > /etc/nsswitch.conf << "EOF"
+# Begin /etc/nsswitch.conf
+
+passwd: files
+group: files
+shadow: files
+
+hosts: files dns
+networks: files
+
+protocols: files
+services: files
+ethers: files
+rpc: files
+
+# End /etc/nsswitch.conf
+EOF
+
+tar -xf ../../tzdata2019c.tar.gz
+
+ZONEINFO=/usr/share/zoneinfo
+mkdir -pv $ZONEINFO/{posix,right}
+
+for tz in etcetera southamerica northamerica europe africa antarctica  \
+          asia australasia backward pacificnew systemv; do
+    zic -L /dev/null   -d $ZONEINFO       ${tz}
+    zic -L /dev/null   -d $ZONEINFO/posix ${tz}
+    zic -L leapseconds -d $ZONEINFO/right ${tz}
+done
+
+cp -v zone.tab zone1970.tab iso3166.tab $ZONEINFO
+zic -d $ZONEINFO -p America/New_York
+unset ZONEINFO
+
+ln -sfv /usr/share/zoneinfo/<xxx> /etc/localtime
+
+cat > /etc/ld.so.conf << "EOF"
+# Begin /etc/ld.so.conf
+/usr/local/lib
+/opt/lib
+
+EOF
+
+cat >> /etc/ld.so.conf << "EOF"
+# Add an include directory
+include /etc/ld.so.conf.d/*.conf
+
+EOF
+mkdir -pv /etc/ld.so.conf.d
+# Now make 32-bit
+mkdir -v ../build32
+cd ../build32
+CC="gcc -m32" \
+CXX="g++ -m32" \
+../configure --prefix=/usr                   \
+             --disable-werror                \
+             --enable-kernel=3.2             \
+             --enable-multi-arch             \
+             --enable-obsolete-rpc           \
+             --enable-stack-protector=strong \
+             --libdir=/usr/lib32             \
+	     --libexecdir=/usr/lib32         \
+             libc_cv_slibdir=/usr/lib32      \
+             i686-pc-linux-gnu
+make
+make install_root=$PWD/DESTDIR install
+install -vdm755 /usr/lib32
+cp -Rv DESTDIR/usr/lib32/* /usr/lib32/
+install -vm644 DESTDIR/usr/include/gnu/{lib-names,stubs}-32.h \
+         /usr/include/gnu/
+ln -sv ../usr/lib32/ld-linux.so.2 /lib/ld-linux.so.2
+ln -sv ../usr/lib32/ld-linux.so.2 /lib/ld-lsb.so.3
+ln -sv ../lib/locale /usr/lib32/locale
+echo "/usr/lib32" > /etc/ld.so.conf.d/lib32.conf
+
+## -----------------------------------------------------------------------------------
+## 6.10. Adjusting the Toolchain
+mv -v /tools/bin/{ld,ld-old}
+mv -v /tools/$(uname -m)-pc-linux-gnu/bin/{ld,ld-old}
+mv -v /tools/bin/{ld-new,ld}
+ln -sv /tools/bin/ld /tools/$(uname -m)-pc-linux-gnu/bin/ld
+
+gcc -dumpspecs | sed -e 's@/tools@@g'                   \
+    -e '/\*startfile_prefix_spec:/{n;s@.*@/usr/lib/ @}' \
+    -e '/\*cpp:/{n;s@$@ -isystem /usr/include@}' >      \
+    `dirname $(gcc --print-libgcc-file-name)`/specs
+
+# Sanity check
+echo 'int main(){}' > dummy.c
+cc dummy.c -v -Wl,--verbose &> dummy.log
+readelf -l a.out | grep ': /lib'
+#[Requesting program interpreter: /lib64/ld-linux-x86-64.so.2]
+grep -o '/usr/lib.*/crt[1in].*succeeded' dummy.log
+#/usr/lib/../lib/crt1.o succeeded
+#/usr/lib/../lib/crti.o succeeded
+#/usr/lib/../lib/crtn.o succeeded
+grep -B1 '^ /usr/include' dummy.log
+# #include <...> search starts here:
+#   /usr/include
+grep 'SEARCH.*/usr/lib' dummy.log |sed 's|; |\n|g'
+#SEARCH_DIR("/usr/lib")
+#SEARCH_DIR("/lib")
+grep "/lib.*/libc.so.6 " dummy.log
+# attempt to open /lib/libc.so.6 succeeded
+grep found dummy.log
+#found ld-linux-x86-64.so.2 at /lib/ld-linux-x86-64.so.2
+rm -v dummy.c a.out dummy.log
+## -----------------------------------------------------------------------------------
+## 6.11 to 6.17, no change ... build 32bit version later?
+## -----------------------------------------------------------------------------------
+## 6.18. Binutils-2.34
+sed -i '/@\tincremental_copy/d' gold/testsuite/Makefile.in
+mkdir -v build
+cd       build
+../configure --prefix=/usr       \
+             --enable-gold       \
+             --enable-ld=default \
+             --enable-plugins    \
+             --enable-shared     \
+             --disable-werror    \
+             --enable-64-bit-bfd \
+             --enable-multilib --with-lib-path=/usr/lib:/lib:/usr/lib32
+             --with-system-zlib
+make tooldir=/usr
+make -k check
+make tooldir=/usr install
+## -----------------------------------------------------------------------------------
+## 6.19 to 6.24, no change
+## -----------------------------------------------------------------------------------
+## 6.25. GCC-9.2.0
+case $(uname -m) in
+  x86_64)
+    sed -e '/m64=/s/lib64/lib/' \
+        -i.orig gcc/config/i386/t-linux64
+  ;;
+esac
+
+sed -e '1161 s|^|//|' \
+    -i libsanitizer/sanitizer_common/sanitizer_platform_limits_posix.cc
+
+mkdir -v build
+cd       build
+
+SED=sed                               \
+../configure --prefix=/usr            \
+             --enable-languages=c,c++ \
+             --enable-multilib \
+             --disable-bootstrap      \
+             --with-system-zlib --libexecdir=/usr/lib --disable-libmpx --disable-nls
+
+make 
+
+ulimit -s 32768 && chown -Rv nobody .  && su nobody -s /bin/bash -c "PATH=$PATH make -k check"
+../contrib/test_summary
+
+make install
+rm -rf /usr/lib/gcc/$(gcc -dumpmachine)/9.2.0/include-fixed/bits/
+chown -v -R root:root \
+    /usr/lib/gcc/*linux-gnu/9.2.0/include{,-fixed}
+ln -sv ../usr/bin/cpp /lib
+ln -sv gcc /usr/bin/cc
+install -v -dm755 /usr/lib/bfd-plugins
+ln -sfv ../../libexec/gcc/$(gcc -dumpmachine)/9.2.0/liblto_plugin.so \
+        /usr/lib/bfd-plugins/
+mkdir -pv /usr/share/gdb/auto-load/usr/lib
+mv -v /usr/lib/*gdb.py /usr/share/gdb/auto-load/usr/lib
+
+# Sanity Check
+# 64:
+echo 'int main(){}' > dummy.c
+cc dummy.c -v -Wl,--verbose  &> dummy.log
+readelf -l a.out | grep ': /lib'
+#[Requesting program interpreter: /lib64/ld-linux-x86-64.so.2]
+grep -o '/usr/lib.*/crt[1in].*succeeded' dummy.log
+#/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../lib/crt1.o succeeded
+#/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../lib/crti.o succeeded
+#/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../lib/crtn.o succeeded
+grep -B4 '^ /usr/include' dummy.log
+##include <...> search starts here:
+#/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include
+#/usr/local/include
+#/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include-fixed
+#/usr/include
+grep 'SEARCH.*/usr/lib' dummy.log | sed 's|; |\n|g'
+#SEARCH_DIR("/usr/x86_64-pc-linux-gnu/lib64")
+#SEARCH_DIR("/usr/lib")
+#SEARCH_DIR("/lib")
+#SEARCH_DIR("/usr/lib32")
+#SEARCH_DIR("/usr/x86_64-pc-linux-gnu/lib");
+grep '/lib.*/libc.so.6 ' dummy.log
+#attempt to open /lib/libc.so.6 succeeded
+grep found dummy.log
+#found ld-linux-x86-64.so.2 at /lib/ld-linux-x86-64.so.2
+
+#for 32bit
+echo 'int main(){}' > dummy.c
+cc -m32 dummy.c -v -Wl,--verbose &> dummy.log
+readelf -l a.out | grep ': /lib'
+#[Requesting program interpreter: /lib/ld-linux.so.2]
+grep -o '/usr/lib.*/crt[1in].*succeeded' dummy.log
+#/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../lib32/crt1.o succeeded
+#/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../lib32/crti.o succeeded
+#/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/../../../../lib32/crtn.o succeeded
+grep -B4 '^ /usr/include' dummy.log
+##include <...> search starts here:
+#/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include
+#/usr/local/include
+#/usr/lib/gcc/x86_64-pc-linux-gnu/8.3.0/include-fixed
+#/usr/include
+grep 'SEARCH.*/usr/lib' dummy.log | sed 's|; |\n|g'
+#SEARCH_DIR("/usr/i386-pc-linux-gnu/lib32")
+#SEARCH_DIR("/usr/x86_64-pc-linux-gnu/lib32")
+#SEARCH_DIR("/usr/lib")
+#SEARCH_DIR("/lib")
+#SEARCH_DIR("/usr/lib32")
+#SEARCH_DIR("/usr/i386-pc-linux-gnu/lib");
+grep '/lib.*/libc.so.6 ' dummy.log
+#attempt to open /usr/lib32/libc.so.6 succeeded
+grep found dummy.log
+#found ld-linux.so.2 at /usr/lib32/ld-linux.so.2
+
+## -----------------------------------------------------------------------------------
+## 6.26 Pkg-config-0.29.2 no change ... for rest of the packages?
+## Older LFS Version SVN-20150308 suggests rest of the packages need 32-bit versions.
+## List of 32-bit libraries needed:
+## o  bzip2   o  xz
+## o  zlib
