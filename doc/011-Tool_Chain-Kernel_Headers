@@ -12,12 +12,14 @@ ARCH=${MLFS_ARCH} make headers
 
 # For kernels up to 5.2.x:
 # find dest/include \( -name .install -o -name ..install.cmd \) -delete
+
 # For kernels 5.3.x:
 find usr/include \( -name .install -o -name ..install.cmd \) -delete
-rm usr/include/Makefile
 
 # Install
 cp -rv usr/include/* /tools/include
+rm -v /tools/include/Makefile
+
 # for kernels up to 5.2.x:
 # cp -rv dest/include/* /tools/include
 
