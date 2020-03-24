@@ -32,6 +32,7 @@ Tested Builds
 | i686-glibc   | i686-musl   | Pending |
 | x86_64-musl  | x86_64-musl | Pass |
 | x86_64-glibc | x86_64-musl | Pass |
+| aarch64-glibc | aarch64-musl | Pass |
 | armv7l-glibc | armv7l-musl | Pass |
 | armv7l-musl  | armv7l-musl | Pending |
 | armv6-glibc  | armv6-musl  | Pending |
