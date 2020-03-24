@@ -5,7 +5,7 @@ This is based on the works of Linux From Scratch (http://www.linuxfromscratch.or
 
 The aim of this project is to create a create a Linux system using Musl (www.musl-libc.org) instead of GNU's Glibc and Runit/S6 (http://smarden.org/runit/) instead SysVinit.
 
-Goals:
+## Goals:
 <ul>
 <li> [x] Version 2.xx+ now compiles all packages under chroot by cross-compiling the toolchain. </li>
 <li> [x] Currently, I only have computers with 32 and 64 bit x86 CPUs (i.e. Intel Core Duo). In the future, I would like this project to expand to the ARM architecture </li>
@@ -17,14 +17,14 @@ Goals:
 <li> [ ] Generate HTML 'book' like LFS</li>
 </ul>
 
-Supported Architectures
+## Supported Architectures
 <ul>
 <li>32bit - i686/i586 : Stable and tested. Stable enough to build Xorg, Qt5 (without QT-webengine), and Midori.</li>
 <li>64bit - x86_64 : Stable and tested. Stable enough to build Xorg, Qt5, Rust, and Firefox.
 <li>ARM - Builds fine. Requires modification to suit target hardware.
 </ul>
 
-Tested Builds
+## Tested Builds
 
 | Host         | Target      | Build Status   |
 | ------------ | ----------- | -------------- | 
@@ -32,6 +32,7 @@ Tested Builds
 | i686-glibc   | i686-musl   | Pending |
 | x86_64-musl  | x86_64-musl | Pass |
 | x86_64-glibc | x86_64-musl | Pass |
+| aarh64-glibc | aarch64-musl | Pass |
 | armv7l-glibc | armv7l-musl | Pass |
 | armv7l-musl  | armv7l-musl | Pending |
 | armv6-glibc  | armv6-musl  | Pending |
@@ -39,7 +40,7 @@ Tested Builds
 
 *ARM builds will need some modification based on specific hardware*
 
-Additional Required Packages 
+## Additional Required Packages 
 
 If pursuing BLFS, some packages will fail to compile due certian implementions left out in the Musl C Library.
 
@@ -60,7 +61,7 @@ https://github.com/void-linux/void-packages/blob/master/srcpkgs/musl-legacy-comp
 https://github.com/jahrome/argp-standalone</li>
 </ul>
 
-Optional Packages:
+## Optional Packages:
 <ul>
 <li>LibreSSL (instead of OpenSSL)
 https://www.libressl.org/</li>
@@ -68,7 +69,8 @@ https://www.libressl.org/</li>
 <li>Porg
 http://porg.sourceforge.net/</li>
 </ul>
-Projects of Interest
+
+## Projects of Interest
 
 <ul>
 <li>gCompat - "The gcompat project provides a glibc-compatible runtime environment for distributions that use musl libc."
@@ -76,7 +78,7 @@ https://code.foxkit.us/adelie/gcompat</li>
   <li> Locales - https://github.com/rilian-la-te/musl-locales </li>
 </ul>
 
-Layout
+## Layout
 
 <ul>
   <li>build-scripts - Build scripts to use to semi-automate building `/cross-tools`, `/tools`, and the final system</li>
