@@ -14,7 +14,7 @@ ln -sv   $MLFS/cross-tools /
 ln -sv   $MLFS/tools /
 
 # Create directories to hold patches, files, packages, and build area:
-mkdir -pv $MLFS/sources/{patches,files}
+mkdir -pv $MLFS/sources/{patches,files,packages,scripts}
 
 # Download sources + patches
 #  Use the list in sources folder with wget to download sources. Some sources 
