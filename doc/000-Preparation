@@ -2,9 +2,9 @@
 # If building on a seperate partition, create the file system and mount it.
 # Set #MLFS to the mount point. Example:
 # Perform as root:
-mkfs.etx4 /dev/sda4
+mkfs.etx4 /dev/sdXY
 mkdir -pv /mnt/mlfs
-mount /dev/sda4 /mnt/mlfs
+mount /dev/sdXY /mnt/mlfs
 export MLFS=/mnt/mlfs
 
 # Create directories to build tools and link them to host's root directory:
