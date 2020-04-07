@@ -13,9 +13,9 @@ export STRIP="${MLFS_TARGET}-strip"
 
 # Apply patch for Musl support
 case $(uname -m) in
-  x86_64)  patch -Np0 -i ../patches/porg-0.10-musl-fix-64.patch
+  x86_64)  patch -Np0 -i ../../patches/porg-0.10-musl-fix-64.patch
            ;;
-  i686)    patch -Np0 -i ../patches/porg-0.10-musl-fix-32.patch
+  i686)    patch -Np0 -i ../../patches/porg-0.10-musl-fix-32.patch
            ;;
 esac
 
