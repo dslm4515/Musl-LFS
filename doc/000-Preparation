@@ -113,7 +113,7 @@ cat >> ~/.bashrc << EOF
 export MLFS_HOST="${MLFS_HOST}"
 export MLFS_TARGET="${MLFS_TARGET}"
 export MLFS_ARCH="${MLFS_ARCH}"
-export MLFS_CPU="${MLFS_ARCH}"
+export MLFS_ARCH=$(echo ${MLFS_TARGET} | sed -e 's/-.*//' -e 's/i.86/i386/')
 EOF
 source ~/.bashrc
 
