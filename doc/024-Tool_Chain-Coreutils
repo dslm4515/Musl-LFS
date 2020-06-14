@@ -15,7 +15,7 @@ export STRIP="${MLFS_TARGET}-strip"
 autoreconf -vif
 
 # Fix a issue related to non-glibc builds
-patch -Np1 -i ../patches/coreutils-8.31-fix-strtod.patch
+patch -Np1 -i ../../patches/coreutils-8.31-fix-strtod.patch
 
 # Cross Compiling the configure script 
 # does not does not determine the correct 

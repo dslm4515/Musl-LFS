@@ -2,9 +2,9 @@
 # If building on a seperate partition, create the file system and mount it.
 # Set #MLFS to the mount point. Example:
 # Perform as root:
-mkfs.etx4 /dev/sda4
+mkfs.etx4 /dev/sdXY
 mkdir -pv /mnt/mlfs
-mount /dev/sda4 /mnt/mlfs
+mount /dev/sdXY /mnt/mlfs
 export MLFS=/mnt/mlfs
 
 # Create directories to build tools and link them to host's root directory:
@@ -14,7 +14,7 @@ ln -sv   $MLFS/cross-tools /
 ln -sv   $MLFS/tools /
 
 # Create directories to hold patches, files, packages, and build area:
-mkdir -pv $MLFS/sources/{patches,files}
+mkdir -pv $MLFS/sources/{patches,files,packages,scripts}
 
 # Download sources + patches
 #  Use the list in sources folder with wget to download sources. Some sources 
@@ -113,7 +113,7 @@ cat >> ~/.bashrc << EOF
 export MLFS_HOST="${MLFS_HOST}"
 export MLFS_TARGET="${MLFS_TARGET}"
 export MLFS_ARCH="${MLFS_ARCH}"
-export MLFS_CPU="${MLFS_ARCH}"
+export MLFS_CPU="${MLFS_CPU}
 EOF
 source ~/.bashrc
 

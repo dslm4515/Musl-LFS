@@ -3,22 +3,22 @@
 # Build and install as mlfs
 
 # Additional sources to add as GCC requires them 
-tar -xf ../mpfr-4.0.2.tar.xz
-mv -v mpfr-4.0.2 mpfr
-tar -xf ../gmp-6.1.2.tar.xz
-mv -v gmp-6.1.2 gmp
-tar -xf ../mpc-1.1.0.tar.gz
-mv -v mpc-1.1.0 mpc
+tar -xf ../mpfr-4.0.2.tar.xz &&
+mv -v mpfr-4.0.2 mpfr &&
+tar -xf ../gmp-6.1.2.tar.xz &&
+mv -v gmp-6.1.2 gmp &&
+tar -xf ../mpc-1.1.0.tar.gz &&
+mv -v mpc-1.1.0 mpc 
 
 # Apply patches [from void-linux]
-patch -Np0 -i ../patches/gcc-9.1.0-void-patches/0010-ldbl128-config.patch
-patch -Np0 -i ../patches/gcc-9.1.0-void-patches/ada-shared.patch
-patch -Np0 -i ../patches/gcc-9.1.0-void-patches/fix-cxxflags-passing.patch
-patch -Np0 -i ../patches/gcc-9.1.0-void-patches/fix-musl-execinfo.patch
-patch -Np0 -i ../patches/gcc-9.1.0-void-patches/libgcc-musl-ldbl128-config.patch
-patch -Np0 -i ../patches/gcc-9.1.0-void-patches/musl-ada.patch
-patch -Np0 -i ../patches/gcc-9.1.0-void-patches/no-stack_chk_fail_local.patch
-patch -Np0 -i ../patches/gcc-9.1.0-void-patches/non-nullness.patch
+patch -Np0 -i ../../patches/gcc-9.1.0-void-patches/0010-ldbl128-config.patch &&
+patch -Np0 -i ../../patches/gcc-9.1.0-void-patches/ada-shared.patch &&
+patch -Np0 -i ../../patches/gcc-9.1.0-void-patches/fix-cxxflags-passing.patch &&
+patch -Np0 -i ../../patches/gcc-9.1.0-void-patches/fix-musl-execinfo.patch &&
+patch -Np0 -i ../../patches/gcc-9.1.0-void-patches/libgcc-musl-ldbl128-config.patch &&
+patch -Np0 -i ../../patches/gcc-9.1.0-void-patches/musl-ada.patch &&
+patch -Np0 -i ../../patches/gcc-9.1.0-void-patches/no-stack_chk_fail_local.patch &&
+patch -Np0 -i ../../patches/gcc-9.1.0-void-patches/non-nullness.patch
 
 case $(uname -m) in
   x86_64)
