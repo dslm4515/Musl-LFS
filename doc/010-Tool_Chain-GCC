@@ -1,5 +1,5 @@
-# Tool Chain: GCC-9.1.0 
-# Source: http://ftp.gnu.org/gnu/gcc/gcc-9.1.0/gcc-9.1.0.tar.xz
+# Tool Chain: GCC-10.1.0 
+# Source: http://ftp.gnu.org/gnu/gcc/gcc-10.1.0/gcc-10.1.0.tar.xz
 # Build and install as mlfs
 
 # Set the environment for cross-compiling if not done already.
@@ -14,13 +14,13 @@ export STRIP="${MLFS_TARGET}-strip"
 # Additional sources to add
 tar -xf ../mpfr-4.0.2.tar.xz
 mv -v mpfr-4.0.2 mpfr
-tar -xf ../gmp-6.1.2.tar.xz
-mv -v gmp-6.1.2 gmp
+tar -xf ../gmp-6.2.0.tar.xz
+mv -v gmp-6.2.0 gmp
 tar -xf ../mpc-1.1.0.tar.gz
 mv -v mpc-1.1.0 mpc
 
-# Apply patches [from void-linux]
-patch -Np0 -i ../patches/gcc-9.1.0-void-patches/0010-ldbl128-config.patch
+# Apply patches [from void-linux] .. works for version 10.1.0
+#patch -Np0 -i ../patches/gcc-9.1.0-void-patches/0010-ldbl128-config.patch
 patch -Np0 -i ../patches/gcc-9.1.0-void-patches/ada-shared.patch
 patch -Np0 -i ../patches/gcc-9.1.0-void-patches/fix-cxxflags-passing.patch
 patch -Np0 -i ../patches/gcc-9.1.0-void-patches/fix-musl-execinfo.patch
@@ -28,6 +28,8 @@ patch -Np0 -i ../patches/gcc-9.1.0-void-patches/libgcc-musl-ldbl128-config.patch
 patch -Np0 -i ../patches/gcc-9.1.0-void-patches/musl-ada.patch
 patch -Np0 -i ../patches/gcc-9.1.0-void-patches/no-stack_chk_fail_local.patch
 patch -Np0 -i ../patches/gcc-9.1.0-void-patches/non-nullness.patch
+# Fix CET for cross-compiling
+patch -Np0 -i ../patches/gcc-10.1.0-Enable-CET-in-cross-compiler-if-possible.patch
 
 # Re-create internal header
 cat gcc/limitx.h gcc/glimits.h gcc/limity.h > \
@@ -78,7 +80,7 @@ CXXFLAGS='-g0 -O0' \
     --disable-libstdcxx-pch                        \
     --disable-multilib                             \
     --disable-bootstrap                            \
-    --disable-libgomp    i                          \
+    --disable-libgomp                              \
     --disable-libquadmath                          \
     --disable-libssp                               \
     --disable-libvtv                               \
