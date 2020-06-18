@@ -1,5 +1,5 @@
-# Toolchain: Ncurses-6.1
-# Source: http://ftp.gnu.org/gnu/ncurses/ncurses-6.1.tar.gz
+# Toolchain: Ncurses-6.2
+# Source: http://ftp.gnu.org/gnu/ncurses/ncurses-6.2.tar.gz
 # Build and install as mlfs
 
 # Set the environment for cross-compiling if not done already.
@@ -10,6 +10,14 @@ export AS="${MLFS_TARGET}-as"
 export RANLIB="${MLFS_TARGET}-ranlib"
 export LD="${MLFS_TARGET}-ld"
 export STRIP="${MLFS_TARGET}-strip"
+
+# Build the “tic” program on the build host
+mkdir build
+pushd build
+  ../configure
+  make -C include
+  make -C progs tic
+popd
 
 # Ensure that gawk is found first during configuration: 
 sed -i '/LIBTOOL_INSTALL/d' c++/Makefile.in
@@ -26,4 +34,6 @@ sed -i '/LIBTOOL_INSTALL/d' c++/Makefile.in
     --with-build-cc="gcc -D_GNU_SOURCE"
 
 # Build and install to toolchain
-make && make install
+make && make TIC_PATH=$(pwd)/build/progs/tic install
+ln -s libncursesw.so /tools/lib/libncurses.so
+
