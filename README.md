@@ -13,7 +13,7 @@ The aim of this project is to create a create a Linux system using Musl (www.mus
 <li> [ ] Properly name patches to reflect origin (i.e. Alpine or void) </li>
 <li> [X] Create a list for wget to download sources.
 <li> [X] Transition from Runit to S6 </li>
-<li> [ ] Redesign build to avoid two build passes of binutils and GCC
+<li> [X] Redesign build to avoid two build passes of binutils and GCC
 <li> [ ] Generate HTML 'book' like LFS</li>
 </ul>
 
@@ -25,6 +25,8 @@ The aim of this project is to create a create a Linux system using Musl (www.mus
 </ul>
 
 ## Tested Builds
+
+These builds were tested on either LFS(Glibc) or a previously built MLFS(musl).
 
 | Host         | Target      | Build Status   |
 | ------------ | ----------- | -------------- | 
