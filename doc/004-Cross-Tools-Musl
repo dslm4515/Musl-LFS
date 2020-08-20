@@ -1,6 +1,6 @@
 # Cross-Tools: Musl
 # Build and install as mlfs
-# source: https://www.musl-libc.org/releases/musl-1.2.0.tar.gz
+# source: https://www.musl-libc.org/releases/musl-1.2.1.tar.gz
 
 # Configure source for cross build
 ./configure \
