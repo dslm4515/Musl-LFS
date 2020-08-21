@@ -1,5 +1,5 @@
-# Toolchain: Texinfo 6.6
-# Source: http://ftp.gnu.org/gnu/texinfo/texinfo-6.6.tar.xz
+# Toolchain: Texinfo 6.7
+# Source: http://ftp.gnu.org/gnu/texinfo/texinfo-6.7.tar.xz
 # Build and install as mlfs
 
 # Set the environment for cross-compiling if not done already.
@@ -18,3 +18,4 @@ export STRIP="${MLFS_TARGET}-strip"
 
 # Build and install to toolchain
 make && make install
+
