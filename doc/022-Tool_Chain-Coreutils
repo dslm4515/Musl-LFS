@@ -1,5 +1,5 @@
-# Toolchain: Coreutils 8.31
-# Source: http://ftp.gnu.org/gnu/coreutils/coreutils-8.31.tar.xz
+# Toolchain: Coreutils 8.32
+# Source: http://ftp.gnu.org/gnu/coreutils/coreutils-8.32.tar.xz
 # Build and install as mlfs
 
 # Set the environment for cross-compiling if not done already.
@@ -14,8 +14,8 @@ export STRIP="${MLFS_TARGET}-strip"
 # Re-create configure script
 autoreconf -vif
 
-# Fix a issue related to non-glibc builds
-patch -Np1 -i ../patches/coreutils-8.31-fix-strtod.patch
+# Apply patch
+patch -Np0 -i ../patches/coreutils-8.32-void-ls-restore-8.31-behavior-on-removed-directories.patch
 
 # Cross Compiling the configure script 
 # does not does not determine the correct 
