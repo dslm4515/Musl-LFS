@@ -1,5 +1,5 @@
-# ToolChain: Bzip2 1.0.6
-# Source: http://anduin.linuxfromscratch.org/LFS/bzip2-1.0.6.tar.gz
+# ToolChain: Bzip2 1.0.8
+# Source: http://anduin.linuxfromscratch.org/LFS/bzip2-1.0.8.tar.gz
 # Build and install as mlfs
 
 # Set the environment for cross-compiling if not done already.
