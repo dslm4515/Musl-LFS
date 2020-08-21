@@ -1,5 +1,5 @@
-# Toolchain: File 5.37
-# Source: ftp://ftp.astron.com/pub/file/file-5.37.tar.gz
+# Toolchain: File 5.39
+# Source: ftp://ftp.astron.com/pub/file/file-5.39.tar.gz
 # Build and install as mlfs
 # Must use same version for cross-tools, tools, 
 # and final system. 
