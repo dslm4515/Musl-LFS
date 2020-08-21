@@ -14,7 +14,8 @@ export STRIP="${MLFS_TARGET}-strip"
 # Build the “tic” program on the build host
 mkdir build
 pushd build
-  ../configure
+  ../configure --build=${MLFS_HOST} \
+               --host=${MLFS_TARGET}
   make -C include
   make -C progs tic
 popd
