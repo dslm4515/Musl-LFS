@@ -24,6 +24,11 @@ case $(uname -m) in
            # check with
            grep "/tools/lib/ld-musl-arm" tempspecfile --color=auto
            ;;
+   aarch64) # for 64-bit arm64
+           sed -i 's/\/lib\/ld-musl-aarch64/\/tools\/lib\/ld-musl-aarch64/g' tempspecfile
+           # check with
+           grep "/tools/lib/ld-musl-aarch64" tempspecfile --color=auto
+           ;;
 esac
 
 mv -vf tempspecfile $SPECFILE &&
@@ -48,6 +53,8 @@ readelf -l a.out | grep ': /tools'
 # [Requesting program interpreter: /tools/lib/ld-musl-x86_64.so.1]
 # or
 # [Requesting program interpreter: /tools/lib/ld-musl-arm.so.1]
+# or
+# [Requesting program interpreter: /tools/lib/ld-musl-aarch64.so.1]
 
 # Clean up after testing
 rm -v dummy.c a.out
