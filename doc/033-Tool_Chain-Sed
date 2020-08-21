@@ -1,5 +1,5 @@
-# Toolchain: Sed 4.7
-# Source: http://ftp.gnu.org/gnu/sed/sed-4.7.tar.xz
+# Toolchain: Sed 4.8
+# Source: http://ftp.gnu.org/gnu/sed/sed-4.8.tar.xz
 # Build and install as mlfs
 
 # Set the environment for cross-compiling if not done already.
