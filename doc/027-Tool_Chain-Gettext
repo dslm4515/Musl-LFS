@@ -1,5 +1,5 @@
-# Toolchain: Gettext 0.20.1
-# Source: http://ftp.gnu.org/gnu/gettext/gettext-0.20.1.tar.xz
+# Toolchain: Gettext 0.21
+# Source: http://ftp.gnu.org/gnu/gettext/gettext-0.21.tar.xz
 # Build and install as mlfs
 
 # Set the environment for cross-compiling if not done already.
@@ -16,8 +16,6 @@ export STRIP="${MLFS_TARGET}-strip"
             --host=${MLFS_TARGET} \
             --prefix=/tools \
             --disable-shared
-
-
 # Build
 make
 
