@@ -1,6 +1,6 @@
-# Toolchain: Perl 5.30.0
-# Source: https://www.cpan.org/src/5.0/perl-5.30.0.tar.xz
-# Source: https://github.com/arsv/perl-cross/releases/download/1.3/perl-cross-1.3.tar.gz
+# Toolchain: Perl 5.32.0
+# Source: https://www.cpan.org/src/5.0/perl-5.32.0.tar.xz
+# Source: https://github.com/arsv/perl-cross/releases/download/1.3.4/perl-cross-1.3.4.tar.gz
 # Build and install as mlfs
 
 # Set the environment for cross-compiling if not done already.
@@ -15,10 +15,10 @@ export STRIP="${MLFS_TARGET}-strip"
 # Use perl-cross, by copying over perl source
 # ignore warnings by mv
 cd .. &&
-tar xf perl-cross-1.3.tar.gz
-cd perl-5.30.0 &&
-mv -v ../perl-cross-1.3/* ./
-mv -v ../perl-cross-1.3/utils/* utils/
+tar xf perl-cross-1.3.4.tar.gz
+cd perl-5.32.0 &&
+mv -v ../perl-cross-1.3.4/* ./
+mv -v ../perl-cross-1.3.4/utils/* utils/
 
 # Apply patch from Alpine to fix locale.c errors
 # in programs such as rxvt-unicode
@@ -33,5 +33,5 @@ make
 
 # Only a few of the utilities and libraries need to be installed to toolchain
 cp -v perl cpan/podlators/scripts/pod2man /tools/bin
-mkdir -pv /tools/lib/perl5/5.30.0
-cp -Rv lib/* /tools/lib/perl5/5.30.0
+mkdir -pv /tools/lib/perl5/5.32.0
+cp -Rv lib/* /tools/lib/perl5/5.32.0
