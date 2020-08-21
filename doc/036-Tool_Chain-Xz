@@ -1,5 +1,5 @@
-# Toolchain: Xz 5.2.4
-# Source: https://tukaani.org/xz/xz-5.2.4.tar.xz
+# Toolchain: Xz 5.2.5
+# Source: https://tukaani.org/xz/xz-5.2.5.tar.xz
 # Build and install as mlfs
 
 # Set the environment for cross-compiling if not done already.
