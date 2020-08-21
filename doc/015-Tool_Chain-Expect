@@ -14,9 +14,9 @@ export LD="${MLFS_TARGET}-ld"
 export STRIP="${MLFS_TARGET}-strip"
 
 # Patch source to run with musl libc
-patch -Np1 -i ../patches/expect-5.45.3-dont-put-toolchain-in-libpath.patch
-patch -Np1 -i ../patches/expect-5.45.3-dont-configure-testsuites.patch
-patch -Np1 -i ../patches/expect-5.45.3-allow-cross-compile.patch
+patch -Np1 -i ../patches/expect-5.45.3/dont-put-toolchain-in-libpath.patch
+patch -Np1 -i ../patches/expect-5.45.3/dont-configure-testsuites.patch
+patch -Np1 -i ../patches/expect-5.45.3/allow-cross-compile.patch
 
 # Update files to support Musl Libc for configure
 cp -v ../files/config.guess-musl tclconfig/config.guess
