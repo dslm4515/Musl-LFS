@@ -1,5 +1,5 @@
-# Toolchain: Gawk 5.0.0
-# Source: http://ftp.gnu.org/gnu/gawk/gawk-5.0.0.tar.xz
+# Toolchain: Gawk 5.1.0
+# Source: http://ftp.gnu.org/gnu/gawk/gawk-5.1.0.tar.xz
 # Build and install as mlfs
 
 # Set the environment for cross-compiling if not done already.
