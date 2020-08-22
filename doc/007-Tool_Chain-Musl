@@ -28,3 +28,9 @@ case $(uname -m) in
            ;;
 esac
 
+# Create dynamic linker config
+cat > /tools/etc/ld-musl-$(uname -m).path << "EOF"
+/tools/lib
+EOF
+
+
