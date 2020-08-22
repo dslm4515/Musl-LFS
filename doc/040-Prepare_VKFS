@@ -1,0 +1,21 @@
+# Prepare Virtual Kernel Filesystems for chroot
+# This section is done by root
+
+export MLFS=/mnt/mlfs
+
+# Create directories and nodes
+mkdir -pv $MLFS/{dev,proc,sys,run}
+mknod -m 600 $MLFS/dev/console c 5 1
+mknod -m 666 $MLFS/dev/null c 1 3
+
+# Mount virtual filesystems
+mount -v --bind /dev $MLFS/dev
+mount -vt devpts devpts $MLFS/dev/pts -o gid=5,mode=620
+mount -vt proc proc $MLFS/proc
+mount -vt sysfs sysfs $MLFS/sys
+mount -vt tmpfs tmpfs $MLFS/run
+if [ -h $MLFS/dev/shm ]; then
+  mkdir -pv $MLFS/$(readlink $MLFS/dev/shm)
+fi
+
+
