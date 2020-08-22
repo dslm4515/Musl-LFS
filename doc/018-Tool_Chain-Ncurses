@@ -12,13 +12,14 @@ export LD="${MLFS_TARGET}-ld"
 export STRIP="${MLFS_TARGET}-strip"
 
 # Build the “tic” program on the build host
-mkdir build
-pushd build
-  ../configure --build=${MLFS_HOST} \
-               --host=${MLFS_TARGET}
-  make -C include
-  make -C progs tic
-popd
+#mkdir build
+#pushd build
+#  ../configure --build=${MLFS_HOST} \
+#               --host=${MLFS_TARGET} 
+#  make -C include -j4
+#  make -C progs tic -j4
+#popd
+# ^ Causes ncurses libraries to link to ones on host
 
 # Ensure that gawk is found first during configuration: 
 sed -i '/LIBTOOL_INSTALL/d' c++/Makefile.in
@@ -32,9 +33,14 @@ sed -i '/LIBTOOL_INSTALL/d' c++/Makefile.in
     --without-ada   \
     --enable-widec  \
     --enable-overwrite     \
-    --with-build-cc="gcc -D_GNU_SOURCE"
+    --with-termlib \
+    --enable-termcap --libdir=/tools/lib --oldincludedir=/tools/include  
 
 # Build and install to toolchain
-make && make TIC_PATH=$(pwd)/build/progs/tic install
-ln -s libncursesw.so /tools/lib/libncurses.so
+make && make install
+
+# Causes libraries built to link against host's
+#make && make TIC_PATH=$(pwd)/build/progs/tic install
+#ln -s libncursesw.so /tools/lib/libncurses.so
+#echo "INPUT(-lncursesw)" > /tools/lib/libncurses.so
 
