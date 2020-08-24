@@ -1,0 +1,163 @@
+# Final System: GCC-10.2.0
+# Source: http://ftp.gnu.org/gnu/gcc/gcc-10.2.0/gcc-10.2.0.tar.xz
+# Source: http://isl.gforge.inria.fr/isl-0.19.tar.xz
+# This section is done in Chroot environment
+
+case $(uname -m) in
+  x86_64) export TRUPLE="x86_64-linux-musl"
+          ;;
+  i686)   export TRUPLE="i686-linux-musl"
+          ;;
+  armv7l) export TRUPLE="armv7l-linux-musleabihf"
+          ;;
+  armv6l) export TRUPLE="armv6l-linux-musleabihf"
+          ;;
+  aarch64) export TRUPLE="aarch64-linux-musleabihf"
+           export EXTRA_CONFIG=" --with-arch=armv8-a --with-abi=lp64"
+           sed -i '/m64=/s/lib64/lib/' gcc/config/aarch64/t-aarch64-linux
+          ;;
+esac
+
+# Add isl source
+tar -xf ../isl-0.19.tar.xz
+mv -v isl-0.19 isl
+
+# Apply patches [from alpine-linux]
+for p in 0001-posix_memalign.patch 0002-gcc-poison-system-directories.patch 0003-Turn-on-Wl-z-relro-z-now-by-default.patch 0004-Turn-on-D_FORTIFY_SOURCE-2-by-default-for-C-C-ObjC-O.patch 0005-On-linux-targets-pass-as-needed-by-default-to-the-li.patch 0006-Enable-Wformat-and-Wformat-security-by-default.patch 0007-Enable-Wtrampolines-by-default.patch 0008-Disable-ssp-on-nostdlib-nodefaultlibs-and-ffreestand.patch 0009-Ensure-that-msgfmt-doesn-t-encounter-problems-during.patch 0010-Don-t-declare-asprintf-if-defined-as-a-macro.patch 0011-libiberty-copy-PIC-objects-during-build-process.patch 0012-libitm-disable-FORTIFY.patch 0013-libgcc_s.patch 0014-nopie.patch 0015-libffi-use-__linux__-instead-of-__gnu_linux__-for-mu.patch 0016-dlang-update-zlib-binding.patch 0017-dlang-fix-fcntl-on-mips-add-libucontext-dep.patch 0018-ada-fix-shared-linking.patch 0019-build-fix-CXXFLAGS_FOR_BUILD-passing.patch 0020-libstdc-futex-add-time64-compatibility.patch 0021-add-fortify-headers-paths.patch 0022-Alpine-musl-package-provides-libssp_nonshared.a.-We-.patch 0023-DP-Use-push-state-pop-state-for-gold-as-well-when-li.patch 0024-Pure-64-bit-MIPS.patch 0025-use-pure-64-bit-configuration-where-appropriate.patch 0026-always-build-libgcc_eh.a.patch 0027-ada-libgnarl-compatibility-for-musl.patch 0028-ada-musl-support-fixes.patch; do
+ patch -Np1 -i ../patches/gcc-10.2.0-alpine/$p
+done
+
+# Apply patches [from void-linux] .. works for version 10.2.0
+patch -Np0 -i ../patches/gcc-9.1.0-void-patches/fix-musl-execinfo.patch
+
+# If building on x86_64, change the default 
+# directory name for 64-bit libraries to “lib”:
+case $(uname -m) in
+  x86_64)
+    sed -e '/m64=/s/lib64/lib/' \
+        -i.orig gcc/config/i386/t-linux64
+  ;;
+esac
+
+# _FORTIFY_SOURCE needs an optimization level.
+sed -i "/ac_cpp=/s/\$CPPFLAGS/\$CPPFLAGS -O2/" {gcc,libiberty}/configure
+
+#export CFLAGS="$CFLAGS -D_FORTIFY_SOURCE=2"
+#export CXXFLAGS="$CXXFLAGS -D_FORTIFY_SOURCE=2"
+
+# Disable explicit -fno-PIE, gcc will figure this out itself.
+#export CFLAGS="$CFLAGS -fno-PIE"
+#export CXXFLAGS="$CXXFLAGS -fno-PIE"
+#export LDFLAGS="$LDFLAGS -no-pie"
+
+# Configure source
+mkdir -v build && cd build
+SED=sed  libat_cv_have_ifunc=no       \
+../configure --prefix=/usr            \
+             --build="${TRUPLE}"\
+             --with-system-zlib       \
+             --with-isl \
+             --with-linker-hash-style=gnu \
+             --enable-languages=c,c++ \
+             --enable-threads=posix \
+             --enable-clocale=generic \
+             --enable-languages=c,c++ \
+             --enable-tls \
+             --enable-libstdcxx-time \
+             --enable-fully-dynamic-string \
+             --enable-default-pie \
+             --enable-default-ssp \
+             --enable-vtable-verify \
+             --enable-linker-build-id \
+             --enable-fast-character \
+             --disable-libstdcxx-pch \
+             --disable-nls \
+             --disable-multilib       \
+             --disable-bootstrap      \
+             --disable-symvers \
+             --disable-libsanitizer \
+             --disable-target-libiberty \
+             --disable-libunwind-exceptions \
+             --disable-libssp --disable-libmpx --disable-libmudflap $EXTRA_CONFIG 
+
+# Build
+make
+
+# Test GCC:
+ulimit -s 32768
+# Test the results as a non-privileged user, but do not stop at errors
+chown -Rv nobody . 
+su nobody -s /bin/bash -c "PATH=$PATH make -k check"
+
+# To receive a summary of the test suite results, run:
+../contrib/test_summary
+# Or, For only the summaries, pipe the output through grep -A7 Summ"
+../contrib/test_summary | grep -A7 Summ
+
+# Install
+make install
+
+# Create a symlink required by the FHS for "historical" reasons
+ln -sv ../usr/bin/cpp /lib
+
+# Many packages use the name cc to call the C compiler. To 
+# satisfy those packages, create a symlink
+ln -sv gcc /usr/bin/cc
+
+# Add a compatibility symlink to enable building programs with 
+# Link Time Optimization (LTO): 
+install -v -dm755 /usr/lib/bfd-plugins
+ln -sfv ../../libexec/gcc/$(gcc -dumpmachine)/10.2.0/liblto_plugin.so \
+        /usr/lib/bfd-plugins/
+mkdir -pv /usr/share/gdb/auto-load/usr/lib
+mv -v /usr/lib/*gdb.py /usr/share/gdb/auto-load/usr/lib
+
+# Test final system's toolchain:
+echo 'int main(){}' > dummy.c
+cc dummy.c -v -Wl,--verbose &> dummy.log
+readelf -l a.out | grep ': /lib'
+# Should output:
+# [Requesting program interpreter: /lib/ld-musl-x86_64.so.1]
+# or
+# [Requesting program interpreter: /lib/ld-musl-i386.so.1]
+# or
+# [Requesting program interpreter: /lib/ld-musl-arm.so.1]
+# or
+# [Requesting program interpreter: /lib/ld-musl-aarch64.so.1]
+grep  'crt[1in].o succeeded' dummy.log
+# Should output:
+# attempt to open /usr/lib/gcc/$ARCH-linux-musl/10.2.0/../../../../lib/Scrt1.o succeeded
+# attempt to open /usr/lib/gcc/$ARCH-linux-musl/9.2.0/../../../../lib/crti.o succeeded
+# attempt to open /usr/lib/gcc/$ARCH-linux-musl/10.2.0/../../../../lib/crtn.o succeeded
+grep -B2 '^ /usr/lib/gcc' dummy.log
+# Should output:
+# #include <...> search starts here:
+# /usr/lib/gcc/$ARCH-linux-musl/10.2.0/include-fixed
+# /usr/local/include
+# /usr/include
+# /usr/lib/gcc/$ARCH-linux-musl/10.2.0/include
+grep 'SEARCH.*/usr/lib' dummy.log |sed 's|; |\n|g'
+# Should output:
+# SEARCH_DIR("/usr/$ARCH-pc-linux-musl/lib32")
+# SEARCH_DIR("/usr/local/lib32")
+# SEARCH_DIR("/lib32")
+# SEARCH_DIR("/usr/lib32")
+# SEARCH_DIR("/usr/$ARCH-pc-linux-musl/lib")
+# SEARCH_DIR("/usr/local/lib")
+# SEARCH_DIR("/lib")
+# SEARCH_DIR("/usr/lib");
+
+# If all is well, remove test files:
+rm -v dummy.c a.out dummy.log
+
+# Build useful utilities
+cc -fpie ../../files/gcc/getent.c -o getent
+cc -fpie ../../files/gcc/getconf.c -o getconf
+cc -fpie ../../files/gcc/iconv.c -o iconv
+
+cp -v getent  /usr/bin/
+cp -v getconf /usr/bin/
+cp -v iconv   /usr/bin/
+cp -v ../../files/gcc/getent.1   /usr/share/man/man1/
+cp -v ../../files/gcc/getconf.1  /usr/share/man/man1/
+
