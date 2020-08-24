@@ -14,3 +14,26 @@ make && DESTDIR=/cross-tools make install
 # Add missing directory and link
 mkdir -v /cross-tools/usr
 ln -sv ../include  /cross-tools/usr/include
+
+case $(uname -m) in
+  x86_64) export ARCH="x86_64"
+          ;;
+  i686)   export ARCH="i386"
+          ;;
+  arm*)   export ARCH="arm"
+          ;;
+  aarch64) export ARCH="aarch64"
+          ;;
+esac
+
+# Create link for ldd:
+ln -sv ../lib/ld-musl-$ARCH.so.1 /cross-tools/bin/ldd
+
+# Create config for dynamic library loading:
+mkdir -v /cross-tools/etc
+cat > /cross-tools/etc/ld-musl-$ARCH.path << "EOF"
+/cross-tools/lib
+/tools/lib
+EOF
+
+unset ARCH
