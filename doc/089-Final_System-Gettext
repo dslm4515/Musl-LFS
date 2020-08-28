@@ -1,0 +1,29 @@
+# Final System: Gettext
+# Source: http://ftp.gnu.org/gnu/gettext/gettext-0.21.tar.xz
+# This section is done in Chroot environment
+
+# Suppress two invocations of test-lock which on some machines can loop forever: 
+sed -i '/^TESTS =/d' gettext-runtime/tests/Makefile.in &&
+sed -i 's/test-lock..EXEEXT.//' gettext-tools/gnulib-tests/Makefile.in
+
+# Configure ..
+./configure --prefix=/usr    \
+            --disable-static \
+            --with-included-gettext \
+            -enable-threads=posix   \
+            --disable-rpath \
+            --docdir=/usr/share/doc/gettext-0.21  gl_cv_func_gettimeofday_clobber=no &&
+
+# Build
+make
+
+# Fix conflict with musl before installing by first backing up header...
+mv -v  /usr/include/libintl.h /usr/include/libintl.h.musl
+
+# Install
+make install
+
+# Move file to avoid conflict
+mkdir -v /usr/include/gettext
+mv -v  /usr/include/libintl.h /usr/include/gettext
+mv -v /usr/include/libintl.h.musl /usr/include/libintl.h
