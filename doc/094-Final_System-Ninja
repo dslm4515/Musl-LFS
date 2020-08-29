@@ -1,0 +1,21 @@
+# Final System: Ninja
+# Source: https://github.com/ninja-build/ninja/archive/v1.10.0/ninja-1.10.0.tar.gz
+# This section is done in Chroot environment
+
+# If desired, add the capability to use the 
+# environment variable NINJAJOBS
+sed -i '/int Guess/a \
+  int   j = 0;\
+  char* jobs = getenv( "NINJAJOBS" );\
+  if ( jobs != NULL ) j = atoi( jobs );\
+  if ( j > 0 ) return j;\
+' src/ninja.cc
+
+# Configure and build source
+python3 configure.py --bootstrap
+
+# Install
+install -vm755 ninja /usr/bin/
+install -vDm644 misc/bash-completion /usr/share/bash-completion/completions/ninja
+install -vDm644 misc/zsh-completion /usr/share/zsh/site-functions/_ninja
+
