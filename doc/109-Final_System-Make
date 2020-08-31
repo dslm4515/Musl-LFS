@@ -1,0 +1,5 @@
+# Final System: Make 
+# Source: http://ftp.gnu.org/gnu/make/make-4.3.tar.bz2
+# This section is done in Chroot environment
+
+./configure --prefix=/usr && make && make install
