@@ -1,0 +1,26 @@
+# Final system: Man-DB
+# Source: http://download.savannah.gnu.org/releases/man-db/man-db-2.9.3.tar.xz
+# This section is done in Chroot environment
+
+export CFLAGS+=" -I/usr/include/gettext" 
+export LDFLAGS+=" -lintl"
+
+./configure --prefix=/usr                        \
+            --docdir=/usr/share/doc/man-db-2.9.3 \
+            --sysconfdir=/etc                    \
+            --disable-setuid                     \
+            --enable-cache-owner=bin             \
+            --with-browser=/usr/bin/lynx         \
+            --with-vgrind=/usr/bin/vgrind        \
+            --with-grap=/usr/bin/grap            \
+            --with-systemdtmpfilesdir=           \
+            --with-systemdsystemunitdir=         \
+            --with-pager=less                    \
+            --disable-rpath                      \
+            --enable-threads=posix               \
+            --without-included-regex             \
+            --enable-automatic-create 
+
+make && make install
+
+unset CFLAGS LDFLAGS
