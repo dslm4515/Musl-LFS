@@ -1,15 +1,12 @@
 # Final System: Cpio
-# Source: https://ftp.gnu.org/gnu/cpio/cpio-2.12.tar.bz2
+# Source: https://ftp.gnu.org/gnu/cpio/cpio-2.13.tar.bz2
 # Required when building an initrd for boot
-
-# Apply patches:
-patch -Np0 -i ../patches/cpio-2.12-void/0001-Fix-out-of-bounds-read.patch
-patch -Np0 -i ../patches/cpio-2.12-void/0002-Fix-signed-integer-overflow-big-block-sizes.patch
-patch -Np0 -i ../patches/cpio-2.12-void/0003-CVE-2016-2037-1-byte-out-of-bounds-write.patch
-patch -Np0 -i ../patches/cpio-2.12-void/0004-Fix-sigfault-when-appending-to-archive.patch
 
 # Recreate configure
 autoreconf -ifv
+
+export CFLAGS="-fcommon"
+sed -i '/The name/,+2 d' src/global.c
 
 # Configure source
 ./configure --prefix=/usr \
@@ -20,3 +17,5 @@ autoreconf -ifv
 # Build and install
 make 
 make install
+
+unset CFLAGS
