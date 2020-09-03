@@ -1,5 +1,0 @@
-# Final System: Man Pages 5.02
-# Source: https://www.kernel.org/pub/linux/docs/man-pages/man-pages-5.02.tar.xz
-# This section is done in Chroot environment
-
-make install

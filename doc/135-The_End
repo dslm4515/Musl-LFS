@@ -4,13 +4,13 @@
 # file, it is very easy for you (and for us if you need to ask for help at 
 # some point) to find out which LFS version is installed on the system. 
 # Create this file by running: 
-echo 5.0 > /etc/mlfs-release
+echo 7.0 > /etc/mlfs-release
 
 # It is also a good idea to create a file to show the status of your new 
 # system with respect to the Linux Standards Base (LSB). To create this file, run: 
 cat > /etc/lsb-release << "EOF"
 DISTRIB_ID="Musl Linux From Scratch"
-DISTRIB_RELEASE="5.0"
+DISTRIB_RELEASE="7.0"
 DISTRIB_CODENAME="<your name here>"
 DISTRIB_DESCRIPTION="Musl Linux From Scratch"
 EOF

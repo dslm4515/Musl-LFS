@@ -1,5 +1,6 @@
 # Final System: S6-Portable-Utils 
 # Source: http://skarnet.org/software/s6-portable-utils/s6-portable-utils-2.2.1.3.tar.gz
+# Source: http://www.skarnet.org/software/s6-portable-utils/s6-portable-utils-2.2.2.4.tar.gz
 # This section is done in Chroot environment
 
 ./configure --prefix=/usr \
