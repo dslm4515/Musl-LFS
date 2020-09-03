@@ -3,19 +3,19 @@
 # This section is done in Chroot environment
 
 # Add missing files
-cp -vr ../files/error.h lib/
-cp -vr ../files/error.h src/
+cp -vr ../files/elfuilts-void/error.h lib/
+cp -vr ../files/elfutils-void/error.h src/
 
 # Patch source for musl
-patch -Np0 -i ../patches/elfutils/fix-aarch64_fregs.patch
-patch -Np0 -i ../patches/elfutils/musl-cdefs.patch
-patch -Np0 -i ../patches/elfutils/musl-fts-obstack.patch
-patch -Np0 -i ../patches/elfutils/musl-macros.patch
-patch -Np0 -i ../patches/elfutils/musl-qsort_r.patch
-patch -Np0 -i ../patches/elfutils/musl-strerror_r.patch
-patch -Np0 -i ../patches/elfutils/musl-strndupa.patch
-patch -Np0 -i ../patches/elfutils/fix-uninitialized.patch
-patch -Np0 -i ../patches/elfutils/musl-asm_ptrace_h.patch
+patch -Np0 -i ../patches/elfutils-void/fix-aarch64_fregs.patch
+patch -Np0 -i ../patches/elfutils-void/musl-cdefs.patch
+patch -Np0 -i ../patches/elfutils-void/musl-fts-obstack.patch
+patch -Np0 -i ../patches/elfutils-void/musl-macros.patch
+patch -Np0 -i ../patches/elfutils-void/musl-qsort_r.patch
+patch -Np0 -i ../patches/elfutils-void/musl-strerror_r.patch
+patch -Np0 -i ../patches/elfutils-void/musl-strndupa.patch
+patch -Np0 -i ../patches/elfutils-void/fix-uninitialized.patch
+patch -Np0 -i ../patches/elfutils-void/musl-asm_ptrace_h.patch
 
 # Re-create configure script
 autoreconf -ifv

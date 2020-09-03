@@ -12,13 +12,13 @@ export LD="${MLFS_TARGET}-ld"
 export STRIP="${MLFS_TARGET}-strip"
 
 # Apply patches [from void-linux] .. works for version 10.2.0
-patch -Np0 -i ../patches/gcc-9.1.0-void-patches/ada-shared.patch
-patch -Np0 -i ../patches/gcc-9.1.0-void-patches/fix-cxxflags-passing.patch
-patch -Np0 -i ../patches/gcc-9.1.0-void-patches/fix-musl-execinfo.patch
-patch -Np0 -i ../patches/gcc-9.1.0-void-patches/libgcc-musl-ldbl128-config.patch
-patch -Np0 -i ../patches/gcc-9.1.0-void-patches/musl-ada.patch
-patch -Np0 -i ../patches/gcc-9.1.0-void-patches/no-stack_chk_fail_local.patch
-patch -Np0 -i ../patches/gcc-9.1.0-void-patches/non-nullness.patch
+patch -Np0 -i ../patches/gcc-9.1.0-void/ada-shared.patch
+patch -Np0 -i ../patches/gcc-9.1.0-void/fix-cxxflags-passing.patch
+patch -Np0 -i ../patches/gcc-9.1.0-void/fix-musl-execinfo.patch
+patch -Np0 -i ../patches/gcc-9.1.0-void/libgcc-musl-ldbl128-config.patch
+patch -Np0 -i ../patches/gcc-9.1.0-void/musl-ada.patch
+patch -Np0 -i ../patches/gcc-9.1.0-void/no-stack_chk_fail_local.patch
+patch -Np0 -i ../patches/gcc-9.1.0-void/non-nullness.patch
 # Fix CET for cross-compiling
 #patch -Np1 -i ../patches/gcc-10.1.0-Enable-CET-in-cross-compiler-if-possible.patch
 # Fixed in 10.2.0
