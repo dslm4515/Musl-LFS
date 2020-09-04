@@ -15,7 +15,9 @@ export STRIP="${MLFS_TARGET}-strip"
 autoreconf -vif
 
 # Apply patch
-patch -Np0 -i ../patches/coreutils-8.32-void-ls-restore-8.31-behavior-on-removed-directories.patch
+# looks like he named it different
+# patch -Np0 -i ../patches/coreutils-8.32-void-ls-restore-8.31-behavior-on-removed-directories.patch
+patch -Np0 -i ../patches/coreutils-void/0001-ls-restore-8.31-behavior-on-removed-directories.patch
 
 # Cross Compiling the configure script 
 # does not does not determine the correct 
