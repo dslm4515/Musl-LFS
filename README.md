@@ -33,11 +33,7 @@ The aim of this project is to create a create a Linux system using Musl (www.mus
 | i686-glibc   | i686-musl   | Pending |
 | x86_64-musl  | x86_64-musl | Pass |
 | x86_64-glibc | x86_64-musl | Pass |
-<<<<<<< HEAD
 | aarch64-glibc | aarch64-musl | Pass |
-=======
-| aarh64-glibc | aarch64-musl | Pass |
->>>>>>> stable-7.00
 | armv7l-glibc | armv7l-musl | Pass |
 | armv7l-musl  | armv7l-musl | Pending |
 | armv6-glibc  | armv6-musl  | Pending |
