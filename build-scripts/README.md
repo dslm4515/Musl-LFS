@@ -1,25 +1,18 @@
-# Musl LFS Build Scripts
+#  Musl-LFS Automated Build Script
 
-As a means of convenience, these buld scripts will automate building the cross tools and tool chain for x86 CPU's.
+As a means of convenience, these buld scripts will automate building the cross tools for x86 CPU's. Eventually there will be scripts to automate the tool-chain to build the final system.
 
-To Use:
-Unpack each pacakge and run script inside:
+## Usage
+
+Scripts should be placed in a `scripts` directory under the source tree, i.e. `$MLFS/sources/scripts` but executed in `$MLFS/sources`.
+
+To build the cross-tools:
 ```
-tar xf binutils-2.32.tar.xz
-cd binutils-2.32
-sh ../scripts/cross/01-binutils 2
+cd $MLFS/sources
+sh scripts/001-CT-BUILD 4
 ```
+Syntax: `001-CT-BUILD <number of make jobs>`
 
-Each build script accepts 1 argument for number of make jobs. For example, to buld with 8 make jobs (`-j8`) then:
-```
-sh ../scripts/cross/01-binutils 8
-```
+## Configuration
 
-Omiting the argument will run `make` without any specified number of jobs.
-
-
-Directory
-<ul>
-  <li>01-cross -- Build scripts to build `/cross-tools`</li>
-  <li>02-tools -- Build scripts to build `/tools` </li>
-</ul>
+The `000-autobuild.config` will be used to configure the build, such as setting target arch, and any often used code.`

@@ -1,0 +1,33 @@
+#! /bin/bash
+# syntax *.build <package.tar.xz> <number of make jobs>
+
+source $MLFS/sources/scripts/000-autobuild.config &&
+
+export PACKAGE=$(echo "$1" | sed -n '/\.tar\.gz$/s///p' )
+cd $PACKAGE &&
+############################################################
+echo "[ TC 1/31 - $PACKAGE ] Configuring ..." |& tee -a  ~/build.log && 
+./configure \
+  CROSS_COMPILE=${MLFS_TARGET}- \
+  --prefix=/ \
+  --target=${MLFS_TARGET} &&
+
+echo "[ TC 1/31 - $PACKAGE ] Compiling ..." |& tee -a  ~/build.log &&
+time { make $MJ ; } &&
+
+echo "[ TC 1/31 - $PACKAGE ] Installing ..." |& tee -a  ~/build.log &&
+make DESTDIR=/tools install &&
+
+case $(uname -m) in
+  x86_64)  rm -v  /tools/lib/ld-musl-x86_64.so.1
+           ln -sv libc.so /tools/lib/ld-musl-x86_64.so.1
+           ;;
+  i686)    rm -v  /tools/lib/ld-musl-i686.so.1
+           ln -sv libc.so /tools/lib/ld-musl-i686.so.1
+           ;;
+  arm*)    rm -v  /tools/lib/ld-musl-arm.so.1
+           ln -sv libc.so /tools/lib/ld-musl-arm.so.1
+           ;;
+esac &&
+############################################################
+cd .. && rm -rf $PACKAGE

@@ -1,0 +1,19 @@
+#! /bin/bash
+# syntax *.build <package.tar.xz> <number of make jobs>
+
+source $MLFS/sources/scripts/000-autobuild.config &&
+
+export PACKAGE=$(echo "$1" | sed -n '/\.tar\.gz$/s///p' )
+cd $PACKAGE &&
+############################################################
+echo "[ CT 6/6 - $PACKAGE ] Configure source..." |& tee -a  ~/build.log  &&
+./configure --prefix=/cross-tools \
+            --disable-libseccomp &&
+
+echo "[ CT 6/6 - $PACKAGE ] Compile.." |& tee -a  ~/build.log  &&
+make $MJ &&
+
+echo "[ CT 6/6 - $PACKAGE ] Install ..." |& tee -a  ~/build.log &&
+make install &&
+cd .. && rm -rf $PACKAGE
+

@@ -1,0 +1,51 @@
+# Final System: LibreSSL 3.2.1
+# This section is done in Chroot environment
+# Source: http://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-3.2.1.tar.gz
+# If building Rustc-1.28.0, use LibreSSL-2.7.5 instead
+
+# Apply patches (from alpine):
+#patch -Np1 -i ../patches/libressl-alpine/s_client-add-options-verify_.patch # for v3.1.4
+patch -Np1 -i ../patches/libressl-alpine/ssl-libcompat.patch
+#patch -Np1 -i ../patches/libressl-alpine/starttls-ldap.patch # for v3.1.4
+
+# Run autoreconf
+autoreconf -vif
+
+# Configure source
+case $(uname -m) in
+   x86_64) export EXTRACONFIG=""
+           ;;
+   i686)   export EXTRACONFIG="--disable-hardening"
+           ;;
+esac
+
+case $(uname -m) in
+ x86_64)  export EXTRACONFIG=""
+          export TRUPLE="x86_64-linux-musl"
+         ;;
+ i686)    export EXTRACONFIG="--disable-hardening"
+          export TRUPLE="i686-linux-musl"
+         ;;
+ armv7l)  export TRUPLE="armv7l-linux-musleabihf"
+         ;;
+ armv6l)  export TRUPLE="armv6l-linux-musleabihf""
+         ;;
+ aarch64) export TRUPLE="aarch64-linux-musleabihf"
+         ;;
+esac
+
+CFLAGS="-L/usr/lib $CFLAGS" \
+./configure \
+           --build=$TRUPLE \
+           --host=$TRUPLE \
+           --prefix=/usr \
+           --sysconfdir=/etc \
+           --mandir=/usr/share/man \
+           --localstatedir=/var $EXTRACONFIG
+
+
+unset EXTRACONFIG TRUPLE
+
+# Build and install
+make && make install
+

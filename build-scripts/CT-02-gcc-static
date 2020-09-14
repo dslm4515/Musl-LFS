@@ -1,0 +1,41 @@
+#! /bin/bash
+# syntax *.build <package.tar.xz> <number of make jobs>
+
+source $MLFS/sources/scripts/000-autobuild.config &&
+
+export PACKAGE=$(echo "$1" | sed -n '/\.tar\.xz$/s///p' )
+cd $PACKAGE &&
+############################################################
+echo "[ CT 3/6 - $PACKAGE Static ] Adding auxillary sources ..." |& tee -a  ~/build.log  &&
+tar -xf ../mpfr-*
+mv $( echo "$(ls ../mpfr-*)" | sed -n '/\.tar\.xz$/s///p' | cut -d "/" -f 2 ) mpfr
+tar -xf ../gmp-*
+mv $( echo "$(ls ../gmp-*)" | sed -n '/\.tar\.xz$/s///p' | cut -d "/" -f 2 ) gmp
+tar -xf ../mpc-* &&
+mv $( echo "$(ls ../mpc-*)" | sed -n '/\.tar\.gz$/s///p' | cut -d "/" -f 2 ) mpc
+
+echo "[ CT 3/6 - $PACKAGE Static ] Configure source..." |& tee -a  ~/build.log  &&
+mkdir -v build && cd  build &&
+CFLAGS='-g0 -O0' \
+CXXFLAGS='-g0 -O0' \
+../configure \
+          --prefix=/cross-tools --build=${MLFS_HOST} \
+          --host=${MLFS_HOST}   --target=${MLFS_TARGET} \
+          --with-sysroot=/cross-tools/${MLFS_TARGET} \
+          --disable-nls         --with-newlib  \
+          --disable-libitm     --disable-libvtv \
+          --disable-libssp     --disable-shared \
+          --disable-libgomp    --without-headers \
+          --disable-threads    --disable-multilib \
+          --disable-libatomic  --disable-libstdcxx \
+          --enable-languages=c --disable-libquadmath \
+          --disable-libsanitizer --with-arch=${MLFS_CPU} \
+          --disable-decimal-float --enable-clocale=generic &&
+
+echo "[ CT 3/6 - $PACKAGE Static ] Compile.." |& tee -a  ~/build.log &&
+make all-gcc all-target-libgcc $MJ  &&
+
+echo "[ CT 3/6 - $PACKAGE Static ] Install ..." |& tee -a  ~/build.log &&
+make install-gcc install-target-libgcc &&
+cd ../.. && rm -rf $PACKAGE 
+

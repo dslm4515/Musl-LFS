@@ -87,22 +87,26 @@ EOF
 
 
 case $(uname -m) in
-   x86_64) export MLFS_TARGET="x86_64-mlfs-linux-musl"
-           export MLFS_ARCH="x86"
-           export MLFS_CPU="x86-64"
-           ;;
-   i686)   export MLFS_TARGET="i686-mlfs-linux-musl"
-           export MLFS_ARCH="x86"
-           export MLFS_CPU="i686"
-           ;;
-   armv7l) export MLFS_TARGET="armv7l-mlfs-linux-musl"
-           export MLFS_ARCH="arm"
-           export MLFS_CPU="armv7-a"
-           ;;
-   armv6l) export MLFS_TARGET="armv6l-lfs-linux-musl"
-           export MLFS_ARCH="arm"
-           export MLFS_CPU="armv6"
-           ;;
+   x86_64)  export MLFS_TARGET="x86_64-mlfs-linux-musl"
+            export MLFS_ARCH="x86"
+            export MLFS_CPU="x86-64"
+            ;;
+   i686)    export MLFS_TARGET="i686-mlfs-linux-musl"
+            export MLFS_ARCH="x86"
+            export MLFS_CPU="i686"
+            ;;
+   armv7l)  export MLFS_TARGET="armv7l-mlfs-linux-musleabihf"
+            export MLFS_ARCH="arm"
+            export MLFS_CPU="armv7-a"
+            ;;
+   armv6l)  export MLFS_TARGET="armv6l-lfs-linux-musleabihf"
+            export MLFS_ARCH="arm"
+            export MLFS_CPU="armv6"
+            ;;
+   aarch64) export MLFS_TARGET="aarch64-mlfs-linux-musleabihf"
+            export MLFS_ARCH="arm64"
+            export MLFS_CPU="armv8-a"
+            ;;
 esac
 
 export MLFS_HOST="$(echo $MACHTYPE | \
@@ -113,7 +117,7 @@ cat >> ~/.bashrc << EOF
 export MLFS_HOST="${MLFS_HOST}"
 export MLFS_TARGET="${MLFS_TARGET}"
 export MLFS_ARCH="${MLFS_ARCH}"
-export MLFS_CPU="${MLFS_CPU}
+export MLFS_CPU="${MLFS_CPU}"
 EOF
 source ~/.bashrc
 

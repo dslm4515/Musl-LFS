@@ -1,0 +1,31 @@
+# Final System: Libelf 
+# Source: https://sourceware.org/ftp/elfutils/0.180/elfutils-0.180.tar.bz2
+# This section is done in Chroot environment
+
+# Add missing files
+cp -vr ../files/elfuilts-void/error.h lib/
+cp -vr ../files/elfutils-void/error.h src/
+
+# Patch source for musl
+patch -Np0 -i ../patches/elfutils-void/fix-aarch64_fregs.patch
+patch -Np0 -i ../patches/elfutils-void/musl-cdefs.patch
+patch -Np0 -i ../patches/elfutils-void/musl-fts-obstack.patch
+patch -Np0 -i ../patches/elfutils-void/musl-macros.patch
+patch -Np0 -i ../patches/elfutils-void/musl-qsort_r.patch
+patch -Np0 -i ../patches/elfutils-void/musl-strerror_r.patch
+patch -Np0 -i ../patches/elfutils-void/musl-strndupa.patch
+patch -Np0 -i ../patches/elfutils-void/fix-uninitialized.patch
+patch -Np0 -i ../patches/elfutils-void/musl-asm_ptrace_h.patch
+
+# Re-create configure script
+autoreconf -ifv
+
+# Configure source & build
+CFLAGS="-Wno-error -Wno-error=null-dereference" \
+./configure --prefix=/usr --disable-debuginfod && make
+
+# Install library
+make -C libelf install
+
+# Install pkgconfig file for library
+install -vm644 config/libelf.pc /usr/lib/pkgconfig

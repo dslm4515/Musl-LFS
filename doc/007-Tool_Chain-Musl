@@ -23,5 +23,14 @@ case $(uname -m) in
   arm*)    rm -v  /tools/lib/ld-musl-arm.so.1
            ln -sv libc.so /tools/lib/ld-musl-arm.so.1
            ;;
+  aarch64) rm -v /tools/lib/ld-musl-aarch64.so.1
+           ln -sv libc.so /tools/lib/ld-musl-aarch64.so.1
+           ;;
 esac
+
+# Create dynamic linker config
+cat > /tools/etc/ld-musl-$(uname -m).path << "EOF"
+/tools/lib
+EOF
+
 

@@ -1,6 +1,6 @@
 # Cross-Tools: Binutils
 # Build and install as mlfs
-# source: http://ftp.gnu.org/gnu/binutils/binutils-2.32.tar.xz
+# source: http://ftp.gnu.org/gnu/binutils/binutils-2.34.tar.xz
 
 # Create build directory in-tree
 mkdir -v build && cd build

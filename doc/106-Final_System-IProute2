@@ -1,0 +1,11 @@
+# Final System: IProute2 
+# Source: https://www.kernel.org/pub/linux/utils/net/iproute2/iproute2-5.8.0.tar.xz
+# This section is done in Chroot environment
+
+patch -Np0 -i ../patches/iproute2-void/fix-musl-devlink.patch
+
+sed -i /ARPD/d Makefile
+rm -fv man/man8/arpd.8
+sed -i 's/.m_ipt.o//' tc/Makefile
+
+make && make DOCDIR=/usr/share/doc/iproute2-5.8.0 install

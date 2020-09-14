@@ -1,0 +1,30 @@
+# Final System: Util-Linux
+# Source: https://www.kernel.org/pub/linux/utils/util-linux/v2.36/util-linux-2.36.tar.xz
+# This section is done in Chroot environment
+
+patch -Np0 -i ../patches/util-linux-void/fix-musl.patch
+
+mkdir -pv /var/lib/hwclock
+rm -vf /usr/include/{blkid,libmount,uuid}
+
+# musl needs this for switch_root(8).
+export CFLAGS="-D_DIRENT_HAVE_D_TYPE"
+
+NOCONFIGURE=1 ./autogen.sh
+
+./configure ADJTIME_PATH=/var/lib/hwclock/adjtime   \
+            --docdir=/usr/share/doc/util-linux-2.36 \
+            --disable-chfn-chsh  \
+            --disable-login      \
+            --disable-nologin    \
+            --disable-su         \
+            --disable-setpriv    \
+            --disable-runuser    \
+            --disable-pylibmount \
+            --disable-static     \
+            --without-python     \
+            --without-systemd    \
+            --without-systemdsystemunitdir
+make && make install
+
+unset CFLAGS

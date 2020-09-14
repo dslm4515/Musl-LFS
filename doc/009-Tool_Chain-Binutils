@@ -1,0 +1,40 @@
+# Tool Chain: Binutils
+# Build and install as mlfs
+
+# Set the environment to corss-compile with cross-tools
+export CC="${MLFS_TARGET}-gcc"
+export CXX="${MLFS_TARGET}-g++"
+export AR="${MLFS_TARGET}-ar"
+export AS="${MLFS_TARGET}-as"
+export RANLIB="${MLFS_TARGET}-ranlib"
+export LD="${MLFS_TARGET}-ld"
+export STRIP="${MLFS_TARGET}-strip"
+
+# Link directories so libraries can be found in both lib & lib64
+case $(uname -m) in
+	x86_64) ln -sv lib /tools/lib64 ;;
+esac
+
+# Configure in dedicated build directory
+mkdir -v build && cd build
+../configure --prefix=/tools            \
+             --with-lib-path=/tools/lib \
+             --build=${MLFS_HOST}       \
+             --host=${MLFS_TARGET}      \
+             --target=${MLFS_TARGET}    \
+             --disable-nls              \
+             --disable-werror           \
+             --with-sysroot
+# Build
+make
+
+# Install
+make install
+
+# Clean source to rebuild linker
+make -C ld clean
+
+# Build and install linker that will be used later after adjusting toolchain
+make -C ld LIB_PATH=/usr/lib:/lib 
+cp -v ld/ld-new /tools/bin
+

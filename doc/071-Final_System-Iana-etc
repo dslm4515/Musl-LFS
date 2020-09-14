@@ -1,5 +1,0 @@
-# Final System: Iana-etc
-# Source: http://anduin.linuxfromscratch.org/LFS/iana-etc-2.30.tar.bz2
-# This section is done in Chroot environment
-
-make && make install

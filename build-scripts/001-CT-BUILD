@@ -1,0 +1,18 @@
+#! /bin/bash
+# Run script in $MLFS/sources
+# Syntax 001-CT_BUILD <number of make jobs>
+
+
+SRCPKG="$( ls linux-* )" &&
+sh scripts/CT-00-headers $SRCPKG  $1 &&
+SRCPKG="$( ls binutils-* )" &&
+sh scripts/CT-01-binutils $SRCPKG  $1 &&
+SRCPKG="$( ls gcc-* )" &&
+sh scripts/CT-02-gcc-static $SRCPKG $1 &&
+SRCPKG="$( ls musl-* )" &&
+sh scripts/CT-03-musl $SRCPKG $1 &&
+SRCPKG="$( ls gcc-* )" &&
+sh scripts/CT-04-gcc-final $SRCPKG $1 &&
+SRCPKG="$( ls file-* )" &&
+sh scripts/CT-05-file $SRCPKG $1
+
