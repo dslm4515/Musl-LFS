@@ -21,7 +21,7 @@ make && make  install
 # provide minimal libssp_nonshared.a so we don't need libssp from gcc
 /tools/bin/$(uname -m)-mlfs-*-gcc -fpie -c ../files/__stack_chk_fail_local.c -o __stack_chk_fail_local.o
 /tools/bin/$(uname -m)-mlfs-*-gcc-ar r libssp_nonshared.a __stack_chk_fail_local.o
-cp -v libssp_noshared.a /usr/lib/
+cp -v libssp_nonshared.a /usr/lib/
 
 case $(uname -m) in
   x86_64) export ARCH="x86_64"
