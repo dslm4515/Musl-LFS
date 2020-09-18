@@ -101,6 +101,17 @@ su nobody -s /bin/bash -c "PATH=$PATH make -k check"
 # Install
 make install
 
+# Build useful utilities
+cc -fpie ../../files/gcc/getent.c -o getent
+cc -fpie ../../files/gcc/getconf.c -o getconf
+cc -fpie ../../files/gcc/iconv.c -o iconv
+
+cp -v getent  /usr/bin/
+cp -v getconf /usr/bin/
+cp -v iconv   /usr/bin/
+cp -v ../../files/gcc/getent.1   /usr/share/man/man1/
+cp -v ../../files/gcc/getconf.1  /usr/share/man/man1/
+
 # Create a symlink required by the FHS for "historical" reasons
 ln -sv ../usr/bin/cpp /lib
 
@@ -153,15 +164,4 @@ grep 'SEARCH.*/usr/lib' dummy.log |sed 's|; |\n|g'
 
 # If all is well, remove test files:
 rm -v dummy.c a.out dummy.log
-
-# Build useful utilities
-cc -fpie ../../files/gcc/getent.c -o getent
-cc -fpie ../../files/gcc/getconf.c -o getconf
-cc -fpie ../../files/gcc/iconv.c -o iconv
-
-cp -v getent  /usr/bin/
-cp -v getconf /usr/bin/
-cp -v iconv   /usr/bin/
-cp -v ../../files/gcc/getent.1   /usr/share/man/man1/
-cp -v ../../files/gcc/getconf.1  /usr/share/man/man1/
 
