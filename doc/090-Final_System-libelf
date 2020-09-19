@@ -3,7 +3,7 @@
 # This section is done in Chroot environment
 
 # Add missing files
-cp -vr ../files/elfuilts-void/error.h lib/
+cp -vr ../files/elfutils-void/error.h lib/
 cp -vr ../files/elfutils-void/error.h src/
 
 # Patch source for musl
