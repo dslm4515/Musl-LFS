@@ -11,14 +11,7 @@ patch -Np1 -i ../patches/libressl-alpine/ssl-libcompat.patch
 # Run autoreconf
 autoreconf -vif
 
-# Configure source
-case $(uname -m) in
-   x86_64) export EXTRACONFIG=""
-           ;;
-   i686)   export EXTRACONFIG="--disable-hardening"
-           ;;
-esac
-
+# Set a few variables ...
 case $(uname -m) in
  x86_64)  export EXTRACONFIG=""
           export TRUPLE="x86_64-linux-musl"
@@ -28,7 +21,7 @@ case $(uname -m) in
          ;;
  armv7l)  export TRUPLE="armv7l-linux-musleabihf"
          ;;
- armv6l)  export TRUPLE="armv6l-linux-musleabihf""
+ armv6l)  export TRUPLE="armv6l-linux-musleabihf"
          ;;
  aarch64) export TRUPLE="aarch64-linux-musleabihf"
          ;;
