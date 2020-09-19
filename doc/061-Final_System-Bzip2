@@ -2,8 +2,8 @@
 # Source: http://anduin.linuxfromscratch.org/LFS/bzip2-1.0.8.tar.gz
 # This section is done in Chroot environment
 
-patch -Np1 -i ../patches/bzip2-1.0.8-void/install_docs-1.patch
-patch -Np0 -i ../patches/bzip2-1.0.8-void/soname.patch
+patch -Np1 -i ../patches/bzip2-void/install_docs-1.patch
+patch -Np0 -i ../patches/bzip2-void/soname.patch
 sed -i 's@\(ln -s -f \)$(PREFIX)/bin/@\1@' Makefile
 sed -i "s@(PREFIX)/man@(PREFIX)/share/man@g" Makefile
 
