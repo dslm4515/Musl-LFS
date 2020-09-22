@@ -2,9 +2,6 @@
 # Source: http://ftp.gnu.org/gnu/findutils/findutils-4.7.0.tar.xz
 # This section is done in Chroot environment
 
-# Suppress a test which on some machines can loop forever: 
-sed -i 's/test-lock..EXEEXT.//' tests/Makefile.in
-
 # Configure source
 ./configure --prefix=/usr --localstatedir=/var/lib/locate
 
