@@ -15,20 +15,19 @@ tar -xf ../mpc-* &&
 mv $( echo "$(ls ../mpc-*)" | sed -n '/\.tar\.gz$/s///p' | cut -d "/" -f 2 ) mpc &&
 
 echo "[ CT 5/6 - $PACKAGE Final ] Patching  source..." |& tee -a  ~/build.log  &&
-patch -Np0 -i ../patches/gcc-9.1.0-void-patches/0010-ldbl128-config.patch 
-patch -Np0 -i ../patches/gcc-9.1.0-void-patches/ada-shared.patch
-patch -Np0 -i ../patches/gcc-9.1.0-void-patches/fix-cxxflags-passing.patch
-patch -Np0 -i ../patches/gcc-9.1.0-void-patches/fix-musl-execinfo.patch
-patch -Np0 -i ../patches/gcc-9.1.0-void-patches/libgcc-musl-ldbl128-config.patch
-patch -Np0 -i ../patches/gcc-9.1.0-void-patches/musl-ada.patch
-patch -Np0 -i ../patches/gcc-9.1.0-void-patches/no-stack_chk_fail_local.patch
-patch -Np0 -i ../patches/gcc-9.1.0-void-patches/non-nullness.patch
+patch -Np0 -i ../patches/gcc-9.1.0-void/ada-shared.patch
+patch -Np0 -i ../patches/gcc-9.1.0-void/fix-cxxflags-passing.patch
+patch -Np0 -i ../patches/gcc-9.1.0-void/fix-musl-execinfo.patch
+patch -Np0 -i ../patches/gcc-9.1.0-void/libgcc-musl-ldbl128-config.patch
+patch -Np0 -i ../patches/gcc-9.1.0-void/musl-ada.patch
+patch -Np0 -i ../patches/gcc-9.1.0-void/no-stack_chk_fail_local.patch
+patch -Np0 -i ../patches/gcc-9.1.0-void/non-nullness.patch
 case $(uname -m) in
   x86_64)
     sed -e '/m64=/s/lib64/lib/' \
         -i.orig gcc/config/i386/t-linux64
  ;;
-esac
+esac &&
 echo "[ CT 5/6 - $PACKAGE Final ] Configure source..." |& tee -a  ~/build.log  &&
 mkdir -v build && cd  build &&
 AR=ar LDFLAGS="-Wl,-rpath,/cross-tools/lib" \
