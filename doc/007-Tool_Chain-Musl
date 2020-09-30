@@ -16,20 +16,25 @@ make && make DESTDIR=/tools install
 case $(uname -m) in
   x86_64)  rm -v  /tools/lib/ld-musl-x86_64.so.1
            ln -sv libc.so /tools/lib/ld-musl-x86_64.so.1
+           export barch=$(uname -m)
            ;;
-  i686)    rm -v  /tools/lib/ld-musl-i686.so.1
-           ln -sv libc.so /tools/lib/ld-musl-i686.so.1
+  i686)    rm -v  /tools/lib/ld-musl-i386.so.1
+           ln -sv libc.so /tools/lib/ld-musl-i386.so.1
+	   export barch=i386
            ;;
   arm*)    rm -v  /tools/lib/ld-musl-arm.so.1
            ln -sv libc.so /tools/lib/ld-musl-arm.so.1
+           export barch=arm
            ;;
   aarch64) rm -v /tools/lib/ld-musl-aarch64.so.1
            ln -sv libc.so /tools/lib/ld-musl-aarch64.so.1
+           export barch=$(uname -m)
            ;;
 esac
 
 # Create dynamic linker config
-cat > /tools/etc/ld-musl-$(uname -m).path << "EOF"
+mkdir -pv /tools/etc &&
+cat > /tools/etc/ld-musl-$(barch).path << "EOF"
 /tools/lib
 EOF
 
