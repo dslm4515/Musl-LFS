@@ -1,7 +1,7 @@
 # Adjust Cross Tool Chain
 #
 # Adjustment is needed when Host has a different libc than target.
-# Otherwise GCC Pass1 of /tools will fail to build
+# Otherwise GCC of /tools will fail to build
 
 # Dump current cross-gcc specs 
 export SPECFILE=`dirname $(${MLFS_TARGET}-gcc -print-libgcc-file-name)`/specs
