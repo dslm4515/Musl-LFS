@@ -1,5 +1,5 @@
 # Toolchain: Findutils - 4.7.0
-# Source: http://ftp.gnu.org/gnu/findutils/findutils-4.7.0.tar.gz
+# Source: http://ftp.gnu.org/gnu/findutils/findutils-4.7.0.tar.xz
 # Build and install as mlfs
 
 # Set the environment for cross-compiling if not done already.
