@@ -15,5 +15,4 @@ make ARCH=${MLFS_ARCH} headers_check
 make ARCH=${MLFS_ARCH} headers
 mkdir -pv /cross-tools/${MLFS_TARGET}/include
 cp -rv usr/include/* /cross-tools/${MLFS_TARGET}/include
-# rm -v /cross-tools/${MLFS_TARGET}/include/MakeFile
-# Looks like Makefile no longer found
+rm -v /cross-tools/${MLFS_TARGET}/include/Makefile
