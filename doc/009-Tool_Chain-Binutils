@@ -1,7 +1,7 @@
 # Tool Chain: Binutils
 # Build and install as mlfs
 
-# Set the environment to corss-compile with cross-tools
+# Set the environment to cross-compile with cross-tools
 export CC="${MLFS_TARGET}-gcc"
 export CXX="${MLFS_TARGET}-g++"
 export AR="${MLFS_TARGET}-ar"
