@@ -44,9 +44,9 @@ ac7ec9cedad48f4c279251cddc72008a  kbd-2.3.0.tar.xz
 f22cd619e04ae7b88a6a0c109b9523eb  libcap-2.42.tar.xz
 6313289e32f1d38a9df4770b014a2ca7  libffi-3.3.tar.gz
 dad443d0911cf9f0f1bd90a334bc9004  libpipeline-1.5.3.tar.gz
-5dfba5fa8e173b0838844c4ab6f5b483  libressl-3.0.0.tar.gz
+d2f6cc43c6155e834228256a27d80163  libressl-3.2.1.tar.gz
 1bfb9b923f2c1339b4d2ce1807064aa5  libtool-2.4.6.tar.xz
-c75898eb9458e4b424fa38cbe6e24cb8  linux-5.8.12.tar.xz
+ee17763117af02637f9f98bfeee32a09  linux-5.8.1.tar.xz
 c0061730d017ea593a09308edc547128  lzip-1.21.tar.gz
 730bb15d96fffe47e148d1e09235af82  m4-1.4.18.tar.xz
 fc7a67ea86ace13195b0bce683fd4469  make-4.3.tar.gz
@@ -70,7 +70,6 @@ e8dc8455e573bdc40b8381d572bbb89b  procps-ng-3.3.16.tar.xz
 6d906edfdb3202304059233f51f9a71d  sed-4.8.tar.xz
 4b05eff8a427cf50e615bda324b5bc45  shadow-4.8.1.tar.xz
 da4c3f1adcd8a204ae9c5fcff4ce4a9a  skalibs-2.9.2.1.tar.gz
-402a54bdde58dec411ea844b75cf5804  tar-1.13.tar.gz
 83e38700a80a26e30b2df054e69956e5  tar-1.32.tar.xz
 97c55573f8520bcab74e21bfd8d0aadc  tcl8.6.10-src.tar.gz
 d4c5d8cc84438c5993ec5163a59522a6  texinfo-6.7.tar.xz
@@ -81,7 +80,6 @@ fe7c0f7e439f08970e462c9d44599903  util-linux-2.36.tar.xz
 bce0b5de0cf2519a74fbfacead60369d  v1.2.7.tar.gz
 3b3b1e3b131ea9a888aec8a557fbaedd  v2.7.2.2.tar.gz
 e07b0c1e71aa059cdfddc7c93c00c62a  vim-8.2.1361.tar.gz
-097ff1a324ae02e0a3b0369f07a7544a  which-2.21.tar.gz
 aa1621ec7013a19abab52a8aff04fe5b  xz-5.2.5.tar.xz
 85adef240c5f370b308da8c938951a68  zlib-1.2.11.tar.xz
 dd0b53631303b8f972dafa6fd34beb0c  zstd-1.4.5.tar.gz
