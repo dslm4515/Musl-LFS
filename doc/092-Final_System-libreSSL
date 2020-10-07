@@ -1,12 +1,12 @@
 # Final System: LibreSSL 3.2.1
 # This section is done in Chroot environment
 # Source: http://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-3.2.1.tar.gz
-# If building Rustc-1.28.0, use LibreSSL-2.7.5 instead
+# If building Rustc-1.45.1, use LibreSSL-3.0.0 instead
 
 # Apply patches (from alpine):
-#patch -Np1 -i ../patches/libressl-alpine/s_client-add-options-verify_.patch # for v3.1.4
+#patch -Np1 -i ../patches/libressl-alpine/s_client-add-options-verify_.patch # for v3.x.x
 patch -Np1 -i ../patches/libressl-alpine/ssl-libcompat.patch
-#patch -Np1 -i ../patches/libressl-alpine/starttls-ldap.patch # for v3.1.4
+#patch -Np1 -i ../patches/libressl-alpine/starttls-ldap.patch # for v3.x.x
 
 # Run autoreconf
 autoreconf -vif
