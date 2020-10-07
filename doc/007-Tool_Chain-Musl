@@ -34,7 +34,7 @@ esac
 
 # Create dynamic linker config
 mkdir -pv /tools/etc &&
-cat > /tools/etc/ld-musl-$(barch).path << "EOF"
+cat > /tools/etc/ld-musl-${barch}.path << "EOF"
 /tools/lib
 EOF
 

@@ -26,4 +26,4 @@ make && make install
 # Install Headers and create link
 chmod -v u+w /tools/lib/libtcl8.6.so
 make install-private-headers
-ln -sv tclsh8.6 /tools/bin/tcls
+ln -sv tclsh8.6 /tools/bin/tclsh
