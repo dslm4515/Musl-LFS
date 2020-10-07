@@ -17,7 +17,7 @@ case $(uname -m) in
          export TRUPLE="armv7l-linux-musleabihf"
          ;;
  armv6l) export ARCH="armv6"
-         export TRUPLE="armv6l-linux-musleabihf""
+         export TRUPLE="armv6l-linux-musleabihf"
          ;;
  aarch64) export ARCH="armv8-a"
           export TRUPLE="aarch64-linux-musleabihf"
