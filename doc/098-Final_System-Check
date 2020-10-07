@@ -7,4 +7,4 @@
 make && make install
 
 # Fix a script
-#sed -i '1 s/tools/usr/' /usr/bin/checkmk
+sed -i '1 s/tools/usr/' /usr/bin/checkmk
