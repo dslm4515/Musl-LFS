@@ -10,7 +10,7 @@ sed -i 's/test-lock..EXEEXT.//' gettext-tools/gnulib-tests/Makefile.in
 ./configure --prefix=/usr    \
             --disable-static \
             --with-included-gettext \
-            -enable-threads=posix   \
+            --enable-threads=posix   \
             --disable-rpath \
             --docdir=/usr/share/doc/gettext-0.21  gl_cv_func_gettimeofday_clobber=no &&
 
