@@ -1,6 +1,7 @@
 3171c5e93904bd7666b5f807d41721be  MLFS-S6-Bootscripts-3.02.tar.xz
 35b5a3d0254c1c59be9736373d429db7  Python-3.8.5.tar.xz
 80bb18a8e6240fcf7ec2f7b57601c170  XML-Parser-2.46.tar.gz
+007aabf1dbb550bcddde52a244cd1070  acl-2.2.53.tar.gz
 720704bac078d067111b32444e24ba69  argp-standalone-1.3.tar.gz
 bc1e5cb5c96d99b24886f1f527d3bb3d  attr-2.4.48.tar.gz
 50f97f4159805e374639a73e2636f22e  autoconf-2.69.tar.xz
@@ -50,6 +51,7 @@ ee17763117af02637f9f98bfeee32a09  linux-5.8.1.tar.xz
 c0061730d017ea593a09308edc547128  lzip-1.21.tar.gz
 730bb15d96fffe47e148d1e09235af82  m4-1.4.18.tar.xz
 fc7a67ea86ace13195b0bce683fd4469  make-4.3.tar.gz
+4c8721faa54a4c950c640e5e5c713fb0  man-db-2.9.3.tar.xz
 ee4161cbf5ba59be7419937e063252d9  man-pages-5.08.tar.xz
 90c68b7fbb792d734f49957e63756b6c  meson-0.55.1.tar.gz
 4125404e41e482ec68282a2e687f6c73  mpc-1.1.0.tar.gz
