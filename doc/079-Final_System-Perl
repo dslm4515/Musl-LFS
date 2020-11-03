@@ -29,7 +29,8 @@ sh Configure -des -Dprefix=/usr                                \
                   -Dman3dir=/usr/share/man/man3                \
                   -Dpager="/usr/bin/less -isR"                 \
                   -Duseshrplib                                 \
-                  -Dusethreads
+                  -Dusethreads                                 \
+                  -Dcccdlflags='-fPIC' -Dccdlflags='-rdynamic'
 make && make install
 export CFLAGS=$CF_OLD
 unset BUILD_ZLIB BUILD_BZIP2 CF_OLD
