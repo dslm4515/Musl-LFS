@@ -5,6 +5,7 @@
 ./configure --prefix=/usr                       \
             --docdir=/usr/share/doc/bash-5.0 \
             --without-bash-malloc               \
-            --with-installed-readline
+            --with-installed-readline \
+            --with-curses 
 make && make install
 mv -vf /usr/bin/bash /bin
