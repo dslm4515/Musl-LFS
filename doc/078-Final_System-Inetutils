@@ -2,6 +2,9 @@
 # Source: http://ftp.gnu.org/gnu/inetutils/inetutils-1.9.4.tar.xz
 # This section is done in Chroot environment
 
+# Apply patch for utmpx support
+patch -Np1 -i ../patches/inetutils-mlfs/logwtmp.patch
+
 ./configure --prefix=/usr        \
             --localstatedir=/var \
             --disable-logger     \

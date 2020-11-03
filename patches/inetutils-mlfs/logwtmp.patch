@@ -1,0 +1,12 @@
+diff -uNr inetutils-1.9.4.orig/libinetutils/logwtmpko.c inetutils-1.9.4/libinetutils/logwtmpko.c
+--- inetutils-1.9.4.orig/libinetutils/logwtmpko.c	2015-03-31 15:40:48.000000000 +0000
++++ inetutils-1.9.4/libinetutils/logwtmpko.c	2020-10-30 23:49:16.601844196 +0000
+@@ -32,7 +32,7 @@
+  */
+ #if defined HAVE_UPDWTMPX && !defined HAVE_LOGWTMP
+ void
+-logwtmp (char *line, char *name, char *host)
++logwtmp (char const *line, char const *name, const char *host)
+ {
+   struct utmpx ut;
+   struct timeval tv;
