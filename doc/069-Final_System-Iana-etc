@@ -1,5 +1,5 @@
 # Final System: Iana-etc
-# Source: http://anduin.linuxfromscratch.org/LFS/iana-etc-20200429.tar.gz
+# Source: https://github.com/Mic92/iana-etc/releases/download/20201012/iana-etc-20201012.tar.gz
 # This section is done in Chroot environment
 
 cp services protocols /etc
