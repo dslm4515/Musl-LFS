@@ -7,11 +7,15 @@ patch -Np0 -i ../patches/util-linux-void/fix-musl.patch
 mkdir -pv /var/lib/hwclock
 rm -vf /usr/include/{blkid,libmount,uuid}
 
+cp -v ../files/util-linux-adelie/ttydefaults.h include/
+libtoolize --force && aclocal -I m4 && autoconf -v && automake --add-missing
+
 # musl needs this for switch_root(8).
 export CFLAGS="-D_DIRENT_HAVE_D_TYPE"
 
 NOCONFIGURE=1 ./autogen.sh
 
+LIBS="-lutmps -lskarnet" \
 ./configure ADJTIME_PATH=/var/lib/hwclock/adjtime   \
             --docdir=/usr/share/doc/util-linux-2.36 \
             --disable-chfn-chsh  \
