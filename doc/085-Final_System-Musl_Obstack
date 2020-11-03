@@ -4,5 +4,6 @@
 
 sed -i "/pkgconfig_DATA/i pkgconfigdir=/usr/lib/pkgconfig" Makefile.am
 ./bootstrap.sh
-./configure --prefix=/usr
+CFLAGS=" -fPIC" \
+./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var
 make && make install
