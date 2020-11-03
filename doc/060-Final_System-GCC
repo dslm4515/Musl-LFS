@@ -3,19 +3,29 @@
 # Source: http://isl.gforge.inria.fr/isl-0.19.tar.xz
 # This section is done in Chroot environment
 
+# Options based on architecture
 case $(uname -m) in
   x86_64) export TRUPLE="x86_64-linux-musl"
+          export EXTRA_CONFIG=" --with-arch=x86-64"
           ;;
   i686)   export TRUPLE="i686-linux-musl"
+          export EXTRA_CONFIG=" --with-arch=pentium3 --with-tune=pentium-m"
           ;;
   armv7l) export TRUPLE="armv7l-linux-musleabihf"
+          export EXTRA_CONFIG=" --with-arch=armv7-a --with-tune=generic-armv7-a --with-fpu=vfpv3-d16 --with-float=hard --with-abi=aapcs-linux --with-mode=thumb"
           ;;
   armv6l) export TRUPLE="armv6l-linux-musleabihf"
+          export EXTRA_CONFIG=" --with-arch=armv6zk --with-tune=arm1176jzf-s --with-fpu=vfp --with-float=hard --with-abi=aapcs-linux"
           ;;
   aarch64) export TRUPLE="aarch64-linux-musleabihf"
-           export EXTRA_CONFIG=" --with-arch=armv8-a --with-abi=lp64"
+           export EXTRA_CONFIG=" --with-arch=armv8-a --with-abi=lp64 --enable-fix-cortex-a53-835769 --enable-fix-cortex-a53-843419"
            sed -i '/m64=/s/lib64/lib/' gcc/config/aarch64/t-aarch64-linux
           ;;
+esac
+
+# libitm has TEXTRELs in ARM build, so disable for now
+case $(uname -m) in
+     arm*) export LIBITM=false ;;
 esac
 
 # Add isl source
@@ -23,12 +33,37 @@ tar -xf ../isl-0.19.tar.xz
 mv -v isl-0.19 isl
 
 # Apply patches [from alpine-linux]
-for p in 0001-posix_memalign.patch 0002-gcc-poison-system-directories.patch 0003-Turn-on-Wl-z-relro-z-now-by-default.patch 0004-Turn-on-D_FORTIFY_SOURCE-2-by-default-for-C-C-ObjC-O.patch 0005-On-linux-targets-pass-as-needed-by-default-to-the-li.patch 0006-Enable-Wformat-and-Wformat-security-by-default.patch 0007-Enable-Wtrampolines-by-default.patch 0008-Disable-ssp-on-nostdlib-nodefaultlibs-and-ffreestand.patch 0009-Ensure-that-msgfmt-doesn-t-encounter-problems-during.patch 0010-Don-t-declare-asprintf-if-defined-as-a-macro.patch 0011-libiberty-copy-PIC-objects-during-build-process.patch 0012-libitm-disable-FORTIFY.patch 0013-libgcc_s.patch 0014-nopie.patch 0015-libffi-use-__linux__-instead-of-__gnu_linux__-for-mu.patch 0016-dlang-update-zlib-binding.patch 0017-dlang-fix-fcntl-on-mips-add-libucontext-dep.patch 0018-ada-fix-shared-linking.patch 0019-build-fix-CXXFLAGS_FOR_BUILD-passing.patch 0020-libstdc-futex-add-time64-compatibility.patch 0021-add-fortify-headers-paths.patch 0022-Alpine-musl-package-provides-libssp_nonshared.a.-We-.patch 0023-DP-Use-push-state-pop-state-for-gold-as-well-when-li.patch 0024-Pure-64-bit-MIPS.patch 0025-use-pure-64-bit-configuration-where-appropriate.patch 0026-always-build-libgcc_eh.a.patch 0027-ada-libgnarl-compatibility-for-musl.patch 0028-ada-musl-support-fixes.patch; do
- patch -Np1 -i ../patches/gcc-10.2.0-alpine/$p
+for p in 0001-posix_memalign.patch \
+         0002-gcc-poison-system-directories.patch \
+         0003-Turn-on-Wl-z-relro-z-now-by-default.patch \
+         0004-Turn-on-D_FORTIFY_SOURCE-2-by-default-for-C-C-ObjC-O.patch \
+         0005-On-linux-targets-pass-as-needed-by-default-to-the-li.patch \
+         0006-Enable-Wformat-and-Wformat-security-by-default.patch \
+         0007-Enable-Wtrampolines-by-default.patch \
+         0008-Disable-ssp-on-nostdlib-nodefaultlibs-and-ffreestand.patch \
+         0009-Ensure-that-msgfmt-doesn-t-encounter-problems-during.patch \
+         0010-Don-t-declare-asprintf-if-defined-as-a-macro.patch \
+         0011-libiberty-copy-PIC-objects-during-build-process.patch \
+         0012-libitm-disable-FORTIFY.patch 0013-libgcc_s.patch \
+         0014-nopie.patch 0015-libffi-use-__linux__-instead-of-__gnu_linux__-for-mu.patch \
+         0016-dlang-update-zlib-binding.patch \
+         0017-dlang-fix-fcntl-on-mips-add-libucontext-dep.patch \
+         0018-ada-fix-shared-linking.patch \
+         0019-build-fix-CXXFLAGS_FOR_BUILD-passing.patch \
+         0020-libstdc-futex-add-time64-compatibility.patch \
+         0021-add-fortify-headers-paths.patch \
+         0022-Alpine-musl-package-provides-libssp_nonshared.a.-We-.patch \
+         0023-DP-Use-push-state-pop-state-for-gold-as-well-when-li.patch \
+         0024-Pure-64-bit-MIPS.patch \
+         0025-use-pure-64-bit-configuration-where-appropriate.patch \
+         0026-always-build-libgcc_eh.a.patch \
+         0027-ada-libgnarl-compatibility-for-musl.patch \
+         0028-ada-musl-support-fixes.patch; do
+    patch -Np1 -i ../patches/gcc-10.2.0-alpine/$p
 done
 
 # Apply patches [from void-linux] .. works for version 10.2.0
-patch -Np0 -i ../patches/gcc-9.1.0-void-patches/fix-musl-execinfo.patch
+patch -Np0 -i ../patches/gcc-9.1.0-void/fix-musl-execinfo.patch
 
 # If building on x86_64, change the default 
 # directory name for 64-bit libraries to “lib”:
@@ -82,7 +117,9 @@ SED=sed  libat_cv_have_ifunc=no       \
              --disable-libsanitizer \
              --disable-target-libiberty \
              --disable-libunwind-exceptions \
-             --disable-libssp --disable-libmpx --disable-libmudflap $EXTRA_CONFIG 
+             --disable-libssp --disable-libmpx \
+             --disable-libmudflap $EXTRA_CONFIG 
+             # --with-pkgversion="Musl-LFS 8.00"  
 
 # Build
 make
@@ -101,7 +138,8 @@ su nobody -s /bin/bash -c "PATH=$PATH make -k check"
 # Install
 make install
 
-# Build useful utilities
+# Build useful utilities.. according to Adelie Linux, these are for BSD-Compatibility.
+# It may be done seperately as a package in the future. 
 cc -fpie ../../files/musl/getent.c -o getent
 cc -fpie ../../files/musl/getconf.c -o getconf
 cc -fpie ../../files/musl/iconv.c -o iconv
@@ -113,7 +151,7 @@ cp -v ../../files/musl/getent.1   /usr/share/man/man1/
 cp -v ../../files/musl/getconf.1  /usr/share/man/man1/
 
 # Create a symlink required by the FHS for "historical" reasons
-ln -sv ../usr/bin/cpp /lib
+ln -sv ../usr/bin/cpp /lib/cpp
 
 # Many packages use the name cc to call the C compiler. To 
 # satisfy those packages, create a symlink
@@ -126,6 +164,8 @@ ln -sfv ../../libexec/gcc/$(gcc -dumpmachine)/10.2.0/liblto_plugin.so \
         /usr/lib/bfd-plugins/
 mkdir -pv /usr/share/gdb/auto-load/usr/lib
 mv -v /usr/lib/*gdb.py /usr/share/gdb/auto-load/usr/lib
+
+unset LIBITM
 
 # Test final system's toolchain:
 echo 'int main(){}' > dummy.c
@@ -142,12 +182,11 @@ readelf -l a.out | grep ': /lib'
 grep  'crt[1in].o succeeded' dummy.log
 # Should output:
 # attempt to open /usr/lib/gcc/$ARCH-linux-musl/10.2.0/../../../../lib/Scrt1.o succeeded
-# attempt to open /usr/lib/gcc/$ARCH-linux-musl/9.2.0/../../../../lib/crti.o succeeded
+# attempt to open /usr/lib/gcc/$ARCH-linux-musl/10.2.0/../../../../lib/crti.o succeeded
 # attempt to open /usr/lib/gcc/$ARCH-linux-musl/10.2.0/../../../../lib/crtn.o succeeded
 grep -B2 '^ /usr/lib/gcc' dummy.log
 # Should output:
 # #include <...> search starts here:
-# /usr/lib/gcc/$ARCH-linux-musl/10.2.0/include-fixed
 # /usr/local/include
 # /usr/include
 # /usr/lib/gcc/$ARCH-linux-musl/10.2.0/include
