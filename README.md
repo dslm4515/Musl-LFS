@@ -10,7 +10,7 @@ The aim of this project is to create a create a Linux system using Musl (www.mus
   <li>i686/i586 : Stable and tested. Stable enough to build Xorg, Qt5 (without QT-webengine), Rust, and Firefox.</li>
   <li>x86_64 : Stable and tested. Stable enough to build Xorg, Qt5, Rust, and Firefox.</li>
   <li>aarch64: Stable and tested. Stable enough to build Xorg, Qt5, Rust, and Firefox.</li>
-  <li>/armv7/armv6: Builds fine. Requires modification to suit target hardware.</li>
+  <li>armv7/armv6: Builds fine. Requires modification to suit target hardware.</li>
 </ul>
 
 ## Goals:
@@ -21,7 +21,7 @@ The aim of this project is to create a create a Linux system using Musl (www.mus
   <li> [ ] Update s6-rc & s6 to lastest version </li>
   <li> [x] Redesign tool chain build to avoid two build passes of binutils and GCC</li>
   <li> [ ] Generate HTML 'book' like LFS</li>
-  <li> [ ] Add utmp/utmpx implementation<li>
+  <li> [ ] Add utmp/utmpx implementation</li>
   <li> [ ] Transition from pkgconfig to pkgconf</li>
   <li> [ ] Transition from gettext to gettext-tiny?</li>
   <li> [ ] POSIX compatibility </li>
@@ -94,7 +94,7 @@ https://github.com/AdelieLinux/gettext-tiny</li>
 ## Layout
 
 <ul>
-  <li>build-scripts - [WIP] Build scripts to use to semi-automate building `/cross-tools`, `/tools`, and the final system</li>
+  <li>build-scripts - [WIP] Build scripts to use to semi-automate building /cross-tools, /tools, and the final system</li>
   <li>contrib - Additional sources that are hard to find or re-packed
   <li>doc - Build instructions to build a LFS installation that uses Musl instead of Glibc and S6 instead of SysVint.</li>
   <li>extra - Helpful scripts to mount, chroot, and umount a MLFS build.</li>
