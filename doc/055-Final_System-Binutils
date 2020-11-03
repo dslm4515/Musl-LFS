@@ -2,13 +2,37 @@
 # Source: http://ftp.gnu.org/gnu/binutils/binutils-2.35.tar.xz
 # This section is done in Chroot environment
 
+# Aply security fixes from Adelie Linux
+patch -Np1 -i ../patches/binutils-adelie/BTS-170.patch
+patch -Np1 -i ../patches/binutils-adelie/BTS-196.patch
+patch -Np1 -i ../patches/binutils-adelie/CVE-2019-12972.patch
+patch -Np1 -i ../patches/binutils-adelie/CVE-2019-14250.patch
+patch -Np1 -i ../patches/binutils-adelie/CVE-2019-14444.patch
+#patch -Np1 -i ../patches/binutils-adelie/CVE-2019-17450.patch
+#patch -Np1 -i ../patches/binutils-adelie/CVE-2019-17451.patch
+#patch -Np1 -i ../patches/binutils-adelie/CVE-2019-9070-and-9071.patch
+#patch -Np1 -i ../patches/binutils-adelie/CVE-2019-9073.patch
+#patch -Np1 -i ../patches/binutils-adelie/CVE-2019-9074.patch
+#patch -Np1 -i ../patches/binutils-adelie/CVE-2019-9075.patch
+#patch -Np1 -i ../patches/binutils-adelie/CVE-2019-9077.patch
+#patch -Np1 -i ../patches/binutils-adelie/arm-pie.patch
+patch -Np1 -i ../patches/binutils-adelie/binutils-ld-fix-static-linking.patch
+#patch -Np1 -i ../patches/binutils-adelie/disable-gnu-mbind.patch
+#patch -Np1 -i ../patches/binutils-adelie/disable-ifunc-tests.patch
+patch -Np1 -i ../patches/binutils-adelie/disable-preinit-array-tests.patch
+patch -Np1 -i ../patches/binutils-adelie/remove-pr19553c-test.patch
+patch -Np1 -i ../patches/binutils-adelie/remove-pr19719-test.patch
+patch -Np1 -i ../patches/binutils-adelie/remove-pr2404-tests.patch
+#patch -Np1 -i ../patches/binutils-adelie/srec.patch
+
 # Create build directory
 mkdir -v build && cd build
 
+# -z separate-code is currently causing kernel miscompiles on x86*
 case $(uname -m) in
-  x86_64)  export EXTRA_CONFIG=" --enable-targets=x86_64-pep"
+  x86_64)  export EXTRA_CONFIG=" --enable-targets=x86_64-pep --enable-64-bit-bfd --disable-separate-code"
            ;;
-  i686)    export EXTRA_CONFIG=" --enable-64-bit-bfd --enable-targets=x86_64-linux-gnu,x86_64-pep"
+  i686)    export EXTRA_CONFIG=" --disable-separate-code --enable-64-bit-bfd --enable-targets=x86_64-linux-gnu,x86_64-pep"
            ;;
 esac
 
@@ -24,7 +48,9 @@ esac
              --enable-lto \
              --disable-nls \
              --enable-deterministic-archives \
+             --enable-default-hash-style=gnu \
              --enable-threads \
+             --disable-multilib \
              --disable-compressed-debug-sections \
              --with-mmap $EXTRA_CONFIG 
 

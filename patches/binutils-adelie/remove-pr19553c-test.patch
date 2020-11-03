@@ -1,0 +1,14 @@
+This test requires symbol versioning which the musl libc does not support.
+
+--- binutils-2.29/ld/testsuite/ld-elf/indirect.exp.old	2017-07-04 08:43:21.000000000 +0000
++++ binutils-2.29/ld/testsuite/ld-elf/indirect.exp	2017-08-19 05:00:13.086002872 +0000
+@@ -186,9 +186,6 @@
+     {"Run with libpr19553b.so"
+      "-Wl,--no-as-needed tmpdir/libpr19553b.so tmpdir/libpr19553d.so -Wl,-rpath-link,." ""
+      {pr19553a.c} "pr19553b" "pr19553b.out"}
+-    {"Run with libpr19553c.so"
+-     "-Wl,--no-as-needed tmpdir/libpr19553c.so tmpdir/libpr19553b.so tmpdir/libpr19553d.so" ""
+-     {pr19553a.c} "pr19553c" "pr19553c.out"}
+     {"Run with libpr19553d.so"
+      "-Wl,--no-as-needed tmpdir/libpr19553d.so tmpdir/libpr19553b.so -Wl,-rpath-link,." ""
+      {pr19553a.c} "pr19553d" "pr19553d.out"}

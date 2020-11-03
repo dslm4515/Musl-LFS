@@ -1,0 +1,73 @@
+These tests fail to link correctly on musl.
+
+--- binutils-2.29/ld/testsuite/ld-elf/shared.exp.old	2017-07-04 08:43:21.000000000 +0000
++++ binutils-2.29/ld/testsuite/ld-elf/shared.exp	2017-08-19 04:59:05.319481464 +0000
+@@ -375,15 +375,6 @@
+   {"Build needed3"
+    "tmpdir/needed3.o -Wl,--as-needed -Ltmpdir -lneeded3a -lneeded3b -lneeded1b" ""
+    {dummy.c} {} "needed3"}
+-  {"Build libpr2404a.so"
+-   "-shared" "-fPIC"
+-   {pr2404a.c} {} "libpr2404a.so"}
+-  {"Build libpr2404n.so"
+-   "-shared -Wl,-z,now" "-fPIC"
+-   {pr2404a.c} {} "libpr2404n.so"}
+-  {"Build libpr2404b.a"
+-   "" ""
+-   {pr2404b.c} {} "libpr2404b.a"}
+   {"Build rdynamic-1"
+    "-Wl,--no-dynamic-linker,-export-dynamic,--gc-sections" "-ffunction-sections"
+    {rdynamic-1.c} {{readelf {-s} rdynamic-1.rd}} "rdynamic-1"}
+@@ -531,12 +522,6 @@
+     [list "Run relmain" \
+      "-Wl,--no-as-needed,-rpath=tmpdir -Ltmpdir -lrel" "" \
+      {relmain.c} "relmain" "relmain.out" ] \
+-    [list "Run pr2404" \
+-     "-Wl,--no-as-needed tmpdir/pr2404b.o tmpdir/libpr2404a.so" "" \
+-     {dummy.c} "pr2404" "pr2404.out" ] \
+-    [list "Run pr2404n" \
+-     "-Wl,-z,now -Wl,--no-as-needed tmpdir/pr2404b.o tmpdir/libpr2404n.so" "" \
+-     {dummy.c} "pr2404n" "pr2404.out" ] \
+     [list "Run pr18458" \
+      "-Wl,--no-as-needed,-z,now tmpdir/libpr18458a.so tmpdir/libpr18458b.so" "" \
+      {pr18458c.c} "pr18458" "pass.out" ] \
+@@ -675,14 +660,6 @@
+      || [istarget *-*-gnu*] } {
+     run_cc_link_tests [list \
+ 	[list \
+-	    "Build libpr2404b.a with PIE" \
+-	    "" \
+-	    "-fPIE" \
+-	    { pr2404b.c } \
+-	    {} \
+-	    "libpr2404b.a" \
+-	] \
+-	[list \
+ 	    "Build pr19579a.o" \
+ 	    "" "-fPIE" \
+ 	    {pr19579a.c} \
+@@ -717,24 +694,6 @@
+ 	    "-fPIE" \
+ 	] \
+ 	[list \
+-	    "Run pr2404 with PIE" \
+-	    "-pie -Wl,--no-as-needed tmpdir/pr2404b.o tmpdir/libpr2404a.so" \
+-	    "" \
+-	    { dummy.c } \
+-	    "pr2404pie" \
+-	    "pr2404.out" \
+-	    "-fPIE" \
+-	] \
+-	[list \
+-	    "Run pr2404 with PIE (-z now)" \
+-	    "-pie -Wl,-z,now -Wl,--no-as-needed tmpdir/pr2404b.o tmpdir/libpr2404n.so" \
+-	    "" \
+-	    { dummy.c } \
+-	    "pr2404pien" \
+-	    "pr2404.out" \
+-	    "-fPIE" \
+-	] \
+-	[list \
+ 	    "Run pr18718" \
+ 	    "" \
+ 	    "" \

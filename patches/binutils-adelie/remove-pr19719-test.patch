@@ -1,0 +1,9 @@
+We always use -fPIE (it's in our spec file), so it isn't possible to test this.
+--- binutils-2.30/ld/testsuite/ld-elf/shared.exp.old	2018-05-25 06:28:07.252414401 +0000
++++ binutils-2.30/ld/testsuite/ld-elf/shared.exp	2018-05-25 06:51:50.637028357 +0000
+@@ -1102,5 +1102,4 @@
+     }
+ }
+ 
+-mix_pic_and_non_pic [list "arm*-*-*" "aarch64*-*-*"] "" "" "pr19719"
+ mix_pic_and_non_pic [] "-fPIE" "-pie" "pr19719pie"

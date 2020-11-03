@@ -1,0 +1,29 @@
+--- binutils-2.29/ld/testsuite/ld-elf/elf.exp.old	2017-07-04 08:43:21.000000000 +0000
++++ binutils-2.29/ld/testsuite/ld-elf/elf.exp	2017-08-19 04:46:32.214460537 +0000
+@@ -262,8 +262,6 @@
+ }
+ 
+ set array_tests {
+-    {"preinit array" "" ""
+-	{preinit.c} "preinit" "preinit.out"}
+     {"init array" "" ""
+ 	{init.c} "init" "init.out"}
+     {"fini array" "" ""
+@@ -272,8 +270,6 @@
+ 	{init-mixed.c} "init-mixed" "init-mixed.out" "-I."}
+ }
+ set array_tests_pie {
+-    {"PIE preinit array" "-pie" ""
+-	{preinit.c} "preinit" "preinit.out" "-fPIE"}
+     {"PIE init array" "-pie" ""
+ 	{init.c} "init" "init.out" "-fPIE"}
+     {"PIE fini array" "-pie" ""
+@@ -284,8 +280,6 @@
+ 	{pr14525.c} "pr14525" "pr14525.out" "-fPIE"}
+ }
+ set array_tests_static {
+-    {"static preinit array" "-static" ""
+-	{preinit.c} "preinit" "preinit.out"}
+     {"static init array" "-static" ""
+ 	{init.c} "init" "init.out"}
+     {"static fini array" "-static" ""

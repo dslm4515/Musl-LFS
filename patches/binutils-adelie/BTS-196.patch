@@ -1,0 +1,223 @@
+https://bts.adelielinux.org/show_bug.cgi?id=196
+
+--- binutils-2.32/ld/testsuite/ld-i386/i386.exp	2019-01-19 10:01:33.000000000 -0600
++++ binutils-2.32/ld/testsuite/ld-i386/i386.exp	2019-09-17 13:47:29.921108280 -0500
+@@ -1035,23 +1035,6 @@ if { [isnative]
+ 	    "pr18900.out" \
+ 	] \
+ 	[list \
+-	    "Run pr19031" \
+-	    "$NOPIE_LDFLAGS tmpdir/pr19031.so" \
+-	    "-Wa,-mx86-used-note=yes" \
+-	    { pr19031b.S pr19031c.c } \
+-	    "pr19031" \
+-	    "pr19031.out" \
+-	    "$NOPIE_CFLAGS" \
+-	] \
+-	[list \
+-	    "Run got1" \
+-	    "$NOPIE_LDFLAGS tmpdir/got1d.so" \
+-	    "-Wa,-mx86-used-note=yes" \
+-	    { got1a.S got1b.c got1c.c } \
+-	    "got1" \
+-	    "got1.out" \
+-	] \
+-	[list \
+ 	    "Run property 1" \
+ 	    "" \
+ 	    "-Wa,-mx86-used-note=yes" \
+@@ -1159,8 +1142,6 @@ if { [isnative]
+     ]
+ 
+     undefined_weak "$NOPIE_CFLAGS" "$NOPIE_LDFLAGS"
+-    undefined_weak "-fPIE" "$NOPIE_LDFLAGS"
+-    undefined_weak "-fPIE" "-pie"
+     undefined_weak "-fPIE" "-z nodynamic-undefined-weak $NOPIE_LDFLAGS"
+     undefined_weak "-fPIE" "-pie -z nodynamic-undefined-weak"
+ }
+@@ -1327,15 +1308,6 @@ if { [isnative]
+ 	    "$NOPIE_CFLAGS" \
+ 	] \
+ 	[list \
+-	    "Run pr22001-1" \
+-	    "$NOPIE_LDFLAGS -Wl,-z,nocopyreloc,--no-as-needed tmpdir/pr22001-1.so" \
+-	    "-Wa,-mx86-used-note=yes" \
+-	    { pr22001-1b.c } \
+-	    "pr22001-1" \
+-	    "pass.out" \
+-	    "$NOPIE_CFLAGS" \
+-	] \
+-	[list \
+ 	    "Run pr22001-1 (PIE 1)" \
+ 	    "$NOPIE_LDFLAGS -Wl,-z,nocopyreloc,--no-as-needed tmpdir/pr22001-1.so" \
+ 	    "-Wa,-mx86-used-note=yes" \
+@@ -1370,15 +1342,6 @@ if { [isnative]
+ 	    "-fPIC" \
+ 	] \
+ 	[list \
+-	    "Run pr21997-1" \
+-	    "$NOPIE_LDFLAGS -Wl,--no-as-needed tmpdir/pr21997-1.so" \
+-	    "-Wa,-mx86-used-note=yes" \
+-	    { pr21997-1b.c } \
+-	    "pr21997-1" \
+-	    "pass.out" \
+-	    "$NOPIE_CFLAGS" \
+-	] \
+-	[list \
+ 	    "Run pr21997-1 (PIC 1)" \
+ 	    "$NOPIE_LDFLAGS -Wl,--no-as-needed tmpdir/pr21997-1.so" \
+ 	    "-Wa,-mx86-used-note=yes" \
+--- binutils-2.32/ld/testsuite/ld-i386/no-plt.exp	2019-09-17 13:51:35.771111471 -0500
++++ binutils-2.32/ld/testsuite/ld-i386/no-plt.exp	2019-09-17 14:00:48.581118647 -0500
+@@ -66,69 +66,6 @@ run_cc_link_tests [list \
+ 	"libno-plt-1a.so" \
+     ] \
+     [list \
+-	"Build libno-plt-1b.so" \
+-	"-shared tmpdir/no-plt-extern1a.o" \
+-	"-Wa,-mx86-used-note=yes" \
+-	{dummy.s} \
+-	{{readelf -Wr libno-plt-1b.rd} \
+-	 {objdump -dwrj.text libno-plt-1b.dd}} \
+-	"libno-plt-1b.so" \
+-    ] \
+-    [list \
+-	"No PLT (dynamic 1a)" \
+-	"$NOPIE_LDFLAGS tmpdir/no-plt-check1a.o tmpdir/no-plt-main1.o \
+-	 tmpdir/no-plt-func1.o tmpdir/no-plt-extern1a.o" \
+-	"-Wa,-mx86-used-note=yes" \
+-	{dummy.s} \
+-	{{readelf -Wr no-plt-1a.rd} {objdump -dwrj.text no-plt-1a.dd}} \
+-	"no-plt-1a" \
+-    ] \
+-    [list \
+-	"No PLT (dynamic 1b)" \
+-	"tmpdir/no-plt-check1a.o tmpdir/no-plt-main1.o \
+-	 tmpdir/libno-plt-1a.so tmpdir/libno-plt-1b.so" \
+-	"-Wa,-mx86-used-note=yes" \
+-	{dummy.s} \
+-	{{readelf -Wr no-plt-1b.rd} {objdump -dwrj.text no-plt-1b.dd}} \
+-	"no-plt-1b" \
+-    ] \
+-    [list \
+-	"No PLT (dynamic 1c)" \
+-	"$NOPIE_LDFLAGS tmpdir/no-plt-check1a.o tmpdir/no-plt-main1.o \
+-	 tmpdir/no-plt-func1.o tmpdir/libno-plt-1b.so" \
+-	"-Wa,-mx86-used-note=yes" \
+-	{dummy.s} \
+-	{{readelf -Wr no-plt-1c.rd} {objdump -dwrj.text no-plt-1c.dd}} \
+-	"no-plt-1c" \
+-    ] \
+-    [list \
+-	"No PLT (PIE 1e)" \
+-	"-pie tmpdir/no-plt-check1a.o tmpdir/no-plt-main1.o \
+-	 tmpdir/no-plt-func1.o tmpdir/no-plt-extern1a.o" \
+-	"-Wa,-mx86-used-note=yes" \
+-	{dummy.s} \
+-	{{readelf -Wr no-plt-1e.rd} {objdump -dwrj.text no-plt-1e.dd}} \
+-	"no-plt-1e" \
+-    ] \
+-    [list \
+-	"No PLT (PIE 1f)" \
+-	"-pie tmpdir/no-plt-check1a.o tmpdir/no-plt-main1.o \
+-	 tmpdir/libno-plt-1a.so tmpdir/libno-plt-1b.so" \
+-	"-Wa,-mx86-used-note=yes" \
+-	{ dummy.s } \
+-	{{readelf -Wr no-plt-1f.rd} {objdump -dwrj.text no-plt-1f.dd}} \
+-	"no-plt-1f" \
+-    ] \
+-    [list \
+-	"No PLT (PIE 1g)" \
+-	"-pie tmpdir/no-plt-check1a.o tmpdir/no-plt-main1.o \
+-	 tmpdir/no-plt-func1.o tmpdir/libno-plt-1b.so" \
+-	"-Wa,-mx86-used-note=yes" \
+-	{ dummy.s } \
+-	{{readelf -Wr no-plt-1g.rd} {objdump -dwrj.text no-plt-1g.dd}} \
+-	"no-plt-1g" \
+-    ] \
+-    [list \
+ 	"No PLT (dynamic 1h)" \
+ 	"$NOPIE_LDFLAGS tmpdir/no-plt-check1b.o tmpdir/no-plt-main1.o \
+ 	 tmpdir/no-plt-func1.o tmpdir/no-plt-extern1b.o" \
+@@ -146,15 +83,6 @@ run_cc_link_tests [list \
+ 	{{readelf -Wr no-plt-1i.rd} {objdump -dwrj.text no-plt-1i.dd}} \
+ 	"no-plt-1i" \
+     ] \
+-    [list \
+-	"No PLT (static 1j)" \
+-	"-static tmpdir/no-plt-check1b.o tmpdir/no-plt-main1.o \
+-	 tmpdir/no-plt-func1.o tmpdir/no-plt-extern1b.o" \
+-	"-Wa,-mx86-used-note=yes" \
+-	{dummy.s} \
+-	{{readelf -Wr no-plt-1j.rd} {objdump -dwrj.text no-plt-1j.dd}} \
+-	"no-plt-1j" \
+-    ] \
+ ]
+ 
+ run_ld_link_exec_tests [list \
+@@ -168,24 +96,6 @@ run_ld_link_exec_tests [list \
+ 	"pass.out" \
+     ] \
+     [list \
+-	"No PLT (dynamic 1b)" \
+-	"tmpdir/no-plt-check1a.o tmpdir/no-plt-main1.o \
+-	 tmpdir/libno-plt-1a.so tmpdir/libno-plt-1b.so" \
+-	"-Wa,-mx86-used-note=yes" \
+-	{ dummy.s } \
+-	"no-plt-1b" \
+-	"pass.out" \
+-    ] \
+-    [list \
+-	"No PLT (dynamic 1c)" \
+-	"tmpdir/no-plt-check1a.o tmpdir/no-plt-main1.o \
+-	 tmpdir/no-plt-func1.o tmpdir/libno-plt-1b.so" \
+-	"-Wa,-mx86-used-note=yes" \
+-	{ dummy.s } \
+-	"no-plt-1c" \
+-	"pass.out" \
+-    ] \
+-    [list \
+ 	"No PLT (static 1d)" \
+ 	"-static tmpdir/no-plt-check1a.o tmpdir/no-plt-main1.o \
+ 	 tmpdir/no-plt-func1.o tmpdir/no-plt-extern1a.o" \
+@@ -204,24 +114,6 @@ run_ld_link_exec_tests [list \
+ 	"pass.out" \
+     ] \
+     [list \
+-	"No PLT (PIE 1f)" \
+-	"-pie tmpdir/no-plt-check1a.o tmpdir/no-plt-main1.o \
+-	 tmpdir/libno-plt-1a.so tmpdir/libno-plt-1b.so" \
+-	"-Wa,-mx86-used-note=yes" \
+-	{ dummy.s } \
+-	"no-plt-1f" \
+-	"pass.out" \
+-    ] \
+-    [list \
+-	"No PLT (PIE 1g)" \
+-	"-pie tmpdir/no-plt-check1a.o tmpdir/no-plt-main1.o \
+-	 tmpdir/no-plt-func1.o tmpdir/libno-plt-1b.so" \
+-	"-Wa,-mx86-used-note=yes" \
+-	{ dummy.s } \
+-	"no-plt-1g" \
+-	"pass.out" \
+-    ] \
+-    [list \
+ 	"No PLT (dynamic 1h)" \
+ 	"$NOPIE_LDFLAGS tmpdir/no-plt-check1b.o tmpdir/no-plt-main1.o \
+ 	 tmpdir/no-plt-func1.o tmpdir/no-plt-extern1b.o" \
+@@ -239,15 +131,6 @@ run_ld_link_exec_tests [list \
+ 	"no-plt-1i" \
+ 	"pass.out" \
+     ] \
+-    [list \
+-	"No PLT (static 1j)" \
+-	"-static tmpdir/no-plt-check1b.o tmpdir/no-plt-main1.o \
+-	 tmpdir/no-plt-func1.o tmpdir/no-plt-extern1b.o" \
+-	"-Wa,-mx86-used-note=yes" \
+-	{dummy.s} \
+-	"no-plt-1j" \
+-	"pass.out" \
+-    ] \
+ ]
+ 
+ # Run-time tests which require working IFUNC support.
