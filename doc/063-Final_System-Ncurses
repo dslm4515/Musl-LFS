@@ -13,7 +13,8 @@ sed -i '/LIBTOOL_INSTALL/d' c++/Makefile.in
             --without-debug         \
             --without-normal        \
             --enable-pc-files       \
-            --enable-widec
+            --enable-widec          \
+            --with-pkg-config-libdir=/usr/lib/pkgconfig
 
 # Build and install
 make && make install
