@@ -14,7 +14,10 @@ sed -i 's/1000/999/' etc/useradd
 
 # Configure source
 touch /usr/bin/passwd
-./configure --sysconfdir=/etc --with-group-name-max-length=32
+LIBS="-lutmps -lskarnet" \
+./configure --with-group-name-max-length=32 \
+            --sysconfdir=/etc \
+            --enable-utmpx 
 
 # Build, Install, and fix misplaced files
 make && make install
