@@ -1,28 +1,30 @@
 # Musl-LFS
 Linux From Scratch using Musl as Libc and S6+S6-rc as init system
 
-This is based on the works of Linux From Scratch (http://www.linuxfromscratch.org), which use GLibc and SysVinit/systemD. Additional work was derived from Void Linux (https://voidlinux.org), Alpine Linux (https://alpinelinux.org), and Dragora Linux (https://dragora.org). Runit scripts were used from (https://github.com/inthecloud247/runit-for-lfs). For logging, I used porg from http://porg.sourceforge.net/.
+This is based on the works of Linux From Scratch (http://www.linuxfromscratch.org), which use GLibc and SysVinit/systemD. Additional work was derived from Void Linux (https://voidlinux.org), Alpine Linux (https://alpinelinux.org), and Dragora Linux (https://dragora.org). For logging during development of tool chains, I used porg from http://porg.sourceforge.net/.
 
-The aim of this project is to create a create a Linux system using Musl (www.musl-libc.org) instead of GNU's Glibc and Runit/S6 (http://smarden.org/runit/) instead SysVinit.
+The aim of this project is to create a create a Linux system using Musl (www.musl-libc.org) instead of GNU's Glibc and S6 (https://skarnet.org/) instead SysVinit.
 
 ## Supported Architectures
 <ul>
-<li>32bit - i686/i586 : Stable and tested. Stable enough to build Xorg, Qt5 (without QT-webengine), and Midori.</li>
-<li>64bit - x86_64 : Stable and tested. Stable enough to build Xorg, Qt5, Rust, and Firefox.
-<li>ARM - aarch64/armv7/armv6: Builds fine. Requires modification to suit target hardware.
+  <li>i686/i586 : Stable and tested. Stable enough to build Xorg, Qt5 (without QT-webengine), Rust, and Firefox.</li>
+  <li>x86_64 : Stable and tested. Stable enough to build Xorg, Qt5, Rust, and Firefox.</li>
+  <li>aarch64: Stable and tested. Stable enough to build Xorg, Qt5, Rust, and Firefox.</li>
+  <li>/armv7/armv6: Builds fine. Requires modification to suit target hardware.</li>
 </ul>
 
 ## Goals:
 <ul>
-<li> [x] Version 2.xx+ now compiles all packages under chroot by cross-compiling the toolchain. </li>
-<li> [x] Currently, I only have computers with 32 and 64 bit x86 CPUs (i.e. Intel Core Duo). In the future, I would like this project to expand to the ARM architecture </li>
-<li> [x] Stack Smashing Protection (SSP) will be enabled since using a patch from Void Linux should solve the previous issues of packages failing to compile when SSP is enabled by default.
-<li> [x] Properly name patches to reflect origin (i.e. Alpine or void) </li>
-<li> [x] Create a list for wget to download sources.
-<li> [x] Transition from Runit to S6 </li>
-<li> [ ] Update s6-rc to lastest version </li>
-<li> [x] Redesign tool chain build to avoid two build passes of binutils and GCC
-<li> [ ] Generate HTML 'book' like LFS</li>
+  <li> [x] Properly name patches to reflect origin (i.e. Alpine or void) </li>
+  <li> [ ] Create a list for wget to download sources.</li>
+  <li> [ ] Create md5s list for sources</li>
+  <li> [ ] Update s6-rc & s6 to lastest version </li>
+  <li> [x] Redesign tool chain build to avoid two build passes of binutils and GCC</li>
+  <li> [ ] Generate HTML 'book' like LFS</li>
+  <li> [ ] Add utmp/utmpx implementation<li>
+  <li> [ ] Transition from pkgconfig to pkgconf</li>
+  <li> [ ] Transition from gettext to gettext-tiny?</li>
+  <li> [ ] POSIX compatibility </li>
 </ul>
 
 ## Tested Builds
@@ -63,6 +65,7 @@ https://github.com/void-linux/void-packages/blob/master/srcpkgs/musl-legacy-comp
 
 <li>Argp-Standalone
 https://github.com/jahrome/argp-standalone</li>
+
 </ul>
 
 ## Optional Packages:
@@ -82,6 +85,10 @@ https://code.foxkit.us/adelie/gcompat</li>
 https://github.com/rilian-la-te/musl-locales </li>
 <li>Mussel - "...the shortest and fastest script available today to build working cross compilers that target musl libc."
 https://github.com/firasuke/mussel </li>
+<li>shimmy - POSIX:registered: compatibility shims for Linux (and other environments)
+https://code.foxkit.us/adelie/shimmy</li>
+<li>gettext-tiny - It provides lightweight replacements for tools typically used from the GNU gettext suite.
+https://github.com/AdelieLinux/gettext-tiny</li>
 </ul>
 
 ## Layout
