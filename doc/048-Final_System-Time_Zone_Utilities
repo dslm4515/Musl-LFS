@@ -1,24 +1,31 @@
 # Final System: TimeZone Utilites & Data
-# Source: https://data.iana.org/time-zones/releases/tzdb-2020a.tar.lz
+# Source: https://www.iana.org/time-zones/repository/releases/tzdata2020a.tar.gz 
+# Source: https://www.iana.org/time-zones/repository/releases/tzcode2020a.tar.gz
+# Source: https://dev.alpinelinux.org/archive/posixtz/posixtz-0.5.tar.xz
 # This section is done in Chroot environment
 # https://www.iana.org/time-zones
 
-# Build
-make TZDIR=/usr/share/zoneinfo
-
-# Install tools
-cp -v zic zdump /usr/sbin
-cp -v tzselect  /usr/bin
-
-# Install timezone data
-mkdir -pv /usr/share/zoneinfo/{posix,right}
-install -m444 -t /usr/share/zoneinfo iso3166.tab zone1970.tab zone.tab
 export timezones="africa antarctica asia australasia europe northamerica \
-                southamerica pacificnew etcetera backward systemv factory"
-zic -y ./yearistype -d /usr/share/zoneinfo ${timezones}
-zic -y ./yearistype -d /usr/share/zoneinfo/posix ${timezones}
-zic -y ./yearistype -d /usr/share/zoneinfo/right -L leapseconds ${timezones}
-zic -y ./yearistype -d /usr/share/zoneinfo -p America/New_York
+                  southamerica pacificnew etcetera backward systemv factory"
+mkdir tzdb && cd tzdb && 
+tar xf ../tzdata2020a.tar.gz &&
+tar xf ../tzcode2020a.tar.gz &&
+tar xf ../posixtz-0.5.tar.xz &&
+
+patch -Np1 -i ../patches/posixtz-adelie/0001-posixtz-fix-up-lseek.patch
+
+make CFLAGS="$CFLAGS -DHAVE_STDINT_H=1" TZDIR="/usr/share/zoneinfo"  
+make -C posixtz-0.5 posixtz
+
+./zic -y ./yearistype -d /usr/share/zoneinfo ${timezones}
+./zic -y ./yearistype -d /usr/share/zoneinfo/right -L leapseconds ${timezones}
+./zic -y ./yearistype -d /usr/share/zoneinfo -p America/New_York
+install -m444 -t /usr/share/zoneinfo iso3166.tab zone1970.tab zone.tab
+install -m755 zic zdump /usr/sbin
+install -m644 zic.8 zdump.8 /usr/share/man/man8
+#rm -fv /usr/share/zoneinfo/localtime
+install -Dm755 posixtz-0.5/posixtz /usr/bin/posixtz
+
 unset timezones
 
 # use tzselect to determine <xxx>
