@@ -2,6 +2,9 @@
 # Source: http://ftp.gnu.org/gnu/m4/m4-1.4.18.tar.xz
 # This section is done in Chroot environment
 
+patch -Np1 -i ../patches/m4-adelie/disable-mbrtowc-test.patch
+patch -Np1 -i ../patches/m4-adelie/gnulib-tests-dont-require-gpg-passphrase.patch
+patch -Np1 -i ../patches/m4-adelie/localename-test-fix.patch
 # Configure
 ./configure --prefix=/usr
 
