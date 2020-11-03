@@ -40,8 +40,6 @@ autoreconf -fvi
 sed -e '/^PKG_CHECK_MODULES.*/d' -i configure.ac
 sed -e 's,tests ,,g' -i Makefile.am
 
-
-
 # Configure
 ./configure --prefix=/usr --disable-vlock
 
