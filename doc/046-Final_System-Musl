@@ -10,47 +10,57 @@ patch -Np0 -i ../patches/musl-1.2.1-void/mo_lookup.patch
 # For i686(32 bit), there is a rounding error that
 # causes fonts to not display for SeaMonkey and 
 # Palemoon browsers:
-patch -Np1 -i ../patches/musl-1.2.1/i686-fix-rounding.patch
+patch -Np1 -i ../patches/musl-mlfs/i686-fix-rounding.patch
+
+patch -Np1 -i ../patches/musl-adelie/3001-make-real-lastlog-h.patch
+patch -Np1 -i ../patches/musl-adelie/amalgamation.patch
+patch -Np1 -i ../patches/musl-adelie/fgetspent_r.patch
+patch -Np1 -i ../patches/musl-adelie/handle-aux-at_base.patch
+patch -Np1 -i ../patches/musl-adelie/threads_minus_2.patch
+
+case $(uname -m) in
+     i686) export CARCH="i386"    ;;
+   x86_64) export CARCH="x86_64"  ;;
+     arm*) export CARCH="arm"     ;;
+  aarch64) export CARCH="aarch64" ;;
+esac
 
 # Configure 
-./configure --prefix=/usr -disable-gcc-wrapper
+LDFLAGS="$LDFLAGS -Wl,-soname,libc.musl-${CARCH}.so.1" \
+./configure --prefix=/usr \
+            --sysconfdir=/etc \
+            --localstatedir=/var \
+            --disable-gcc-wrapper
 
 # Build and install 
 make && make  install
 
-# provide minimal libssp_nonshared.a so we don't need libssp from gcc
+# Provide minimal libssp_nonshared.a so we don't need libssp from gcc
 /tools/bin/$(uname -m)-mlfs-*-gcc -fpie -c ../files/__stack_chk_fail_local.c -o __stack_chk_fail_local.o
 /tools/bin/$(uname -m)-mlfs-*-gcc-ar r libssp_nonshared.a __stack_chk_fail_local.o
 cp -v libssp_nonshared.a /usr/lib/
 
-case $(uname -m) in
-  x86_64) export ARCH="x86_64"
-          ;;
-  i686)   export ARCH="i386"
-          ;;
-  arm*)   export ARCH="arm"
-          ;;
-  aarch64) export ARCH="aarch64"
-          ;;
-esac
 
 # Create link for ldd:
-ln -sv /lib/ld-musl-$ARCH.so.1 /bin/ldd
+ln -sv /lib/ld-musl-$CARCH.so.1 /bin/ldd
 
 # Create config for dynamic library loading:
-
-cat > /etc/ld-musl-$ARCH.path << "EOF"
+cat > /etc/ld-musl-$CARCH.path << "EOF"
 /lib
 /usr/local/lib
 /usr/lib
 EOF
 
-unset ARCH
+unset CARCH
 
-# Fake ldconfig
-ln -s /bin/true /usr/bin/ldconfig
+# Create  ldconfig
+cp -v ../files/musl-adelie/ldconfig /usr/bin/
 
 # If desired, install legacy compatability headers:
 cp -v ../files/musl-legacy-compat-void/cdefs.h /usr/include/sys/
 cp -v ../files/musl-legacy-compat-void/queue.h /usr/include/sys/
 cp -v ../files/musl-legacy-compat-void/tree.h /usr/include/sys/
+
+# Remove, as skarnet's utmps will provide it
+rm -v /usr/include/utmp.h
+rm -v /usr/include/utmpx.h

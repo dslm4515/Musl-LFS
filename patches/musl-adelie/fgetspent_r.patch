@@ -1,0 +1,65 @@
+From 3489f9e5ef055c80464252fe640fead8aeb1068e Mon Sep 17 00:00:00 2001
+From: Markus Wichmann <nullplan@gmx.net>
+Date: Sun, 20 Jan 2019 16:31:34 +0100
+Subject: [PATCH 5/5] Add fgetspent_r().
+
+Interface was defined by glibc, and seems to have been adopted by
+Solaris. Some freedesktop software appears to require it, and it adds
+little bloat.
+
+Added without feature test macros, since no other interface in shadow.h
+requires it, even the ones documented to have required it in the past.
+---
+ include/shadow.h         |  1 +
+ src/passwd/fgetspent_r.c | 27 +++++++++++++++++++++++++++
+ 2 files changed, 28 insertions(+)
+ create mode 100644 src/passwd/fgetspent_r.c
+
+diff --git a/include/shadow.h b/include/shadow.h
+index 2b1be413..4edc90db 100644
+--- a/include/shadow.h
++++ b/include/shadow.h
+@@ -33,6 +33,7 @@ int putspent(const struct spwd *, FILE *);
+ 
+ struct spwd *getspnam(const char *);
+ int getspnam_r(const char *, struct spwd *, char *, size_t, struct spwd **);
++int fgetspent_r(FILE *f, struct spwd* sp, char *line, size_t size, struct spwd **spret);
+ 
+ int lckpwdf(void);
+ int ulckpwdf(void);
+diff --git a/src/passwd/fgetspent_r.c b/src/passwd/fgetspent_r.c
+new file mode 100644
+index 00000000..643637de
+--- /dev/null
++++ b/src/passwd/fgetspent_r.c
+@@ -0,0 +1,27 @@
++#include "pwf.h"
++#include <pthread.h>
++#include <limits.h>
++#include <stdio.h>
++
++int fgetspent_r(FILE *f, struct spwd *sp, char *line, size_t size, struct spwd **spret)
++{
++	int res = EIO;
++	int cs;
++	*spret = 0;
++	if (size > INT_MAX)
++		size = INT_MAX; //2GB ought to be enough for anyone
++	pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, &cs);
++	if (!fgets(line, size, f))
++		goto out;
++	res = ERANGE;
++	if (line[strlen(line) - 1] != '\n')
++		goto out;
++	res = EILSEQ;
++	if ( __parsespent(line, sp) < 0)
++		goto out;
++	*spret = sp;
++	res = 0;
++out:
++	pthread_setcancelstate(cs, 0);
++	return res;
++}
+-- 
+2.19.1
+
