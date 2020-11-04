@@ -2,6 +2,8 @@
 # Source: https://downloads.sourceforge.net/project/e2fsprogs/e2fsprogs/v1.45.6/e2fsprogs-1.45.6.tar.gz
 # This section is done in Chroot environment
 
+patch -Np1 -i ../patches/e2fsprogs-adelie/header-fix.patch
+patch -Np1 -i ../patches/e2fsprogs-adelie/time64.patch
 
 mkdir -v build && cd build
 
@@ -15,7 +17,7 @@ e2fsprogs_cv_struct_st_flags=no      \
              --disable-uuidd         \
              --disable-fsck \
              --enable-e2initrd-helper \
-             --disable-rpath
+             --disable-rpath 
 
 make
 
