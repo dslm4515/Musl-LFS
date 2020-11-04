@@ -1,0 +1,13 @@
+diff --git a/src/msgfmt.c b/src/msgfmt.c
+index 1120ff6..f75ab8b 100644
+--- a/src/msgfmt.c
++++ b/src/msgfmt.c
+@@ -333,6 +333,8 @@ int main(int argc, char**argv) {
+ 						mode = m_desktop;
+ 					} else if(streq(A+2, "xml")) {
+ 						mode = m_xml;
++					} else if(streq(A+2, "keyword")) {
++						arg++;
+ 					} else if((locale = strstarts(A+2, "locale="))) {
+ 					} else if(streq(A+2, "check")) {
+ 						strict = true;

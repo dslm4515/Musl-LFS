@@ -1,0 +1,36 @@
+From 0e62c2588742cfffd3dc81c09ecc8488c0ce25b9 Mon Sep 17 00:00:00 2001
+From: Max Rees <maxcrees@me.com>
+Date: Sun, 22 Mar 2020 20:20:15 -0500
+Subject: [PATCH] msgfmt: exit(1) if incorrectly used
+
+This prevents builds from continuing seemingly fine when they are
+actually not using this version of msgfmt correctly.
+---
+ src/msgfmt.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/msgfmt.c b/src/msgfmt.c
+index aa16c5e..3de9a56 100644
+--- a/src/msgfmt.c
++++ b/src/msgfmt.c
+@@ -278,7 +278,7 @@ void set_file(int out, char* fn, FILE** dest) {
+ int main(int argc, char**argv) {
+ 	if (argc == 1) {
+ 		syntax();
+-		return 0;
++		return 1;
+ 	}
+ 
+ 	int arg = 1;
+@@ -376,7 +376,7 @@ int main(int argc, char**argv) {
+ 				streq(A+1, "D")
+ 			) {
+ 				syntax();
+-				return 0;
++				return 1;
+ 			} else if (streq(A+1, "l")) {
+ 				arg++;
+ 				locale = A;
+-- 
+2.25.1
+
