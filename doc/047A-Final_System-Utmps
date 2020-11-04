@@ -1,0 +1,28 @@
+# Final System: Utmps
+# Source: https://skarnet.org/software/utmps/utmps-0.0.3.2.tar.gz
+# This section is done in Chroot environment
+
+# Set target truple
+case $(unmae -m) in
+   i686)     export BTRUPLE="i686-linux-musl"
+   x86_64)   export BTRUPLE="x86_64-linux-musl"
+   armv7*)   export BTRUPLE="armv7l-linux-musleabihf"
+   armv6*)   export BTRUPLE="armv6l-linux-musleabihf"
+   aarch64)  export BTRUPLE="aarch64-linux-musleabihf"
+esac
+
+# Configure source
+sed -i -e "s/@@VERSION@@/0.0.3.2/g" -- ../files/utmps-alpine/*.pc 
+./configure --enable-shared      \
+            --enable-static      \
+            --disable-allstatic  \
+            --libdir=/usr/lib    \
+            --with-dynlib=/lib   \
+            --libexecdir="/lib/utmps" \
+            --build=$BTRUPLE 
+# Build and Install
+make
+make install
+
+# Install pkgconfig
+cp -v ../files/utmps-alpine/utmps.pc /usr/lib/pkgconfig/
