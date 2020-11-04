@@ -1,0 +1,12 @@
+# Final System: Gettext-Tiny
+# Source: https://distfiles.adelielinux.org/source/gettext-tiny-0.3.1_git20191130.tar.xz
+# This section is done in Chroot environment
+
+patch -Np1 -i ../patches/gettext-tiny-adelie/keyword.patch
+patch -Np1 -i ../patches/gettext-tiny-adelie/line-length.patch
+patch -Np1 -i ../patches/gettext-tiny-adelie/respect-cflags.patch
+patch -Np1 -i ../patches/gettext-tiny-adelie/stop-doing-macro-crap.patch
+
+make LIBINTL=MUSL prefix=/usr
+
+make LIBINTL=MUSL DESTDIR=/ prefix=/usr install
