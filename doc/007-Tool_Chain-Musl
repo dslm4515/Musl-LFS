@@ -38,4 +38,4 @@ cat > /tools/etc/ld-musl-${barch}.path << "EOF"
 /tools/lib
 EOF
 
-
+unset barch
