@@ -51,7 +51,12 @@ cat > /etc/ld-musl-$CARCH.path << "EOF"
 /usr/lib
 EOF
 
-unset CARCH
+# Create compatibility link for i686, as some software, like SMPlayer
+# expect i686 instead of i386
+case $(uname -m) in
+     i686) ln -sv /usr/lib/libc.so  /lib/ld-musl-i686.so.1 ;;
+esac
+unset CARCH 
 
 # Create  ldconfig
 cp -v ../files/musl-adelie/ldconfig /usr/bin/
