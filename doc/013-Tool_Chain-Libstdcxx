@@ -18,7 +18,7 @@ patch -Np0 -i ../patches/gcc-9.1.0-void/fix-musl-execinfo.patch
 patch -Np0 -i ../patches/gcc-9.1.0-void/libgcc-musl-ldbl128-config.patch
 patch -Np0 -i ../patches/gcc-9.1.0-void/musl-ada.patch
 patch -Np0 -i ../patches/gcc-9.1.0-void/no-stack_chk_fail_local.patch
-patch -Np0 -i ../patches/gcc-9.1.0-void/non-nullness.patch
+#patch -Np0 -i ../patches/gcc-9.1.0-void/non-nullness.patch
 # Fix CET for cross-compiling
 #patch -Np1 -i ../patches/gcc-10.1.0-Enable-CET-in-cross-compiler-if-possible.patch
 # Fixed in 10.2.0
