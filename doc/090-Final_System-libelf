@@ -22,7 +22,7 @@ autoreconf -ifv
 
 # Configure source & build
 CFLAGS="-Wno-error -Wno-error=null-dereference" \
-./configure --prefix=/usr --disable-debuginfod && make
+./configure --prefix=/usr --disable-debuginfod --disable-libdebuginfod && make
 
 # Install library
 make -C libelf install
