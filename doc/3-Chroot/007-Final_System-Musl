@@ -55,7 +55,7 @@ EOF
 # Create compatibility link for i686, as some software, like SMPlayer
 # expect i686 instead of i386
 case $(uname -m) in
-     i686) ln -sv /usr/lib/libc.so  /lib/ld-musl-i686.so.1 ;;
+     i686) ln -sv ../usr/lib/libc.so  /lib/ld-musl-i686.so.1 ;;
 esac
 unset CARCH 
 
