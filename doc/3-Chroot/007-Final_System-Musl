@@ -60,7 +60,8 @@ esac
 unset CARCH 
 
 # Create  ldconfig
-cp -v ../files/musl-adelie/ldconfig /usr/bin/
+#cp -v ../files/musl-adelie/ldconfig /usr/bin/
+install -v -D -m755 ../files/musl-adelie/ldconfig /usr/bin
 
 # If desired, install legacy compatability headers:
 cp -v ../files/musl-legacy-compat-void/cdefs.h /usr/include/sys/
