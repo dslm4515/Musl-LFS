@@ -42,7 +42,8 @@ cp -v libssp_nonshared.a /usr/lib/
 
 
 # Create link for ldd:
-ln -sv /lib/ld-musl-$CARCH.so.1 /bin/ldd
+#ln -sv /lib/ld-musl-$CARCH.so.1 /bin/ldd
+ln -sv ../usr/lib/libc.so /bin/ldd
 
 # Create config for dynamic library loading:
 cat > /etc/ld-musl-$CARCH.path << "EOF"
