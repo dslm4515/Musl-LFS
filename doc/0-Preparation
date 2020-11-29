@@ -121,3 +121,26 @@ export MLFS_CPU="${MLFS_CPU}"
 EOF
 source ~/.bashrc
 
+## General Compilation Instructions
+
+# The build instructions assume that the bash shell is in use
+
+# The build process:
+# 1) Place all the sources and patches in a directory that will 
+# be accessible from the chroot environment such as 
+# /mnt/mlfs/sources/. Do not put sources in /mnt/mlfs/tools/. 
+#
+# 2) Change to the sources directory. 
+#
+# 3) For each package: 
+#    a.) Using the tar program, extract the package to be 
+#        built. In Chapter 5, ensure you are the lfs user 
+#        when extracting the package. 
+#    b.) Change to the directory created when the package 
+#        was extracted. 
+#    c.) Follow the instructions for building the package.
+#    d.) Change back to the sources directory. 
+#    e.) Delete the extracted source directory and any 
+#        <package>-build directories that were created in 
+#        the build process unless instructed otherwise. 
+
