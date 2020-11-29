@@ -64,9 +64,10 @@ unset CARCH
 install -v -D -m755 ../files/musl-adelie/ldconfig /usr/bin
 
 # If desired, install legacy compatability headers:
-cp -v ../files/musl-legacy-compat-void/cdefs.h /usr/include/sys/
-cp -v ../files/musl-legacy-compat-void/queue.h /usr/include/sys/
-cp -v ../files/musl-legacy-compat-void/tree.h /usr/include/sys/
+for h in cdefs queue tree
+do
+    install -v -D -m644 ../files/musl-legacy-compat-void/$h.h /usr/include/sys
+done
 
 # Remove, as skarnet's utmps will provide it
 rm -v /usr/include/utmp.h
