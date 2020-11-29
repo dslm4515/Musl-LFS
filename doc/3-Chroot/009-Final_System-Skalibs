@@ -4,12 +4,12 @@
 # This section is done in Chroot environment
 
 # Set the target truple
-case $(unmae -m) in
-   i686)     export BTRUPLE="i686-linux-musl"
-   x86_64)   export BTRUPLE="x86_64-linux-musl"
-   armv7*)   export BTRUPLE="armv7l-linux-musleabihf"
-   armv6*)   export BTRUPLE="armv6l-linux-musleabihf"
-   aarch64)  export BTRUPLE="aarch64-linux-musleabihf"
+case $(uname -m) in
+   i686)     export BTRUPLE="i686-linux-musl"           ;;
+   x86_64)   export BTRUPLE="x86_64-linux-musl"         ;;
+   armv7*)   export BTRUPLE="armv7l-linux-musleabihf"   ;;
+   armv6*)   export BTRUPLE="armv6l-linux-musleabihf"   ;;
+   aarch64)  export BTRUPLE="aarch64-linux-musleabihf"  ;;
 esac
 # Configure source
 ./configure --prefix=/usr       \
