@@ -8,7 +8,6 @@ patch -Np1 -i ../patches/argp-standalone-adelie/001-throw-in-funcdef.patch
 patch -Np1 -i ../patches/argp-standalone-adelie/gnu89-inline.patch
 
 # Configure source
-autoreconf -vif
 CFLAGS=" -fPIC" ./configure --prefix=/usr     \
                             --disable-static  \
                             --sysconfdir=/etc \
