@@ -17,5 +17,5 @@ CFLAGS=" -fPIC" ./configure --prefix=/usr     \
 make
 
 # Install
-cp -v libargp.a /usr/lib/
-cp -v argp.h    /usr/include/
+install -v -D -m644  libargp.a /usr/lib/
+install -v -D -m644  argp.h    /usr/include/
