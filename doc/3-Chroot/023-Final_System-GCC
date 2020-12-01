@@ -144,11 +144,11 @@ cc -fpie ../../files/musl/getent.c -o getent
 cc -fpie ../../files/musl/getconf.c -o getconf
 cc -fpie ../../files/musl/iconv.c -o iconv
 
-cp -v getent  /usr/bin/
-cp -v getconf /usr/bin/
-cp -v iconv   /usr/bin/
-cp -v ../../files/musl/getent.1   /usr/share/man/man1/
-cp -v ../../files/musl/getconf.1  /usr/share/man/man1/
+install -v -D -m755  getent  /usr/bin/
+install -v -D -m755  getconf /usr/bin/
+install -v -D -m755  iconv   /usr/bin/
+install -v -D -m644  ../../files/musl/getent.1   /usr/share/man/man1/
+install -v -D -m644  ../../files/musl/getconf.1  /usr/share/man/man1/
 
 # Create a symlink required by the FHS for "historical" reasons
 ln -sv ../usr/bin/cpp /lib/cpp
