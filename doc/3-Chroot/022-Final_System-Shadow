@@ -24,7 +24,7 @@ make && make install
 mv -v /usr/bin/passwd /bin
 sed -i 's/yes/no/' /etc/default/useradd
 
-# Enable shadowed passowrds and shadowed group passwords:
+# Enable shadowed passwords and shadowed group passwords:
 pwconv
 grpconv
 
