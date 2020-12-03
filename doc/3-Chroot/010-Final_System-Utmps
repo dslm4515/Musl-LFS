@@ -12,7 +12,8 @@ case $(uname -m) in
 esac
 
 # Configure source
-sed -i -e "s/@@VERSION@@/0.0.3.2/g" -- ../files/utmps-alpine/*.pc 
+cp -v ../files/utmps-alpine/*.pc /tmp/
+sed -i -e "s/@@VERSION@@/0.0.3.2/g" -- /tmp/*.pc 
 ./configure --enable-shared      \
             --enable-static      \
             --disable-allstatic  \
@@ -25,4 +26,4 @@ make
 make install
 
 # Install pkgconfig
-install -v -D -m644 ../files/utmps-alpine/utmps.pc /usr/lib/pkgconfig
+install -v -D -m644 /tmp/utmps.pc /usr/lib/pkgconfig
