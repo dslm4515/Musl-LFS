@@ -18,6 +18,7 @@ patch -Np1 -i ../patches/musl-adelie/amalgamation.patch
 patch -Np1 -i ../patches/musl-adelie/fgetspent_r.patch
 patch -Np1 -i ../patches/musl-adelie/handle-aux-at_base.patch
 patch -Np1 -i ../patches/musl-adelie/threads_minus_2.patch
+patch -Np1 -i ../patches/musl-adelie/CVE-2020-28928.patch
 
 case $(uname -m) in
      i686) export CARCH="i386"    ;;
