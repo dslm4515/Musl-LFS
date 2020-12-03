@@ -10,8 +10,9 @@ patch -Np0 -i ../patches/musl-1.2.1-void/mo_lookup.patch
 # For i686(32 bit), there is a rounding error that
 # causes fonts to not display for SeaMonkey and 
 # Palemoon browsers:
-patch -Np1 -i ../patches/musl-mlfs/i686-fix-rounding.patch
-
+case $(uname -m) in
+   i686) patch -Np1 -i ../patches/musl-mlfs/i686-fix-rounding.patch ;;
+esac
 patch -Np1 -i ../patches/musl-adelie/3001-make-real-lastlog-h.patch
 patch -Np1 -i ../patches/musl-adelie/amalgamation.patch
 patch -Np1 -i ../patches/musl-adelie/fgetspent_r.patch
@@ -36,8 +37,10 @@ LDFLAGS="$LDFLAGS -Wl,-soname,libc.musl-${CARCH}.so.1" \
 make && make  install
 
 # Provide minimal libssp_nonshared.a so we don't need libssp from gcc
-/tools/bin/$(uname -m)-mlfs-*-gcc -fpie -c ../files/__stack_chk_fail_local.c -o __stack_chk_fail_local.o
-/tools/bin/$(uname -m)-mlfs-*-gcc-ar r libssp_nonshared.a __stack_chk_fail_local.o
+/tools/bin/$(uname -m)-mlfs-*-gcc -fpie -c \
+../files/musl-alpine/__stack_chk_fail_local.c -o __stack_chk_fail_local.o
+/tools/bin/$(uname -m)-mlfs-*-gcc-ar r \
+libssp_nonshared.a __stack_chk_fail_local.o
 cp -v libssp_nonshared.a /usr/lib/
 
 
