@@ -7,6 +7,26 @@ index e9ca94cb..b39b12ee 100644
  #include "time32.h"
  #include <time.h>
  #include <errno.h>
+diff --git a/include/stdlib.h b/include/stdlib.h
+index 194c2033..5734b1f0 100644
+--- a/include/stdlib.h
++++ b/include/stdlib.h
+@@ -100,7 +104,6 @@ int posix_memalign (void **, size_t, size_t);
+ int setenv (const char *, const char *, int);
+ int unsetenv (const char *);
+ int mkstemp (char *);
+-int mkostemp (char *, int);
+ char *mkdtemp (char *);
+ int getsubopt (char **, char *const *, char **);
+ int rand_r (unsigned *);
+@@ -138,6 +141,7 @@ void lcong48 (unsigned short [7]);
+ #include <alloca.h>
+ char *mktemp (char *);
+ int mkstemps (char *, int);
++int mkostemp (char *, int);
+ int mkostemps (char *, int, int);
+ void *valloc (size_t);
+ void *memalign(size_t, size_t);
 diff --git a/include/sys/time.h b/include/sys/time.h
 index cdc67ef6..fd773896 100644
 --- a/include/sys/time.h
