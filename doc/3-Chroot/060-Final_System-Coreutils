@@ -14,6 +14,7 @@ sed -i '/test.lock/s/^/#/' gnulib-tests/gnulib.mk
 # Configure
 ac_cv_func_syncfs=no \
 FORCE_UNSAFE_CONFIGURE=1 \
+LIBS="-lutmps -lskarnet" \
 ./configure --prefix=/usr                           \
             --enable-no-install-program=kill,uptime \
             --disable-rpath                         \

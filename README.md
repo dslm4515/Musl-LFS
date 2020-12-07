@@ -118,6 +118,7 @@ https://github.com/AdelieLinux/gettext-tiny</li>
  <li>Added utmpx support in Shadow</li>
  <li>Added utmpx support in procps-ng</li>
  <li>Added utmpx support in util-linux</li>
+ <li>Added utmpx support in coreutils</li>
  <li>Replaced pkgconfig with pkgconf</li>
  <li>Replaced gettext with gettext-tiny</li>
  <li>Upgraded to Binutils 2.35.1</li>
