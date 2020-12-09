@@ -1,15 +1,15 @@
 # Final System: Libcap
-# Source: https://www.kernel.org/pub/linux/libs/security/linux-privs/libcap2/libcap-2.44.tar.xz
+# Source: https://www.kernel.org/pub/linux/libs/security/linux-privs/libcap2/libcap-2.45.tar.xz
 # This section is done in Chroot environment
 
-sed -i '/install.*STALIBNAME/d' libcap/Makefile
+sed -i '/install -m.*STA/d' libcap/Makefile
 make lib=lib 
 
-make lib=lib prefix=/usr RAISE_SETFCAP=no \
+make lib=lib \
      PKGCONFIGDIR=/usr/lib/pkgconfig install
 
-chmod -v 755 /lib/libcap.so.2.44
-mv -v /lib/libpsx.a /usr/lib
-rm -v /lib/libcap.so
-ln -sfv ../../lib/libcap.so.2 /usr/lib/libcap.so
-
+for libname in cap psx; do
+    chmod -v 755 /lib/lib${libname}.so.2.45
+    rm -v /lib/lib${libname}.so
+    ln -sfv ../../lib/lib${libname}.so.2 /usr/lib/lib${libname}.so
+done
