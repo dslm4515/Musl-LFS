@@ -12,7 +12,6 @@ case $(uname -m) in
 esac
 # Configure source
 ./configure --prefix=/usr       \
-            --enable-force-devr \
             --build=$BTRUPLE
 
 # Build and Install
