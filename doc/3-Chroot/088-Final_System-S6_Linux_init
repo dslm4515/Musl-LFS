@@ -8,6 +8,6 @@
             --with-lib=/usr/lib/execline \
             --with-lib=/usr/lib/s6 \
             --with-dynlib=/usr/lib \
-            --enabled-share
+            --enable-shared
 make
 make install
