@@ -78,7 +78,6 @@ https://github.com/facebook/zstd/releases/download/v1.4.5/zstd-1.4.5.tar.gz
 https://ftp.gnu.org/gnu/cpio/cpio-2.13.tar.bz2
 http://skarnet.org/software/skalibs/skalibs-2.9.3.0.tar.gz
 https://skarnet.org/software/execline/execline-2.6.1.1.tar.gz
-https://github.com/skarnet/s6/s6-2.9.2.0.tar.gz
 http://www.skarnet.org/software/s6-linux-utils/s6-linux-utils-2.5.1.3.tar.gz
 http://www.skarnet.org/software/s6-portable-utils/s6-portable-utils-2.2.3.0.tar.gz
 https://github.com/dslm4515/MLFS-S6-Bootscripts/releases/download/3.02/MLFS-S6-Bootscripts-3.02.tar.xz
@@ -89,3 +88,4 @@ https://launchpad.net/intltool/trunk/0.51.0/+download/intltool-0.51.0.tar.gz
 http://anduin.linuxfromscratch.org/LFS/vim-8.2.2070.tar.gz
 http://skarnet.org/software/s6-rc/s6-rc-0.5.2.0.tar.gz
 http://skarnet.org/software/s6-linux-init/s6-linux-init-1.0.5.1.tar.gz
+http://www.skarnet.org/software/s6/s6-2.9.2.0.tar.gz
