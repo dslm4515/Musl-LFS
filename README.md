@@ -45,7 +45,7 @@ The aim of this project is to create a create a Linux system using Musl (www.mus
 
 ## Additional Required Packages 
 
-If pursuing BLFS, some packages will fail to compile due certian implementions left out in the Musl C Library.
+If pursuing BLFS, some packages will fail to compile due certain implementions left out in the Musl C Library.
 
 <ul>
 <li>Musl C Library
