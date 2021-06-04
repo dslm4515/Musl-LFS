@@ -1,0 +1,31 @@
+# Custom systemd Makefile that installs udev rules for LFS
+# Bruce Dubbs 2014-04-02
+
+# vim: tabstop=3
+
+VERSION=20191014
+SHELL=/bin/bash
+
+ifeq ($(V),)
+ VB = @
+else
+ VB =
+endif
+
+all:
+	@echo "Use the install target"
+
+install: 
+	@mkdir -pv $(DESTDIR)/lib/udev/rules.d \
+              $(DESTDIR)/etc/udev/rules.d \
+              $(DESTDIR)/usr/share/doc/udev-$(VERSION)/mlfs
+
+   # Copy rules
+	@cp -v udev-mlfs-$(VERSION)/*.rules $(DESTDIR)/etc/udev/rules.d
+	@cp -v udev-mlfs-$(VERSION)/*_rules           \
+          udev-mlfs-$(VERSION)/init-net-rules.sh \
+          udev-mlfs-$(VERSION)/rule_generator.functions $(DESTDIR)/lib/udev
+
+   # Copy documentation
+	@cp -v udev-mlfs-$(VERSION)/README     $(DESTDIR)/usr/share/doc/udev-$(VERSION)/mlfs
+	@cp -v udev-mlfs-$(VERSION)/*.txt      $(DESTDIR)/usr/share/doc/udev-$(VERSION)/mlfs
