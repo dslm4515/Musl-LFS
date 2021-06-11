@@ -20,6 +20,6 @@ rm -fv /usr/lib/lib{com_err,e2p,ext2fs,ss}.a
 rm -fv /usr/lib/libltdl.a
 rm -fv /usr/lib/libfl.a
 rm -fv /usr/lib/libz.a
-find /usr/lib /usr/libexec -name \*.la -delete
+find /usr/lib /usr/libexec -name \*.la -exec rm -rvf {} \;
 
 # It is also safe to remove /tools and /cross-tools directories as they're not required anymore
