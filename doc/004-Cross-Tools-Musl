@@ -26,6 +26,9 @@ case $(uname -m) in
           ;;
 esac
 
+# Fix a symlink
+ln -sfv libc.so /cross-tools/lib/ld-musl-x86_64.so.1
+
 # Create link for ldd:
 ln -sv ../lib/ld-musl-$ARCH.so.1 /cross-tools/bin/ldd
 
