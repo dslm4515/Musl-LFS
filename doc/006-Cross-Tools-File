@@ -2,7 +2,14 @@
 # Build and install as mlfs
 # ftp://ftp.astron.com/pub/file/file-5.39.tar.gz
 
-# Configure source
+# Configure source with freshly built GCC
+CC="${MLFS_TARGET}-gcc"         \
+CXX="${MLFS_TARGET}-g++"        \
+AR="${MLFS_TARGET}-ar"          \
+AS="${MLFS_TARGET}-as"          \
+RANLIB="${MLFS_TARGET}-ranlib"  \
+LD="${MLFS_TARGET}-ld"          \
+STRIP="${MLFS_TARGET}-strip"    \
 ./configure --prefix=/cross-tools --disable-libseccomp
 
 # Build and install
