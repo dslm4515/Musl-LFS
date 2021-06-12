@@ -59,7 +59,7 @@ make install
 # Now adjust GCC to produce programs and libraries that will use musl libc in /cross-tools...
 export SPECFILE=`dirname $(${MLFS_TARGET}-gcc -print-libgcc-file-name)`/specs
 ${MLFS_TARGET}-gcc -dumpspecs > specs
-sed -i 's/\/lib\/ld-musl-$ARCH.so.1/\/cross-tools\/lib\/ld-musl-$ARCH.so.1/g' specs
+sed -i "s/\/lib\/ld-musl-$ARCH.so.1/\/cross-tools\/lib\/ld-musl-$ARCH.so.1/g" specs
 
 # Check specs file
 grep "/cross-tools/lib/ld-musl-$ARCH.so.1" specs  --color=auto
