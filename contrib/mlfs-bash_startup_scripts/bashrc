@@ -1,0 +1,15 @@
+alias ls='ls --color=auto'
+alias grep='grep --color=auto'
+
+# Setup a red prompt for root and a green one for users.
+RESET="\[\033[0m\]"
+NORMAL="\[\e[0m\]"
+RED="\[\e[1;31m\]"
+GREEN="\[\e[1;32m\]"
+if [[ $EUID == 0 ]] ; then
+	  PS1="\A | $RED\u [ $NORMAL\w$RED ]\n# $NORMAL$RESET"
+  else
+	  PS1="\A | $GREEN\u [ $NORMAL\w$GREEN ]\n\$ $NORMAL$RESET"
+fi
+unset RED GREEN NORMAL
+
