@@ -1,21 +1,19 @@
-# Toolchain: Coreutils 8.32
-# Source: http://ftp.gnu.org/gnu/coreutils/coreutils-8.32.tar.xz
+# Toolchain: Coreutils
 # Build and install as mlfs
 
 # Set the environment for cross-compiling if not done already.
-export CC="${MLFS_TARGET}-gcc"
-export CXX="${MLFS_TARGET}-g++"
-export AR="${MLFS_TARGET}-ar"
-export AS="${MLFS_TARGET}-as"
-export RANLIB="${MLFS_TARGET}-ranlib"
-export LD="${MLFS_TARGET}-ld"
-export STRIP="${MLFS_TARGET}-strip"
+CC="${MLFS_TARGET}-gcc"
+CXX="${MLFS_TARGET}-g++"
+AR="${MLFS_TARGET}-ar"
+AS="${MLFS_TARGET}-as"
+RANLIB="${MLFS_TARGET}-ranlib"
+LD="${MLFS_TARGET}-ld"
+STRIP="${MLFS_TARGET}-strip"
 
 # Re-create configure script
 autoreconf -vif
 
-# Apply patch
-patch -Np0 -i ../patches/coreutils-void/0001-ls-restore-8.31-behavior-on-removed-directories.patch
+patch -Np1 -i ../patches/coreutils-alpine/ls.patch
 
 # Cross Compiling the configure script 
 # does not does not determine the correct 
@@ -32,11 +30,11 @@ EOF
 sed -i '/test.lock/s/^/#/' gnulib-tests/gnulib.mk
 
 # Configure source
-./configure --build=${MLFS_HOST} \
+./configure --prefix=/tools \
+            --build=${MLFS_HOST} \
             --host=${MLFS_TARGET} \
-            --prefix=/tools \
             --enable-install-program=hostname \
-            --cache-file=config.cache 
+            --cache-file=config.cache
 
 # Build and install to toolchain
 make && make install

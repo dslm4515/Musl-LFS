@@ -20,7 +20,7 @@ case $(uname -m) in
            ;;
   i686)    rm -v  /tools/lib/ld-musl-i386.so.1
            ln -sv libc.so /tools/lib/ld-musl-i386.so.1
-	   export barch=i386
+           export barch=i386
            ;;
   arm*)    rm -v  /tools/lib/ld-musl-arm.so.1
            ln -sv libc.so /tools/lib/ld-musl-arm.so.1
@@ -38,4 +38,4 @@ cat > /tools/etc/ld-musl-${barch}.path << "EOF"
 /tools/lib
 EOF
 
-
+unset barch

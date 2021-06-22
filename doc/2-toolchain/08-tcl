@@ -1,16 +1,15 @@
 # Tool Chain: TCL
-# Source: https://downloads.sourceforge.net/tcl/tcl8.6.10-src.tar.gz 
 # Build and install as mlfs
 # Can be optional: Package used for testing final system packages
 
 # Set the environment for cross-compiling if not done already.
-export CC="${MLFS_TARGET}-gcc"
-export CXX="${MLFS_TARGET}-g++"
-export AR="${MLFS_TARGET}-ar"
-export AS="${MLFS_TARGET}-as"
-export RANLIB="${MLFS_TARGET}-ranlib"
-export LD="${MLFS_TARGET}-ld"
-export STRIP="${MLFS_TARGET}-strip"
+CC="${MLFS_TARGET}-gcc"
+CXX="${MLFS_TARGET}-g++"
+AR="${MLFS_TARGET}-ar"
+AS="${MLFS_TARGET}-as"
+RANLIB="${MLFS_TARGET}-ranlib"
+LD="${MLFS_TARGET}-ld"
+STRIP="${MLFS_TARGET}-strip"
 
 # Configure source
 cd unix

@@ -1,15 +1,14 @@
-# ToolChain: Bzip2 1.0.8
-# Source: http://anduin.linuxfromscratch.org/LFS/bzip2-1.0.8.tar.gz
+# Toolchain: Bzip2
 # Build and install as mlfs
 
 # Set the environment for cross-compiling if not done already.
-export CC="${MLFS_TARGET}-gcc"
-export CXX="${MLFS_TARGET}-g++"
-export AR="${MLFS_TARGET}-ar"
-export AS="${MLFS_TARGET}-as"
-export RANLIB="${MLFS_TARGET}-ranlib"
-export LD="${MLFS_TARGET}-ld"
-export STRIP="${MLFS_TARGET}-strip"
+CC="${MLFS_TARGET}-gcc"
+CXX="${MLFS_TARGET}-g++"
+AR="${MLFS_TARGET}-ar"
+AS="${MLFS_TARGET}-as"
+RANLIB="${MLFS_TARGET}-ranlib"
+LD="${MLFS_TARGET}-ld"
+STRIP="${MLFS_TARGET}-strip"
 
 # Fix the Makefiles for  ensures installation of symbolic 
 # links are relative and the man pages are installed into 
