@@ -5,7 +5,7 @@
 # and GPL3, at your preference.
 # n() function taken from otto-pkg's posix-alt.shi lib.
 
-# USAGE: ./download_sources.sh sources.list sources.md5sum
+# USAGE: ./download_sources.sh sources.list sources.md5
 
 MD5CHECK=${MD5CHECK:-YES};
 
