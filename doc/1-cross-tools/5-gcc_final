@@ -1,24 +1,16 @@
-# Cross-Tools: GCC-10.2.0 Final
-# Source: http://ftp.gnu.org/gnu/gcc/gcc-10.1.0/gcc-10.2.0.tar.xz
+# Cross-Tools: GCC Final
 # Build and install as mlfs
 
 # Additional sources to add as GCC requires them 
-tar -xf ../mpfr-4.1.0.tar.xz
+xz -cd ../pkgs/mpfr-4.1.0.tar.xz | tar -xf -
 mv -v mpfr-4.1.0 mpfr
-tar -xf ../gmp-6.2.0.tar.xz
-mv -v gmp-6.2.0 gmp
-tar -xf ../mpc-1.1.0.tar.gz
-mv -v mpc-1.1.0 mpc
+xz -cd ../pkgs/gmp-6.2.1.tar.xz | tar -xf -
+mv -v gmp-6.2.1 gmp
+gunzip -cd ../pkgs/mpc-1.2.1.tar.gz | tar -xf -
+mv -v mpc-1.2.1 mpc
 
-# Apply patches [from void-linux]
-patch -Np0 -i ../patches/gcc-9.1.0-void/ada-shared.patch
-patch -Np0 -i ../patches/gcc-9.1.0-void/fix-cxxflags-passing.patch
-patch -Np0 -i ../patches/gcc-9.1.0-void/fix-musl-execinfo.patch
-patch -Np0 -i ../patches/gcc-9.1.0-void/libgcc-musl-ldbl128-config.patch
-patch -Np0 -i ../patches/gcc-9.1.0-void/musl-ada.patch
-patch -Np0 -i ../patches/gcc-9.1.0-void/no-stack_chk_fail_local.patch
-patch -Np0 -i ../patches/gcc-9.1.0-void/non-nullness.patch
-patch -Np1 -i ../patches/gcc-10.1.0-Enable-CET-in-cross-compiler-if-possible.patch
+# Apply patches [from Alpine linux]
+bash ../patches/gcc-10.3.1_git20210424-alpine/apply_patches_ct.sh
 
 case $(uname -m) in
   x86_64)

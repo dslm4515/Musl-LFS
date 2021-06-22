@@ -1,10 +1,8 @@
 # Cross-Tools: File
 # Build and install as mlfs
-# ftp://ftp.astron.com/pub/file/file-5.39.tar.gz
 
 # Configure source
 ./configure --prefix=/cross-tools --disable-libseccomp
 
 # Build and install
 make && make install
-

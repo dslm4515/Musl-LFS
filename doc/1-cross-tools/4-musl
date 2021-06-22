@@ -1,6 +1,5 @@
 # Cross-Tools: Musl
 # Build and install as mlfs
-# source: https://www.musl-libc.org/releases/musl-1.2.1.tar.gz
 
 # Configure source for cross build
 ./configure \
@@ -26,6 +25,10 @@ case $(uname -m) in
           ;;
 esac
 
+# Fix link
+rm -vf /cross-tools/lib/ld-musl* &&
+ln -sv libc.so /cross-tools/lib/ld-musl-${ARCH}.so.1
+
 # Create link for ldd:
 ln -sv ../lib/ld-musl-$ARCH.so.1 /cross-tools/bin/ldd
 
@@ -36,4 +39,10 @@ cat > /cross-tools/etc/ld-musl-$ARCH.path << "EOF"
 /tools/lib
 EOF
 
-unset ARCH
+# For arm
+case $(uname -m) in
+        arm*) ln -sv libc.so /cross-tools/lib/ld-musl-${ARCH2}.so.1
+              cp -v /cross-tools/etc/ld-musl-$ARCH.path \
+                      /cross-tools/etc/ld-musl-$ARCH2.path ;;
+esac
+unset ARCH ARCH2
