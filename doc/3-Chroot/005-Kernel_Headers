@@ -1,6 +1,5 @@
 # Final System: Kernel Headers
 # Use latest kernel version when possible
-# Source: https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.8.1.tar.xz
 # This section is done in Chroot environment
 
 # Clean source tree
