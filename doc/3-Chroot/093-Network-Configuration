@@ -43,7 +43,6 @@ EOF
 
 # Set the hostname
 # in this eample, 'mlfs':
-ln -v /etc/s6/env/HOSTNAME /etc/hostname
 echo "mlfs" > /etc/hostname
 
 # Create the /etc/hosts file
