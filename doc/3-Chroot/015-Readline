@@ -1,5 +1,4 @@
-# Final System: Readline 8.0
-# Source: http://ftp.gnu.org/gnu/readline/readline-8.0.tar.gz
+# Final System: Readline 
 # This section is done in Chroot environment
 
 # To avoid a rare possibility of a linking bug in ldconfig
@@ -9,7 +8,7 @@ sed -i '/{OLDSUFF}/c:' support/shlib-install
 # Configure source
 ./configure --prefix=/usr    \
             --disable-static \
-            --docdir=/usr/share/doc/readline-8.0
+            --docdir=/usr/share/doc/readline-8.1
 
 # Build
 make SHLIB_LIBS="-L/tools/lib -lncursesw"
