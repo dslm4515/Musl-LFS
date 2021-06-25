@@ -1,4 +1,4 @@
-# Final System: Bison 3.7.1
+# Final System: Bison 
 # This section is done in Chroot environment
 
 ./configure --prefix=/usr --docdir=/usr/share/doc/bison-3.7.6
