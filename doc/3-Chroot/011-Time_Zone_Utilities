@@ -1,26 +1,39 @@
 # Final System: TimeZone Utilites & Data
-# Source: https://data.iana.org/time-zones/releases/tzdb-2020a.tar.lz
 # This section is done in Chroot environment
-# https://www.iana.org/time-zones
 
-# Build
-make TZDIR=/usr/share/zoneinfo
-
-# Install tools
-cp -v zic zdump /usr/sbin
-cp -v tzselect  /usr/bin
-
-# Install timezone data
-mkdir -pv /usr/share/zoneinfo/{posix,right}
-install -m444 -t /usr/share/zoneinfo iso3166.tab zone1970.tab zone.tab
+# Set the timezones to create
 export timezones="africa antarctica asia australasia europe northamerica \
-                southamerica pacificnew etcetera backward systemv factory"
-zic -y ./yearistype -d /usr/share/zoneinfo ${timezones}
-zic -y ./yearistype -d /usr/share/zoneinfo/posix ${timezones}
-zic -y ./yearistype -d /usr/share/zoneinfo/right -L leapseconds ${timezones}
-zic -y ./yearistype -d /usr/share/zoneinfo -p America/New_York
+                  southamerica etcetera backward factory"
+
+# Unpack the sources in a build directory
+mkdir tzdb && cd tzdb &&
+tar xf ../pkgs/tzdata2021a.tar.gz &&
+tar xf ../pkgs/tzcode2021a.tar.gz &&
+tar xf ../pkgs/posixtz-0.5.tar.xz
+
+# Apply patch from Adelie Linux
+patch -Np1 -i ../patches/posixtz-adelie/0001-posixtz-fix-up-lseek.patch
+
+# Build utilities
+make CFLAGS="$CFLAGS -DHAVE_STDINT_H=1" TZDIR="/usr/share/zoneinfo"
+make -C posixtz-0.5 posixtz
+
+# Create directories to install in
+mkdir -pv /usr/share/zoneinfo/right
+
+# Install
+install -m444 -t /usr/share/zoneinfo iso3166.tab zone1970.tab zone.tab
+install -m755 zic zdump ${BUILD}/usr/sbin
+install -m644 zic.8 zdump.8 ${BUILD}/usr/share/man/man8
+install -v -Dm755 posixtz-0.5/posixtz ${BUILD}/usr/bin/posixtz
+
+# Build the timezones
+./zic -b fat -y ./yearistype -d /usr/share/zoneinfo ${timezones}
+./zic -b fat -y ./yearistype -d /usr/share/zoneinfo/right -L leapseconds ${timezones}
+./zic -b fat -y ./yearistype -d /usr/share/zoneinfo -p America/New_York
 unset timezones
 
+# Set the timezone:
 # use tzselect to determine <xxx>
 cp -v /usr/share/zoneinfo/<xxx> /etc/localtime
 
