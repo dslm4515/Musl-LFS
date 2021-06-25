@@ -1,12 +1,16 @@
 # Final System: Argp-Standalone
-# Source: http://www.lysator.liu.se/~nisse/misc/argp-standalone-1.3.tar.gz
 # This section is done in Chroot environment
 
 # Patch source to compile under Musl libc
-patch -Np0 -i ../patches/argp-standalone-1.3-void-fix-no_use_inline.patch
+patch -Np0 -i ../patches/argp-standalone-void/fix-no_use_inline.patch       &&
+patch -Np1 -i ../patches/argp-standalone-adelie/001-throw-in-funcdef.patch  &&
+patch -Np1 -i ../patches/argp-standalone-adelie/gnu89-inline.patch
 
 # Configure source
-CFLAGS=" -fPIC" ./configure --prefix=/usr --disable-static
+CFLAGS=" -fPIC" ./configure --prefix=/usr \
+                            --disable-static \
+                            --sysconfdir=/etc \
+                            --localstatedir=/var
 
 # Build
 make
