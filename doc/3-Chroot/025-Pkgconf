@@ -1,12 +1,15 @@
-# Final System: Pkg-Config
-# Source: https://pkg-config.freedesktop.org/releases/pkg-config-0.29.2.tar.gz
+# Final System: Pkgconf
 # This section is done in Chroot environment
 
 # Configure source
 ./configure --prefix=/usr              \
-            --with-internal-glib       \
-            --disable-host-tool        \
-            --docdir=/usr/share/doc/pkg-config-0.29.2
+            --docdir=/usr/share/doc/pkgconf-${VER} \
+            --sysconfdir=/etc          \
+            --localstatedir=/var       \
+            --with-pkg-config-dir=/usr/lib/pkgconfig:/usr/share/pkgconfig:/opt/qt5/lib/pkgconfig
 
 # Build and Install
 make && make install
+
+# Create a compatibility link
+ln -s pkgconf /usr/bin/pkg-config
