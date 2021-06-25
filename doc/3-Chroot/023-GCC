@@ -1,34 +1,37 @@
-# Final System: GCC-10.2.0
-# Source: http://ftp.gnu.org/gnu/gcc/gcc-10.2.0/gcc-10.2.0.tar.xz
-# Source: http://isl.gforge.inria.fr/isl-0.19.tar.xz
+# Final System: GCC
 # This section is done in Chroot environment
 
 case $(uname -m) in
   x86_64) export TRUPLE="x86_64-linux-musl"
+          export EXTRA_CONFIG=" --with-arch=x86-64"
           ;;
   i686)   export TRUPLE="i686-linux-musl"
+          export EXTRA_CONFIG=" --with-arch=pentium3 --with-tune=pentium-m"
           ;;
   armv7l) export TRUPLE="armv7l-linux-musleabihf"
+          export EXTRA_CONFIG=" --with-arch=armv7-a --with-tune=generic-armv7-a --with-fpu=vfpv3-d16 --with-float=hard --with-abi=aapcs-linux --with-mode=thumb"
           ;;
   armv6l) export TRUPLE="armv6l-linux-musleabihf"
+          export EXTRA_CONFIG=" --with-arch=armv6zk --with-tune=arm1176jzf-s --with-fpu=vfp --with-float=hard --with-abi=aapcs-linux"
           ;;
   aarch64) export TRUPLE="aarch64-linux-musleabihf"
-           export EXTRA_CONFIG=" --with-arch=armv8-a --with-abi=lp64"
+           export EXTRA_CONFIG=" --with-arch=armv8-a --with-abi=lp64 --enable-fix-cortex-a53-835769 --enable-fix-cortex-a53-843419"
            sed -i '/m64=/s/lib64/lib/' gcc/config/aarch64/t-aarch64-linux
           ;;
+esac 
+
+# For ARM disable libitm because of texrels
+case $(uname -m) in
+     arm*) export LIBITM=false ;;
 esac
 
+
 # Add isl source
-tar -xf ../isl-0.19.tar.xz
-mv -v isl-0.19 isl
+tar -xf ../pkgs/isl-0.23.tar.bz2
+mv -v isl-0.23 isl
 
 # Apply patches [from alpine-linux]
-for p in 0001-posix_memalign.patch 0002-gcc-poison-system-directories.patch 0003-Turn-on-Wl-z-relro-z-now-by-default.patch 0004-Turn-on-D_FORTIFY_SOURCE-2-by-default-for-C-C-ObjC-O.patch 0005-On-linux-targets-pass-as-needed-by-default-to-the-li.patch 0006-Enable-Wformat-and-Wformat-security-by-default.patch 0007-Enable-Wtrampolines-by-default.patch 0008-Disable-ssp-on-nostdlib-nodefaultlibs-and-ffreestand.patch 0009-Ensure-that-msgfmt-doesn-t-encounter-problems-during.patch 0010-Don-t-declare-asprintf-if-defined-as-a-macro.patch 0011-libiberty-copy-PIC-objects-during-build-process.patch 0012-libitm-disable-FORTIFY.patch 0013-libgcc_s.patch 0014-nopie.patch 0015-libffi-use-__linux__-instead-of-__gnu_linux__-for-mu.patch 0016-dlang-update-zlib-binding.patch 0017-dlang-fix-fcntl-on-mips-add-libucontext-dep.patch 0018-ada-fix-shared-linking.patch 0019-build-fix-CXXFLAGS_FOR_BUILD-passing.patch 0020-libstdc-futex-add-time64-compatibility.patch 0021-add-fortify-headers-paths.patch 0022-Alpine-musl-package-provides-libssp_nonshared.a.-We-.patch 0023-DP-Use-push-state-pop-state-for-gold-as-well-when-li.patch 0024-Pure-64-bit-MIPS.patch 0025-use-pure-64-bit-configuration-where-appropriate.patch 0026-always-build-libgcc_eh.a.patch 0027-ada-libgnarl-compatibility-for-musl.patch 0028-ada-musl-support-fixes.patch; do
- patch -Np1 -i ../patches/gcc-10.2.0-alpine/$p
-done
-
-# Apply patches [from void-linux] .. works for version 10.2.0
-patch -Np0 -i ../patches/gcc-9.1.0-void-patches/fix-musl-execinfo.patch
+bash ../patches/gcc-10.3.1_git20210424-alpine/apply_patches.sh
 
 # If building on x86_64, change the default 
 # directory name for 64-bit libraries to “lib”:
@@ -43,18 +46,7 @@ case $(uname -m) in
   ;;
 esac
 
-# _FORTIFY_SOURCE needs an optimization level.
-sed -i "/ac_cpp=/s/\$CPPFLAGS/\$CPPFLAGS -O2/" {gcc,libiberty}/configure
-
-#export CFLAGS="$CFLAGS -D_FORTIFY_SOURCE=2"
-#export CXXFLAGS="$CXXFLAGS -D_FORTIFY_SOURCE=2"
-
-# Disable explicit -fno-PIE, gcc will figure this out itself.
-#export CFLAGS="$CFLAGS -fno-PIE"
-#export CXXFLAGS="$CXXFLAGS -fno-PIE"
-#export LDFLAGS="$LDFLAGS -no-pie"
-
-# Configure source
+# Configure source in dedicated build directory:
 mkdir -v build && cd build
 SED=sed  libat_cv_have_ifunc=no       \
 ../configure --prefix=/usr            \
@@ -65,24 +57,30 @@ SED=sed  libat_cv_have_ifunc=no       \
              --enable-languages=c,c++ \
              --enable-threads=posix \
              --enable-clocale=generic \
-             --enable-languages=c,c++ \
              --enable-tls \
              --enable-libstdcxx-time \
              --enable-fully-dynamic-string \
              --enable-default-pie \
              --enable-default-ssp \
-             --enable-vtable-verify \
              --enable-linker-build-id \
-             --enable-fast-character \
+             --enable-checking=release \
+             --enable-cloog-backend \
+             --enable-__cxa_atexit  \
+             --enable-lto \
+             --enable-plugins \
              --disable-libstdcxx-pch \
              --disable-nls \
              --disable-multilib       \
              --disable-bootstrap      \
              --disable-symvers \
              --disable-libsanitizer \
-             --disable-target-libiberty \
-             --disable-libunwind-exceptions \
-             --disable-libssp --disable-libmpx --disable-libmudflap $EXTRA_CONFIG 
+             --disable-libssp \
+             --disable-libmpx \
+             --disable-libmudflap \
+             --disable-fixed-point \
+             --disable-sjlj-exceptions \
+             --disable-werror $EXTRA_CONFIG \
+             --with-pkgversion="Musl-LFS 9.0"
 
 # Build
 make
@@ -122,7 +120,7 @@ ln -sv gcc /usr/bin/cc
 # Add a compatibility symlink to enable building programs with 
 # Link Time Optimization (LTO): 
 install -v -dm755 /usr/lib/bfd-plugins
-ln -sfv ../../libexec/gcc/$(gcc -dumpmachine)/10.2.0/liblto_plugin.so \
+ln -sfv ../../libexec/gcc/$(gcc -dumpmachine)/10.3.1/liblto_plugin.so \
         /usr/lib/bfd-plugins/
 mkdir -pv /usr/share/gdb/auto-load/usr/lib
 mv -v /usr/lib/*gdb.py /usr/share/gdb/auto-load/usr/lib
@@ -164,4 +162,5 @@ grep 'SEARCH.*/usr/lib' dummy.log |sed 's|; |\n|g'
 
 # If all is well, remove test files:
 rm -v dummy.c a.out dummy.log
+unset LIBITM
 
