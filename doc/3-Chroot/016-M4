@@ -1,6 +1,10 @@
-# Final System: M4 1.4.18
-# Source: http://ftp.gnu.org/gnu/m4/m4-1.4.18.tar.xz
+# Final System: M4 
 # This section is done in Chroot environment
+
+# Apply patches from Adelie
+patch -Np1 -i ../patches/m4-adelie/disable-mbrtowc-test.patch                      &&
+patch -Np1 -i ../patches/m4-adelie/gnulib-tests-dont-require-gpg-passphrase.patch  &&
+patch -Np1 -i ../patches/m4-adelie/localename-test-fix.patch
 
 # Configure
 ./configure --prefix=/usr
