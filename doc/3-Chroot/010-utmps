@@ -1,0 +1,27 @@
+# Final System: utmps
+# This section is done in Chroot environment
+
+# Set the version in pkconfig file
+cp -v ../files/utmps-alpine/*.pc /tmp/
+sed -i -e "s/@@VERSION@@/0.1.0.2/g" -- /tmp/*.pc 
+
+# Configure source
+./configure --enable-shared      \
+            --enable-static      \
+            --enable-allstatic   \
+            --enable-static-libc \
+            --libdir=/usr/lib    \
+            --with-dynlib=/lib   \
+            --libexecdir="/lib/utmps" \
+            --with=dynlib=/lib
+
+# Build and Install
+make
+make install
+install -v -D -m644 /tmp/utmps.pc /usr/lib/pkgconfig/
+
+# Create link as some expect header in /usr/include:
+ln -sv utmps/utmpx.h /usr/include/utmpx.h
+
+# Clean up
+rm -rf /tmp/*.pc
