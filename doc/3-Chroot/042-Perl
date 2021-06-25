@@ -1,5 +1,4 @@
 # Final System: Perl 
-# Source: https://www.cpan.org/src/5.0/perl-5.32.0.tar.xz
 # This section is done in Chroot environment
 
 export BUILD_ZLIB=False
@@ -17,19 +16,23 @@ sed -i '/\(bzip2\|zlib\)-src/d' MANIFEST
 # in programs such as rxvt-unicode
 patch -p1 < ../patches/perl-5.30-alpine/musl-locale.patch
 
+patch -Np1 -i ../patches/perl-alpine/musl-stack-size.patch
+
+# Configure 
 sh Configure -des -Dprefix=/usr                                \
                   -Dvendorprefix=/usr                          \
-                  -Dprivlib=/usr/lib/perl5/5.32/core_perl      \
-                  -Darchlib=/usr/lib/perl5/5.32/core_perl      \
-                  -Dsitelib=/usr/lib/perl5/5.32/site_perl      \
-                  -Dsitearch=/usr/lib/perl5/5.32/site_perl     \
-                  -Dvendorlib=/usr/lib/perl5/5.32/vendor_perl  \
-                  -Dvendorarch=/usr/lib/perl5/5.32/vendor_perl \
+                  -Dprivlib=/usr/lib/perl5/5.34/core_perl      \
+                  -Darchlib=/usr/lib/perl5/5.34/core_perl      \
+                  -Dsitelib=/usr/lib/perl5/5.34/site_perl      \
+                  -Dsitearch=/usr/lib/perl5/5.34/site_perl     \
+                  -Dvendorlib=/usr/lib/perl5/5.34/vendor_perl  \
+                  -Dvendorarch=/usr/lib/perl5/5.34/vendor_perl \
                   -Dman1dir=/usr/share/man/man1                \
                   -Dman3dir=/usr/share/man/man3                \
                   -Dpager="/usr/bin/less -isR"                 \
                   -Duseshrplib                                 \
-                  -Dusethreads
+                  -Dusethreads                                 \
+                  -Dcccdlflags='-fPIC' -Dccdlflags='-rdynamic'
 make && make install
 export CFLAGS=$CF_OLD
 unset BUILD_ZLIB BUILD_BZIP2 CF_OLD
