@@ -1,6 +1,18 @@
 # Final System: Linux Kernel
-# Source: https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.2.11.tar.xz 
+# Source: https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.12.10.tar.xz 
 # This section is done in Chroot environment
+# Recomended to use latest kernel version
+
+# Fix fix header for missing definition of __always_inline in
+# 5.12.x kernels for musl systems.
+patch -Np1 -i ../patches/kernel/include-uapi-linux-swab-Fix-potentially-missing-__always_inline.patch
+
+case $(uname -m) in
+   x86_64*)  export ARCH="x86"   ;;
+   i686*)    export ARCH="x86"   ;;
+   armv*)    export ARCH="arm"   ;;
+   aarch64*) export ARCH="arm64" ;;
+esac
 
 # Prepare for compilation by running the following command:
 make mrproper
@@ -15,17 +27,17 @@ make
 make modules_install
 
 # Install the kernel:
-cp -iv arch/x86/boot/bzImage /boot/vmlinuz
+case $ARCH in
+   x86)  cp -iv arch/${ARCH}/boot/bzImage   /boot/vmlinuz ;;
+   arm*) cp -iv arch/${ARCH}/boot/zImage    /boot/
+         cp -vr arch/${ARCH}/boot/dts/*.dtb /boot/        ;;
+esac
 
 # Install the symbol file for the kernel:
-cp -iv System.map /boot/System.map
+case $ARCH in
+   x86) cp -iv System.map /boot/System.map
+esac
 
 # Install the kernel configuration file .config produced by the make menuconfig:
 cp -iv .config /boot/config
 
-# Then create the initramfs image required by bootscripts
-# Use the name of the kernel, which can be found in /lib/modules:
-# i.e.  /lib/modules/5.2.11
-mkinitramfs <kernel name>
-# i.e.  mkinitramfs 5.2.11
-cp -va initrd.img-<kernel name> /boot/initrd.img
