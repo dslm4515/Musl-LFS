@@ -1,9 +1,10 @@
-# Final System: Musl-FTS 1.2.7
-# Source: https://github.com/pullmoll/musl-fts/archive/v1.2.7.tar.gz
+# Final System: Musl-FTS 
 # This section is done in Chroot environment
 
 sed -i "/pkgconfig_DATA/i pkgconfigdir=/usr/lib/pkgconfig" Makefile.am
 ./bootstrap.sh
 
-./configure --prefix=/usr
+CFLAGS=" -fPIC" \
+./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var
+
 make && make install
