@@ -1,7 +1,15 @@
-# Final System: Inetutils 1.9.4
-# Source: http://ftp.gnu.org/gnu/inetutils/inetutils-1.9.4.tar.xz
+# Final System: Inetutils 
 # This section is done in Chroot environment
 
+# Patch source for utmpx support
+patch -Np1 -i ../patches/inetutils-mlfs/logwtmp.patch
+
+# Fix a few files
+sed -i 's|_GL_WARN_ON_USE (gets|//_GL_WARN_ON_USE (gets|' lib/stdio.in.h
+echo '#define PATH_PROCNET_DEV "/proc/net/dev"' >> ifconfig/system/linux.h
+sed -i 's|port : "whois"|port : "nicname"|' whois/whois.c
+
+# Configure source
 ./configure --prefix=/usr        \
             --localstatedir=/var \
             --disable-logger     \
