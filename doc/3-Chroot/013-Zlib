@@ -1,13 +1,12 @@
-# Final System: Zlib 1.2.11
-# Source: https://zlib.net/zlib-1.2.11.tar.xz
+# Final System: Zlib 
 # This section is done in Chroot environment
 
 # Configure source
-./configure --prefix=/usr
+./configure --prefix=/usr --libdir=/lib --shared
 
 # Build and Install
 make 
-make install
+make pkgconfigdir="/usr/lib/pkgconfig" install
 
 # Fix misplace files
 mv -v /usr/lib/libz.so.* /lib
