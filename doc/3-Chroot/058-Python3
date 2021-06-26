@@ -1,5 +1,4 @@
 # Final System: Python 3
-# Source: https://www.python.org/ftp/python/3.8.5/Python-3.8.5.tar.xz
 # This section is done in Chroot environment
 
 patch -Np0 -i ../patches/python3-void/musl-find_library.patch
@@ -10,18 +9,20 @@ rm -r Modules/expat
 rm -r Modules/_ctypes/{darwin,libffi}*
 
 # Configure source
-./configure --prefix=/usr       \
-            --enable-shared     \
-            --with-system-expat \
-            --with-system-ffi   \
+./configure --prefix=/usr        \
+            --enable-shared      \
+            --with-system-expat  \
+            --with-system-ffi    \
             --with-ensurepip=yes \
-            --enable-ipv6 \
-            --with-threads --enable-loadable-sqlite-extensions --with-computed-gotos
+            --enable-ipv6        \
+            --with-threads       \
+            --enable-loadable-sqlite-extensions \
+            --with-computed-gotos
 
 # Build and install
 make && make install
 
 # Change permissions to allow stripping later
-chmod -v 755 /usr/lib/libpython3.8.so
+chmod -v 755 /usr/lib/libpython3.9.so
 chmod -v 755 /usr/lib/libpython3.so
 
