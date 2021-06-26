@@ -1,28 +1,19 @@
 # Final System: Libelf 
-# Source: https://sourceware.org/ftp/elfutils/0.180/elfutils-0.180.tar.bz2
 # This section is done in Chroot environment
 
 # Add missing files
 cp -vr ../files/elfutils-void/error.h lib/
 cp -vr ../files/elfutils-void/error.h src/
 
-# Patch source for musl
-patch -Np0 -i ../patches/elfutils-void/fix-aarch64_fregs.patch
-patch -Np0 -i ../patches/elfutils-void/musl-cdefs.patch
-patch -Np0 -i ../patches/elfutils-void/musl-fts-obstack.patch
-patch -Np0 -i ../patches/elfutils-void/musl-macros.patch
-patch -Np0 -i ../patches/elfutils-void/musl-qsort_r.patch
-patch -Np0 -i ../patches/elfutils-void/musl-strerror_r.patch
-patch -Np0 -i ../patches/elfutils-void/musl-strndupa.patch
-patch -Np0 -i ../patches/elfutils-void/fix-uninitialized.patch
-patch -Np0 -i ../patches/elfutils-void/musl-asm_ptrace_h.patch
-
 # Re-create configure script
 autoreconf -ifv
 
-# Configure source & build
-CFLAGS="-Wno-error -Wno-error=null-dereference" \
-./configure --prefix=/usr --disable-debuginfod && make
+# Configure source
+CFLAGS="-DFNM_EXTMATCH=0 -Wno-error -Wno-error=null-dereference -Wl,-z,stack-size=2097152" \
+./configure --prefix=/usr --disable-debuginfod \
+            --disable-libdebuginfod 
+# Build only the library
+make -C lib && make -C libelf
 
 # Install library
 make -C libelf install
