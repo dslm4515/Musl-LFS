@@ -1,11 +1,18 @@
 # Final System: IProute2 
-# Source: https://www.kernel.org/pub/linux/utils/net/iproute2/iproute2-5.8.0.tar.xz
 # This section is done in Chroot environment
 
-patch -Np0 -i ../patches/iproute2-void/fix-musl-devlink.patch
-
+# The arpd program included in this package will not be 
+# built since it is dependent on Berkeley DB, which is 
+# not installed in MLFS
 sed -i /ARPD/d Makefile
 rm -fv man/man8/arpd.8
+
+# It is also necessary to disable building two modules that require
+# iptables, not installed in MLFS
 sed -i 's/.m_ipt.o//' tc/Makefile
 
-make && make DOCDIR=/usr/share/doc/iproute2-5.8.0 install
+# Build
+make 
+
+# Install
+make DOCDIR=/usr/share/doc/iproute2-5.12.0 install
