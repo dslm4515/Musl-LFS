@@ -1,11 +1,13 @@
 # Final System: Execline 
-# Source: https://www.skarnet.org/software/execline/execline-2.5.1.0.tar.gz
-# Source: http://www.skarnet.org/software/execline/execline-2.6.1.0.tar.gz
 # This section is done in Chroot environment
 
-./configure --prefix=/usr                        \
-            --with-lib=/usr/lib/skalibs          \
-            --bindir=/bin                        \
-            --enabled-shared
+./configure --enable-shared       \
+            --enable-static       \
+            --enable-allstatic    \
+            --enable-static-libc  \
+            --libdir=/usr/lib     \
+            --with-dynlib=/lib    \
+            --enable-pedantic-posix
+
 make
 make install
