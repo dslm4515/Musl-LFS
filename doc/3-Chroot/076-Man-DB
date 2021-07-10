@@ -1,16 +1,12 @@
 # Final system: Man-DB
-# Source: http://download.savannah.gnu.org/releases/man-db/man-db-2.9.3.tar.xz
 # This section is done in Chroot environment
 
 # Apply patches from void
 patch -Np0 -i ../patches/man-db-void/guard-glibc-iconv-ext.patch
 patch -Np0 -i ../patches/man-db-void/add-missing-stdlib_h-include.patch 
 
-export CFLAGS+=" -I/usr/include/gettext" 
-export LDFLAGS+=" -lintl"
-
 ./configure --prefix=/usr                        \
-            --docdir=/usr/share/doc/man-db-2.9.3 \
+            --docdir=/usr/share/doc/man-db-2.9.4 \
             --sysconfdir=/etc                    \
             --disable-setuid                     \
             --enable-cache-owner=bin             \
