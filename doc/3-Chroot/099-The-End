@@ -4,16 +4,32 @@
 # file, it is very easy for you (and for us if you need to ask for help at 
 # some point) to find out which LFS version is installed on the system. 
 # Create this file by running: 
-echo 9.0 > /etc/mlfs-release
+echo 9.0.0 > /etc/mlfs-release
 
 # It is also a good idea to create a file to show the status of your new 
 # system with respect to the Linux Standards Base (LSB). To create this file, run: 
 cat > /etc/lsb-release << "EOF"
 DISTRIB_ID="Musl Linux From Scratch"
-DISTRIB_RELEASE="9.0"
+DISTRIB_RELEASE="9.0.0"
 DISTRIB_CODENAME="<your name here>"
 DISTRIB_DESCRIPTION="Musl Linux From Scratch"
 EOF
+
+# If desired, an os-release file
+cat > /usr/lib/os-release << "EOF"
+NAME="MLFS"
+VERSION="9.0.0"
+ID=cmlfs
+ID_LIKE="lfs"
+PRETTY_NAME="Musl Linux From Scratch 9.0.0"
+VERSION_ID="9.0.0"
+HOME_URL="https://github.com/dslm4515/Musl-LFS"
+SUPPORT_URL="https://github.com/dslm4515/Musl-LFS/issues"
+BUG_REPORT_URL="https://github.com/dslm4515/Musl-LFS/issues"
+EOF
+
+# freedesktop.org defines that file can be in /etc or /usr/lib
+ln -sv ../usr/lib/os-release /etc/
 
 ## Rebooting the System 
 
