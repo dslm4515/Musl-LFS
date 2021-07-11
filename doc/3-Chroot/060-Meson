@@ -1,0 +1,9 @@
+# Final System: Meson
+# This section is done in Chroot environment
+
+# Build
+python3 setup.py build
+
+# Install
+python3 setup.py install --root=dest
+cp -rv dest/* /

@@ -1,0 +1,8 @@
+# Final System: File 
+# This section is done in Chroot environment
+
+# Configure
+./configure --prefix=/usr
+
+# Build and install
+make && make install

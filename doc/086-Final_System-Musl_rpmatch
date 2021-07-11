@@ -1,7 +1,0 @@
-# Final System: Musl-rpmatch
-# Source: https://github.com/pullmoll/musl-rpmatch/archive/v1.0.tar.gz
-# This section is done in Chroot environment
-
-./bootstrap.sh
-./configure --prefix=/usr --enable-shared --enable-static
-make && make install

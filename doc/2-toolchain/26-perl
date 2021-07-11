@@ -1,0 +1,29 @@
+# Toolchain: Perl 5.32.1
+# Build and install as mlfs
+# perl 5.34.0 will not cross-compile under 
+# musl, even with latest perl-cross 1.3.6
+
+# Set the environment for cross-compiling if not done already.
+CC="${MLFS_TARGET}-gcc"
+CXX="${MLFS_TARGET}-g++"
+AR="${MLFS_TARGET}-ar"
+AS="${MLFS_TARGET}-as"
+RANLIB="${MLFS_TARGET}-ranlib"
+LD="${MLFS_TARGET}-ld"
+STRIP="${MLFS_TARGET}-strip"
+
+# Apply perl-cross over perl source
+cp -vrf ../perl-cross-1.3.5/* ./
+
+# Configure source
+./configure --prefix=/tools \
+            --target=${MLFS_TARGET}
+
+# Build 
+make 
+
+# Copy only what is needed:
+cp -v perl cpan/podlators/scripts/pod2man /tools/bin &&
+mkdir -pv /tools/lib/perl5/5.32.1    &&
+cp -Rv lib/* /tools/lib/perl5/5.32.1
+

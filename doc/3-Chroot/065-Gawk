@@ -1,0 +1,11 @@
+# Final System: Gawk
+# This section is done in Chroot environment
+
+# Ensure some unneeded files are not installed
+sed -i 's/extras//' Makefile.in
+
+# Configure
+./configure --prefix=/usr
+
+# Build & install
+make && make install

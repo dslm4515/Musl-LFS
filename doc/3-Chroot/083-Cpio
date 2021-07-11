@@ -1,0 +1,21 @@
+# Final System: Cpio
+# Required when building an initrd for boot
+
+# Recreate configure
+autoreconf -ifv
+
+export CFLAGS="-fcommon"
+sed -i '/The name/,+2 d' src/global.c
+
+# Configure source
+./configure --prefix=/usr \
+            --bindir=/bin \
+            --enable-mt   \
+            --with-rmt=/usr/libexec/rmt
+
+# Build and install
+make 
+make install
+
+# Clean up
+unset CFLAGS

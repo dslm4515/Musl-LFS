@@ -1,0 +1,13 @@
+# Final System: Zlib 
+# This section is done in Chroot environment
+
+# Configure source
+./configure --prefix=/usr --libdir=/lib --shared
+
+# Build and Install
+make 
+make pkgconfigdir="/usr/lib/pkgconfig" install
+
+# Fix misplace files
+mv -v /usr/lib/libz.so.* /lib
+ln -sfv ../../lib/$(readlink /usr/lib/libz.so) /usr/lib/libz.so

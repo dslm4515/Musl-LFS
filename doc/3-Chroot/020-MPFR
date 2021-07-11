@@ -1,0 +1,17 @@
+# Final System: MPFR 
+# This section is done in Chroot environment
+
+# Configure source
+./configure --prefix=/usr        \
+            --disable-static     \
+            --enable-thread-safe \
+            --docdir=/usr/share/doc/mpfr-4.1.0 
+
+# Build
+make
+
+# Test: make sure all pass
+make check
+
+# Install 
+make install

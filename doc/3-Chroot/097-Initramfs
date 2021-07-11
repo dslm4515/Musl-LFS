@@ -1,0 +1,63 @@
+# Final System: Initramfs Image
+# This section is done in Chroot environment
+
+# Create a directory to hold the contents of
+# the initramfs
+mkdir -pv /sources/initramfs_build
+
+cd /sources/initramfs_build
+mkdir -pv bin dev etc lib proc run sbin sys usr
+mkdir -pv lib/{firmware,modules,udev}
+mkdir -pv etc/{modprobe.d,udev}
+
+# Create symlinks
+ln -sv lib lib64
+ln -sv ../bin usr/bin
+
+# Copy binaries
+for b in cat cp dd killall kmod ln ls mkdir \
+         mknod mount rm sed sh sleep umount uname
+do
+  cp -va /bin/$b bin/
+done
+cp -va /usr/bin/basename bin/
+cp -va /usr/bin/readlink bin/
+ln -sv kmod bin/insmod
+ln -sv kmod bin/lsmod
+
+# Create the nodes for udev to mount on:
+mknod -m 600 dev/console c 5 1
+mknod -m 666 dev/null c 1 3
+
+# Copy udev configuration
+cp -v  /etc/udev/udev.conf etc/udev/
+cp -rv /etc/udev/rules.d   etc/udev/
+cp -rv /lib/udev/*         lib/udev/
+
+# Set module load order, if needed
+touch etc/modprobe.d/modprobe.conf
+
+# Copy the init script
+cp -v ../files/initramfs-init sbin/init
+
+# Copy required libraries
+for l in libacl.so.1  libattr.so.1 libblkid.so.1 libcap.so.2 \
+         libkmod.so.2 liblzma.so.5 libmount.so.1 libncursesw.so.6 \
+         libreadline.so.8 libz.so.1
+do
+  cp -va /lib/$l lib/
+done
+cp -v /lib/ld-musl-$(uname -m).so.1 lib/
+
+# Copy any firmware required for boot:
+cp -rv /lib/firmware/* lib/firmware/
+
+# Copy any kernel modules:
+cp -rv /lib/modules/* lib/modules/
+
+# Now create the initramfs image. Do not change directories
+find . | cpio -o -H newc | gzip -9  > /boot/initrd.img
+
+# Save the initramfs_build directory to update/build more
+# Or after booting into new MLFS build, use the mkinitramfs
+# script. 

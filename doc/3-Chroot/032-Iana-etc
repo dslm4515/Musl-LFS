@@ -1,0 +1,4 @@
+# Final System: Iana-etc
+# This section is done in Chroot environment
+
+cp services protocols /etc

@@ -1,0 +1,38 @@
+# Cross-Tools: GCC STATIC
+# Build and install as mlfs
+
+# GCC now requires the GMP, MPFR and MPC packages to build.
+# Unpack them in-tree.
+xz -cd ../pkgs/mpfr-4.1.0.tar.xz | tar -xf -
+mv -v mpfr-4.1.0 mpfr
+xz -cd ../pkgs/gmp-6.2.1.tar.xz | tar -xf -
+mv -v gmp-6.2.1 gmp
+gunzip -cd ../pkgs/mpc-1.2.1.tar.gz | tar -xf -
+mv -v mpc-1.2.1 mpc
+
+# The GCC documentation recommends building GCC in 
+# a dedicated build directory
+mkdir -v build && cd  build
+
+# Configure source 
+CFLAGS='-g0 -O0' \
+CXXFLAGS='-g0 -O0' \
+../configure \
+          --prefix=/cross-tools --build=${MLFS_HOST} \
+          --host=${MLFS_HOST}   --target=${MLFS_TARGET} \
+          --with-sysroot=/cross-tools/${MLFS_TARGET} \
+          --disable-nls         --with-newlib  \
+          --disable-libitm     --disable-libvtv \
+          --disable-libssp     --disable-shared \
+          --disable-libgomp    --without-headers \
+          --disable-threads    --disable-multilib \
+          --disable-libatomic  --disable-libstdcxx \
+          --enable-languages=c --disable-libquadmath \
+          --disable-libsanitizer --with-arch=${MLFS_CPU} \
+          --disable-decimal-float --enable-clocale=generic 
+
+# Build only the mininum 
+make all-gcc all-target-libgcc
+
+# Install
+make install-gcc install-target-libgcc

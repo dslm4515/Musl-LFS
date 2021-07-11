@@ -1,0 +1,11 @@
+# Final System: Texinfo
+# This section is done in Chroot environment
+
+# Configure
+./configure --prefix=/usr --disable-static
+
+# Build
+make
+
+# Install
+make install

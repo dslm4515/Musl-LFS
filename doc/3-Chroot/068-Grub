@@ -1,0 +1,39 @@
+# Final System: Grub
+# This section is done in Chroot environment
+
+# Apply patches from Apline Linux
+patch -Np1 -i ../patches/grub-alpine/lang-C.UTF-8.patch         && \
+patch -Np1 -i ../patches/grub-alpine/fix-gcc-no-pie-specs.patch && \
+patch -Np1 -i ../patches/grub-alpine/alpine-mkconfig.patch 
+
+# Regenerate configure script
+PYTHON=python3 ./autogen.sh
+
+#################################################
+# for BIOS-based PCs:
+case $(uname -m) in
+ i686|x86_64) export XCONF="-with-platform=pc" ;;
+esac 
+
+./configure --prefix=/usr          \
+            --sbindir=/sbin        \
+            --sysconfdir=/etc      \
+            --disable-efiemu       \
+            --disable-werror $XCONF
+unset $XCONF
+
+#################################################
+# for UEFI-based PCs:
+export XCONF="--with-platform=efi --disable-efiemu"
+case $(uname -m) in
+        x86_64) export XCONF="$XCONF --target=x86_64" ;;
+        i686)   export XCONF="$XCONF --target=i386"   ;;
+esac
+./configure --prefix=/usr          \
+            --sbindir=/sbin        \
+            --sysconfdir=/etc      \
+            --disable-werror $XCONF
+
+# Build and install
+make && make install
+unset $XCONF

@@ -1,0 +1,12 @@
+--- linux-5.12.10.orig/include/uapi/linux/swab.h	2021-06-10 11:41:49.000000000 +0000
++++ linux-5.12.10/include/uapi/linux/swab.h	2021-06-18 19:32:55.629671643 +0000
+@@ -3,7 +3,8 @@
+ #define _UAPI_LINUX_SWAB_H
+ 
+ #include <linux/types.h>
+-#include <linux/compiler.h>
++
++#include <linux/stddef.h>
+ #include <asm/bitsperlong.h>
+ #include <asm/swab.h>
+ 

@@ -1,0 +1,8 @@
+# Final System: Bc
+# This section is done in Chroot environment
+
+# Configure source
+PREFIX=/usr CC=gcc CFLAGS="-std=c99" ./configure.sh -G -O3
+
+# Build and install
+make && make install

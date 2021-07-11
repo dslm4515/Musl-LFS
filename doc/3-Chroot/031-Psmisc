@@ -1,0 +1,20 @@
+# Final System: Psmisc
+# This section is done in Chroot environment
+
+# Configure source
+ac_cv_func_malloc_0_nonnull=yes  \
+ac_cv_func_realloc_0_nonnull=yes \
+./configure --prefix=/usr        \
+            --sysconfdir=/etc     \
+            --localstatedir=/var  \
+            --disable-selinux     \
+            --enable-harden-flags \
+            --enable-ipv6 
+# Build
+make
+
+# Install
+make install
+
+mv -v /usr/bin/fuser   /bin
+mv -v /usr/bin/killall /bin

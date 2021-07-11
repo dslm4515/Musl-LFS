@@ -1,0 +1,10 @@
+# Final System: Musl-rpmatch
+# This section is done in Chroot environment
+
+./bootstrap.sh
+
+CFLAGS=" -fPIC" \
+./configure --prefix=/usr   --enable-shared \
+            --enable-static --localstatedir=/var
+
+make && make install

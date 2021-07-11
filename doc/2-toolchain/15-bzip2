@@ -1,0 +1,29 @@
+# Toolchain: Bzip2
+# Build and install as mlfs
+
+# Set the environment for cross-compiling if not done already.
+CC="${MLFS_TARGET}-gcc"
+CXX="${MLFS_TARGET}-g++"
+AR="${MLFS_TARGET}-ar"
+AS="${MLFS_TARGET}-as"
+RANLIB="${MLFS_TARGET}-ranlib"
+LD="${MLFS_TARGET}-ld"
+STRIP="${MLFS_TARGET}-strip"
+
+# Fix the Makefiles for  ensures installation of symbolic 
+# links are relative and the man pages are installed into 
+# the correct location:
+cp Makefile{,.orig}
+sed -e "/^all:/s/ test//" Makefile.orig > Makefile
+sed -i 's@\(ln -s -f \)$(PREFIX)/bin/@\1@' Makefile
+sed -i "s@(PREFIX)/man@(PREFIX)/share/man@g" Makefile
+
+# Prepare source
+make -f Makefile-libbz2_so CC="${CC}" AR="${AR}" RANLIB="${RANLIB}"
+make clean
+
+# Build
+make CC="${CC}" AR="${AR}" RANLIB="${RANLIB}"
+
+# Install to tool chain
+make PREFIX=/tools install

@@ -1,0 +1,6 @@
+# Final System: Sed 
+# This section is done in Chroot environment
+
+./configure --prefix=/usr --bindir=/bin
+
+make && make install

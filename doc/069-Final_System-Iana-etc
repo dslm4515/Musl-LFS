@@ -1,5 +1,0 @@
-# Final System: Iana-etc
-# Source: http://anduin.linuxfromscratch.org/LFS/iana-etc-20200429.tar.gz
-# This section is done in Chroot environment
-
-cp services protocols /etc

@@ -1,0 +1,10 @@
+--- m4-1.4.18/tests/test-vc-list-files-git.sh.old	2018-01-03 18:36:29.000000000 -0600
++++ m4-1.4.18/tests/test-vc-list-files-git.sh		2018-06-18 21:57:08.305562148 -0500
+@@ -32,6 +32,7 @@
+   touch d/a b c &&
+   git config user.email "you@example.com" &&
+   git config user.name "Your Name" &&
++  git config commit.gpgsign false &&
+   git add . > /dev/null &&
+   git commit -q -a -m log &&
+   printf '%s\n' b c d/a > expected &&

@@ -1,0 +1,13 @@
+# Final System: Gzip
+# This section is done in Chroot environment
+
+# Configure source
+DEFS=NO_ASM gl_cv_func_fflush_stdin=yes \
+./configure --prefix=/usr
+
+# Build and install
+make && make install
+
+# Move to proper path
+mv -v /usr/bin/gzip /bin
+

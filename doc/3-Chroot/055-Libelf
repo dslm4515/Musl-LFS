@@ -1,0 +1,22 @@
+# Final System: Libelf 
+# This section is done in Chroot environment
+
+# Add missing files
+cp -vr ../files/elfutils-void/error.h lib/
+cp -vr ../files/elfutils-void/error.h src/
+
+# Re-create configure script
+autoreconf -ifv
+
+# Configure source
+CFLAGS="-DFNM_EXTMATCH=0 -Wno-error -Wno-error=null-dereference -Wl,-z,stack-size=2097152" \
+./configure --prefix=/usr --disable-debuginfod \
+            --disable-libdebuginfod 
+# Build only the library
+make -C lib && make -C libelf
+
+# Install library
+make -C libelf install
+
+# Install pkgconfig file for library
+install -vm644 config/libelf.pc /usr/lib/pkgconfig

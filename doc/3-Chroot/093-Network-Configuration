@@ -1,0 +1,58 @@
+### General Network Configuration
+### This section is done in Chroot environment
+### May skip if no networking is needed
+
+
+# Create Network Interface Configuration File(s)
+
+# For a wifi card:
+# Requires wpa_supplicant and dhcpcd
+cat > /etc/sysconfig/ifconfig.wlan0 << "EOF"
+ONBOOT="yes"
+IFACE="wlan0"
+SERVICE="wpa"
+
+WPA_ARGS=""
+
+WPA_SERVICE="dhcpcd"
+DHCP_START="-b -q"
+DHCP_STOP="-k"
+EOF
+
+# For a ethernet card with static ip address:
+cat > /etc/sysconfig/ifconfig.eth0 << "EOF"
+ONBOOT=yes
+IFACE=eth0
+SERVICE=ipv4-static
+IP=192.168.1.2
+GATEWAY=192.168.1.1
+PREFIX=24
+BROADCAST=192.168.1.255
+EOF
+
+# Creating the /etc/resolv.conf File
+cat > /etc/resolv.conf << "EOF"
+# Begin /etc/resolv.conf
+
+#domain <Your Domain Name>
+#nameserver <IP address of your primary nameserver>
+#nameserver <IP address of your secondary nameserver>
+
+# End /etc/resolv.conf
+EOF
+
+# Set the hostname
+# in this eample, 'mlfs':
+echo "mlfs" > /etc/hostname
+
+# Create the /etc/hosts file
+cat > /etc/hosts << "EOF"
+# Begin /etc/hosts
+
+127.0.0.1 localhost localhost.localdomain mlfs.localdomain mlfs
+::1       localhost localhost.localdomain mlfs.localdomain mlfs
+ff02::1   ip6-allnodes
+ff02::2   ip6-allrouters
+
+# End /etc/hosts
+EOF

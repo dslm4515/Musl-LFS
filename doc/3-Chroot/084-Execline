@@ -1,0 +1,13 @@
+# Final System: Execline 
+# This section is done in Chroot environment
+
+./configure --enable-shared       \
+            --enable-static       \
+            --enable-allstatic    \
+            --enable-static-libc  \
+            --libdir=/usr/lib     \
+            --with-dynlib=/lib    \
+            --enable-pedantic-posix
+
+make
+make install

@@ -1,0 +1,18 @@
+# Final System: S6-Portable-Utils 
+# This section is done in Chroot environment
+
+# Configure
+./configure --enable-shared         \
+            --enable-static         \
+            --enable-allstatic      \
+            --enable-static-libc    \
+            --libdir=/usr/lib       \
+            --libexecdir=/lib/s6-portable-utils \
+            --with-dynlib=/lib
+
+# Compile
+make
+
+# Install
+make install
+

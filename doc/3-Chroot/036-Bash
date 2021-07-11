@@ -1,0 +1,12 @@
+# Final System: Bash 
+# This section is done in Chroot environment
+
+./configure --prefix=/usr                       \
+            --docdir=/usr/share/doc/bash-5.1    \
+            --without-bash-malloc               \
+            --with-installed-readline           \
+            --with-curses
+
+make && make install
+
+mv -vf /usr/bin/bash /bin

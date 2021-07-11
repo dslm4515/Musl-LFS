@@ -1,0 +1,24 @@
+# Tool Chain: Kernel Headers
+# Build and install as mlfs
+
+# Clean source
+make mrproper
+
+# Extract headers
+# For kernels up to 5.2.x:
+# ARCH=${MLFS_ARCH} make INSTALL_HDR_PATH=dest headers_install
+# For kernels 5.3.x and newer:
+ARCH=${MLFS_ARCH} make headers
+
+# For kernels up to 5.2.x:
+# find dest/include \( -name .install -o -name ..install.cmd \) -delete
+
+# For kernels 5.3.x and newer:
+find usr/include \( -name .install -o -name ..install.cmd \) -delete
+
+# Install
+cp -rv usr/include/* /tools/include
+rm -v /tools/include/Makefile
+
+# for kernels up to 5.2.x:
+# cp -rv dest/include/* /tools/include

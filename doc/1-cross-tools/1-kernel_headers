@@ -1,0 +1,22 @@
+# Cross-Tools: Kernel Headers
+# Build & install as user mlfs
+
+# Clean sources
+make mrproper
+
+# Build Headers
+make ARCH=${MLFS_ARCH} headers_check
+
+# Install
+
+## For kernel up to 5.2.x:
+# make ARCH=${MLFS_ARCH} INSTALL_HDR_PATH=/cross-tools/${MLFS_TARGET} headers_install
+
+## For kernels 5.3.x+:
+make ARCH=${MLFS_ARCH} headers
+mkdir -pv /cross-tools/${MLFS_TARGET}/include
+
+cp -rv usr/include/* /cross-tools/${MLFS_TARGET}/include
+
+# Remove unnecessary Makefile
+rm -v /cross-tools/${MLFS_TARGET}/include/Makefile

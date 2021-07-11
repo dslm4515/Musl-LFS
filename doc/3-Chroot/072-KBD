@@ -1,0 +1,54 @@
+# Final System: KBD
+# This section is done in Chroot environment
+
+patch -Np1 -i ../patches/kbd-lfs/kbd-2.3.0-backspace-1.patch
+
+sed -i 's/\(RESIZECONS_PROGS=\)yes/\1no/g' configure
+sed -i 's/resizecons.8 //' docs/man/man8/Makefile.in
+
+# Fixes suggested by void linux...
+# Rename keymap files with the same names
+# this is needed because when only name of keymap is specified
+# oadkeys loads the first keymap it can find, which is bad
+# this should be removed when upstream adopts the change
+mv data/keymaps/i386/qwertz/cz{,-qwertz}.map
+mv data/keymaps/i386/olpc/es{,-olpc}.map
+mv data/keymaps/i386/olpc/pt{,-olpc}.map
+mv data/keymaps/i386/fgGIod/trf{,-fgGIod}.map
+mv data/keymaps/i386/colemak/{en-latin9,colemak}.map
+
+# fixes from fedora
+# 7-bit maps are obsolete; so are non-euro maps
+cd data/keymaps/i386
+cp qwerty/pt-latin9.map qwerty/pt.map
+cp qwerty/sv-latin1.map qwerty/se-latin1.map
+
+mv azerty/fr.map azerty/fr-old.map
+cp azerty/fr-latin9.map azerty/fr.map
+
+cp azerty/fr-latin9.map azerty/fr-latin0.map # legacy alias
+cd -
+
+cp -v ../files/kbd-void/error.h .
+
+autoreconf -fvi
+
+# Remove the redundant resizecons program (it requires the defunct 
+# svgalib to provide the video mode files - for normal use setfont 
+# sizes the console appropriately) together with its manpage.
+sed -e '/^PKG_CHECK_MODULES.*/d' -i configure.ac
+sed -e 's,tests ,,g' -i Makefile.am
+
+# Configure
+./configure --prefix=/usr --disable-vlock
+
+# Build and install
+make && make install
+
+# Remove keymaps for sun, amiga and atari.
+for f in sun amiga atari; do
+  rm -vrf /usr/share/kbd/keymaps/${f}
+done
+
+# Remove an internal library installed unintentionally:
+rm -v /usr/lib/libtswrap.{a,la,so*}

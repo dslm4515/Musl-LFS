@@ -1,0 +1,17 @@
+# Final System: S6-RC
+# This section is done in Chroot environment
+
+# Configure
+./configure --enable-shared         \
+            --enable-static         \
+            --enable-allstatic      \
+            --enable-static-libc    \
+            --libdir=/usr/lib       \
+            --libexecdir=/lib/s6-rc \
+            --with-dynlib=/lib
+
+# Build
+make
+
+# Install
+make install

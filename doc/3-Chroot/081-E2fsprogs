@@ -1,0 +1,31 @@
+# Final System: E2fsprogs
+# This section is done in Chroot environment
+
+# Build in a dedicated directory
+mkdir -v build && cd build
+
+# configure
+e2fsprogs_cv_struct_st_flags=no      \
+../configure --prefix=/usr           \
+             --bindir=/bin           \
+             --with-root-prefix=""   \
+             --enable-elf-shlibs     \
+             --disable-libblkid      \
+             --disable-libuuid       \
+             --disable-uuidd         \
+             --disable-fsck \
+             --enable-e2initrd-helper \
+             --disable-rpath
+# build
+make
+
+# Install
+make install && make install-libs
+
+# Fix permissions for stripping later on
+chmod -v u+w /usr/lib/{libcom_err,libe2p,libext2fs,libss}.a
+
+# Fix docs
+gunzip -v /usr/share/info/libext2fs.info.gz
+install-info --dir-file=/usr/share/info/dir /usr/share/info/libext2fs.info
+

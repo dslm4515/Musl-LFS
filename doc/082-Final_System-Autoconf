@@ -1,8 +1,0 @@
-# Final System: Autoconf 2.69
-# Source: http://ftp.gnu.org/gnu/autoconf/autoconf-2.69.tar.xz
-# This section is done in Chroot environment
-
-patch -Np1 -i ../patches/autoconf-2.69-musl.patch
-
-./configure --prefix=/usr 
-make && make install

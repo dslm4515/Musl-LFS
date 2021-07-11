@@ -1,0 +1,38 @@
+diff -uNr procps-3.3.17.orig/proc/whattime.c procps-3.3.17/proc/whattime.c
+--- procps-3.3.17.orig/proc/whattime.c	2021-02-09 04:11:25.000000000 -0600
++++ procps-3.3.17/proc/whattime.c	2021-03-19 13:40:17.910049032 -0500
+@@ -33,7 +33,7 @@
+ #include <fcntl.h>
+ #include <unistd.h>
+ #include <time.h>
+-#include <utmp.h>
++#include <utmpx.h>
+ #include <sys/ioctl.h>
+ #include "whattime.h"
+ #include "sysinfo.h"
+@@ -42,7 +42,7 @@
+ static double av[3];
+ 
+ char *sprint_uptime(int human_readable) {
+-  struct utmp *utmpstruct;
++  struct utmpx *utmpstruct;
+   int upminutes, uphours, updays, upweeks, upyears, updecades;
+   int pos;
+   int comma;
+@@ -98,13 +98,13 @@
+ /* count the number of users */
+ 
+     numuser = 0;
+-    setutent();
+-    while ((utmpstruct = getutent())) {
++    setutxent();
++    while ((utmpstruct = getutxent())) {
+       if ((utmpstruct->ut_type == USER_PROCESS) &&
+          (utmpstruct->ut_name[0] != '\0'))
+         numuser++;
+     }
+-    endutent();
++    endutxent();
+ 
+     pos += sprintf(buf + pos, "%2d user%s, ", numuser, numuser == 1 ? "" : "s");
+ 

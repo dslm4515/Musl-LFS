@@ -1,0 +1,48 @@
+# Cross-Tools: Musl
+# Build and install as mlfs
+
+# Configure source for cross build
+./configure \
+  CROSS_COMPILE=${MLFS_TARGET}- \
+  --prefix=/ \
+  --target=${MLFS_TARGET} 
+
+# Build and install
+make && DESTDIR=/cross-tools make install
+
+# Add missing directory and link
+mkdir -v /cross-tools/usr
+ln -sv ../include  /cross-tools/usr/include
+
+case $(uname -m) in
+  x86_64) export ARCH="x86_64"
+          ;;
+  i686)   export ARCH="i386"
+          ;;
+  arm*)   export ARCH="arm"
+          ;;
+  aarch64) export ARCH="aarch64"
+          ;;
+esac
+
+# Fix link
+rm -vf /cross-tools/lib/ld-musl* &&
+ln -sv libc.so /cross-tools/lib/ld-musl-${ARCH}.so.1
+
+# Create link for ldd:
+ln -sv ../lib/ld-musl-$ARCH.so.1 /cross-tools/bin/ldd
+
+# Create config for dynamic library loading:
+mkdir -v /cross-tools/etc
+cat > /cross-tools/etc/ld-musl-$ARCH.path << "EOF"
+/cross-tools/lib
+/tools/lib
+EOF
+
+# For arm
+case $(uname -m) in
+        arm*) ln -sv libc.so /cross-tools/lib/ld-musl-${ARCH2}.so.1
+              cp -v /cross-tools/etc/ld-musl-$ARCH.path \
+                      /cross-tools/etc/ld-musl-$ARCH2.path ;;
+esac
+unset ARCH ARCH2

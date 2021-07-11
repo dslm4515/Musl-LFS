@@ -1,0 +1,11 @@
+# Final System: Skalibs
+# This section is done in Chroot environment
+
+# Configure source
+./configure --enable-shared   \
+            --enable-static   \
+            --libdir=/usr/lib
+
+# Build and Install
+make
+make install

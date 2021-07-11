@@ -1,0 +1,22 @@
+# Cross-Tools: Binutils
+# Build and install as mlfs
+
+# Create build directory in-tree
+mkdir -v build && cd build
+
+# configure source
+../configure \
+   --prefix=/cross-tools \
+   --target=${MLFS_TARGET} \
+   --with-sysroot=/cross-tools/${MLFS_TARGET} \
+   --disable-nls \
+   --disable-multilib \
+   --disable-werror \
+   --enable-deterministic-archives \
+   --disable-compressed-debug-sections 
+
+# build to check host can build
+make configure-host
+
+# Build and install
+make && make install

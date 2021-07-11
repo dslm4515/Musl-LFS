@@ -1,0 +1,69 @@
+# Final System: Musl Libc
+# This section is done in Chroot environment
+
+# For i686(32 bit), there is a rounding error that
+# causes fonts to not display for SeaMonkey and 
+# Palemoon browsers:
+patch -Np1 -i ../patches/musl-mlfs/i686-fix-rounding.patch
+
+# Fix paths for utmp & wtmp:
+patch -Np1 -i ../patches/musl-mlfs/fix-utmp-wtmp-paths.patch
+
+# Additional patches from Alpine Linux:
+patch -Np1 -i ../patches/musl-alpine/0001-riscv64-define-ELF_NFPREG.patch
+patch -Np1 -i ../patches/musl-alpine/handle-aux-at_base.patch
+patch -Np1 -i ../patches/musl-alpine/syscall-cp-epoll.patch
+
+# Configure 
+LDFLAGS="$LDFLAGS -Wl,-soname,libc.musl-${CARCH}.so.1" \
+./configure --prefix=/usr \
+            --sysconfdir=/etc \
+            --localstatedir=/var \
+            --disable-gcc-wrapper
+
+# Build and install 
+make && make  install
+
+# provide minimal libssp_nonshared.a so we don't need libssp from gcc
+/tools/bin/$(uname -m)-mlfs-*-gcc -fpie -c ../files/__stack_chk_fail_local.c -o __stack_chk_fail_local.o
+/tools/bin/$(uname -m)-mlfs-*-gcc-ar r libssp_nonshared.a __stack_chk_fail_local.o
+cp -v libssp_nonshared.a /usr/lib/
+
+case $(uname -m) in
+  x86_64) export ARCH="x86_64"
+          ;;
+  i686)   export ARCH="i386"
+          ;;
+  arm*)   export ARCH="arm"
+          ;;
+  aarch64) export ARCH="aarch64"
+          ;;
+esac
+
+# Create link for ldd:
+ln -sv /lib/ld-musl-$ARCH.so.1 /bin/ldd
+
+# Create config for dynamic library loading:
+cat > /etc/ld-musl-$ARCH.path << "EOF"
+/lib
+/usr/local/lib
+/usr/lib
+EOF
+
+# As of musl v1.2.2, header is needed by util-linux
+#rm -v ${BUILD}/usr/include/utmp.h   &&
+
+# Header will be provided by skarnet's umtps
+rm -v ${BUILD}/usr/include/utmpx.h 
+
+# Install ldconfig script from Adelie Linux
+install -v -D -m755 ../files/musl-adelie/ldconfig ${BUILD}/usr/bin/
+
+# Some packages [outside MLFS] may expect ld-musl-i686.so.1 
+# instead of ld-musl-i386.so.1:
+case $(uname -m) in
+     i686) ln -sv ../usr/lib/libc.so  ${BUILD}/lib/ld-musl-i686.so.1 ;;
+esac
+
+unset ARCH
+

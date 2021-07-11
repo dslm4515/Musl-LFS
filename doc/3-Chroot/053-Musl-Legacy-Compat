@@ -1,0 +1,7 @@
+# Final System: Musl Legacy Compatibility Headers
+# This section is done in Chroot environment
+
+for h in cdefs queue tree
+do
+    install -v -D -m644 files/musl-legacy-compat-void/$h.h /usr/include/sys
+don

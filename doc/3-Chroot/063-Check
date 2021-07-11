@@ -1,0 +1,11 @@
+# Final System: Check
+# This section is done in Chroot environment
+
+# Configure
+./configure --prefix=/usr --disable-static &&
+
+# Build & install
+make && make install
+
+# Fix a script
+sed -i '1 s/tools/usr/' /usr/bin/checkmk

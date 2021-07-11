@@ -1,0 +1,3 @@
+[submodule "contrib/MLFS-S6-Bootscripts"]
+	path = contrib/MLFS-S6-Bootscripts
+	url = https://github.com/dslm4515/MLFS-S6-Bootscripts

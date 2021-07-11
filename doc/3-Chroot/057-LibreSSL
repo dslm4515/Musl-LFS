@@ -1,0 +1,38 @@
+# Final System: LibreSSL 
+# This section is done in Chroot environment
+# If building Rustc-1.45.1, use LibreSSL-3.0.0 instead
+
+# Run autoreconf
+autoreconf -vif
+
+# Set a few variables ...
+case $(uname -m) in
+ x86_64)  export EXTRACONFIG=""
+          export TRUPLE="x86_64-linux-musl"
+         ;;
+ i686)    export EXTRACONFIG="--disable-hardening"
+          export TRUPLE="i686-linux-musl"
+         ;;
+ armv7l)  export TRUPLE="armv7l-linux-musleabihf"
+         ;;
+ armv6l)  export TRUPLE="armv6l-linux-musleabihf"
+         ;;
+ aarch64) export TRUPLE="aarch64-linux-musleabihf"
+         ;;
+esac
+
+CFLAGS="-L/usr/lib $CFLAGS" \
+./configure \
+           --build=$TRUPLE \
+           --host=$TRUPLE \
+           --prefix=/usr \
+           --sysconfdir=/etc \
+           --mandir=/usr/share/man \
+           --localstatedir=/var $EXTRACONFIG
+
+
+unset EXTRACONFIG TRUPLE
+
+# Build and install
+make && make install
+

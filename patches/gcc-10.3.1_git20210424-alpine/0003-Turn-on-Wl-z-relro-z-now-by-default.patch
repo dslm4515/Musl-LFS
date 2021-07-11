@@ -1,0 +1,39 @@
+From f0338445838d12a82c803c1579653332e2710157 Mon Sep 17 00:00:00 2001
+From: Ariadne Conill <ariadne@dereferenced.org>
+Date: Fri, 21 Aug 2020 06:45:49 +0000
+Subject: [PATCH] Turn on -Wl,-z,relro,-z,now by default.
+
+---
+ gcc/doc/invoke.texi | 3 +++
+ gcc/gcc.c           | 1 +
+ 2 files changed, 4 insertions(+)
+
+diff --git a/gcc/doc/invoke.texi b/gcc/doc/invoke.texi
+index cd31b522e42..17d371ef432 100644
+--- a/gcc/doc/invoke.texi
++++ b/gcc/doc/invoke.texi
+@@ -14663,6 +14663,9 @@ For example, @option{-Wl,-Map,output.map} passes @option{-Map output.map} to the
+ linker.  When using the GNU linker, you can also get the same effect with
+ @option{-Wl,-Map=output.map}.
+ 
++NOTE: In Alpine Linux, for LDFLAGS, the option
++@option{-Wl,-z,relro,now} is used.  To disable, use @option{-Wl,-z,norelro}.
++
+ @item -u @var{symbol}
+ @opindex u
+ Pretend the symbol @var{symbol} is undefined, to force linking of
+diff --git a/gcc/gcc.c b/gcc/gcc.c
+index b2200c5185a..625c9ab7902 100644
+--- a/gcc/gcc.c
++++ b/gcc/gcc.c
+@@ -1039,6 +1039,7 @@ proper position among the other output files.  */
+    "%{flto|flto=*:%<fcompare-debug*} \
+     %{flto} %{fno-lto} %{flto=*} %l " LINK_PIE_SPEC \
+    "%{fuse-ld=*:-fuse-ld=%*} " LINK_COMPRESS_DEBUG_SPEC \
++   "-z relro -z now " \
+    "%X %{o*} %{e*} %{N} %{n} %{r}\
+     %{s} %{t} %{u*} %{z} %{Z} %{!nostdlib:%{!r:%{!nostartfiles:%S}}} \
+     %{Wno-poison-system-directories:--no-poison-system-directories} \
+-- 
+2.31.0
+

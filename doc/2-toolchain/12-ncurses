@@ -1,0 +1,27 @@
+# Toolchain: Ncurses
+# Build and install as mlfs
+
+# Set the environment for cross-compiling if not done already.
+CC="${MLFS_TARGET}-gcc"
+CXX="${MLFS_TARGET}-g++"
+AR="${MLFS_TARGET}-ar"
+AS="${MLFS_TARGET}-as"
+RANLIB="${MLFS_TARGET}-ranlib"
+LD="${MLFS_TARGET}-ld"
+STRIP="${MLFS_TARGET}-strip"
+
+# Ensure that gawk is found first during configuration: 
+sed -i s/mawk// configure
+
+# Configure source
+./configure --prefix=/tools \
+    --build=${MLFS_HOST} \
+    --host=${MLFS_TARGET} \
+    --with-shared   \
+    --without-debug \
+    --without-ada   \
+    --enable-widec  \
+    --enable-overwrite     
+
+# Build and install to toolchain
+make && make install

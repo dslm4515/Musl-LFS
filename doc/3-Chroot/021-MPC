@@ -1,0 +1,10 @@
+# Final System: MPC 
+# This section is done in Chroot environment
+
+# Configure source
+./configure --prefix=/usr    \
+            --disable-static \
+            --docdir=/usr/share/doc/mpc-1.2.1 
+
+# Build and install
+make && make install

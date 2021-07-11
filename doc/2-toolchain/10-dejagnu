@@ -1,0 +1,21 @@
+# Toolchain: DejaGNU
+# Build and install as mlfs
+# Can be optional: Package used for testing final system packages
+# *No need to use latest version, so far. If so, patches need updating.*
+
+# Set the environment for cross-compiling if not done already.
+CC="${MLFS_TARGET}-gcc"
+CXX="${MLFS_TARGET}-g++"
+AR="${MLFS_TARGET}-ar"
+AS="${MLFS_TARGET}-as"
+RANLIB="${MLFS_TARGET}-ranlib"
+LD="${MLFS_TARGET}-ld"
+STRIP="${MLFS_TARGET}-strip"
+
+# Configure source
+./configure --build=${MLFS_HOST} \
+            --host=${MLFS_TARGET} \
+            --prefix=/tools
+
+# Build and install to toolchain
+make && make install
