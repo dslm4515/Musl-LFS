@@ -16,14 +16,14 @@ The aim of this project is to create a create a Linux system using Musl (www.mus
 ## Goals:
 <ul>
   <li> [x] Properly name patches to reflect origin (i.e. Alpine or void) </li>
-  <li> [ ] Create a list for wget to download sources.</li>
-  <li> [ ] Create md5s list for sources</li>
-  <li> [ ] Update s6-rc & s6 to lastest version </li>
+  <li> [x] Create a list for wget to download sources.</li>
+  <li> [x] Create md5s list for sources</li>
+  <li> [x] Update s6-rc & s6 to lastest version </li>
   <li> [x] Redesign tool chain build to avoid two build passes of binutils and GCC</li>
   <li> [ ] Generate HTML 'book' like LFS</li>
-  <li> [ ] Add utmp/utmpx implementation</li>
-  <li> [ ] Transition from pkgconfig to pkgconf</li>
-  <li> [ ] Transition from gettext to gettext-tiny?</li>
+  <li> [x] Add utmp/utmpx implementation</li>
+  <li> [x] Transition from pkgconfig to pkgconf</li>
+  <li> [x] Transition from gettext to gettext-tiny</li>
   <li> [ ] POSIX compatibility </li>
 </ul>
 
@@ -94,7 +94,7 @@ https://github.com/AdelieLinux/gettext-tiny</li>
 ## Layout
 
 <ul>
-  <li>build-scripts - [WIP] Build scripts to use to semi-automate building /cross-tools, /tools, and the final system</li>
+  <li>build-scripts - Build scripts to use to semi-automate building /cross-tools, /tools, and the final system</li>
   <li>contrib - Additional sources that are hard to find or re-packed
   <li>doc - Build instructions to build a LFS installation that uses Musl instead of Glibc and S6 instead of SysVint.</li>
   <li>extra - Helpful scripts to mount, chroot, and umount a MLFS build.</li>
@@ -103,14 +103,32 @@ https://github.com/AdelieLinux/gettext-tiny</li>
   <li>sources.list - List of sources to download
 </ul>
 
-## Changelog (since 6.00)
+## Changelog (since 8.00)
 
 <ul>
- <li>Upgraded to GCC-10.2.0 and several other packages</li>
- <li>Added musl-rpmatch to build</li>
- <li>Add zstd to build</li>
- <li>Changed tool chain build flow to build binutils and GCC once</li>
- <li>Added nano text editor for tool chain - Helps with troubleshooting</li>
- <li>Updated patches and files directory scheme to reflect origins</li>
- <li>Removed porg. Recommend use of Slackware's pkgtools</li>
+    <li> Completed scripts to build cross-tools and tools </li>
+    <li> Upgraded bash to 5.1 </li>
+    <li> Updated lsb-release to 9.0 </li>
+    <li> Upgraded flex to 2.6.4 </li>
+    <li> Upgraded expat to 2.4.1 </li>
+    <li> Upgraded inetutils to 2.0 </li>
+    <li> Upgraded perl to 5.34.0 </li>
+    <li> Upgraded autoconf to 2.7.1 </li>
+    <li> Upgraded automake to 1.16.3 </li>
+    <li> Upgraded libelf to 0.185 </li>
+    <li> Upgraded libreSSL to 3.3.3 </li>
+    <li> Upgraded Python3 to 3.9.5 </li>
+    <li> Upgraded procps-ng to 3.3.17 with utmps support </li>
+    <li> Upgraded coreutils with utmps support </li>
+    <li> Upgraded grub to 2.06 </li>
+    <li> Upgraded iproute 2 to 5.12.0 </li>
+    <li> Upgraded to man-db 2.9.4. </li>
+    <li> Upgraded vim to 8.2.2890 </li>
+    <li> Upgraded util-linux to 2.36.2 </li>
+    <li> Upgraded execline to 2.8.0.1 </li>
+    <li> Upgraded s6 to 2.10.0.3 </li>
+    <li> Upgraded s6-rc to 0.5.2.2 </li>
+    <li> Upgraded s6-linux-utils to 2.5.1.5 </li>
+    <li> Upgraded s6-portable-utils to 2.2.3.2 </li>
+    <li> Upgraded s6-linux-init 1.0.6.3 </li>
 </ul>
