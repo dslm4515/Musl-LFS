@@ -38,7 +38,7 @@ cp -rv /lib/udev/*         lib/udev/
 touch etc/modprobe.d/modprobe.conf
 
 # Copy the init script
-cp -v ../files/initramfs-init init
+cp -v ../files/initramfs-init sbin/init
 
 # Copy required libraries
 for l in libacl.so.1  libattr.so.1 libblkid.so.1 libcap.so.2 \
@@ -56,7 +56,7 @@ cp -rv /lib/firmware/* lib/firmware/
 cp -rv /lib/modules/* lib/modules/
 
 # Now create the initramfs image. Do not change directories
-find . | cpio -o -H newc | gzip -9  > /boot/initramfs.img
+find . | cpio -o -H newc | gzip -9  > /boot/initrd.img
 
 # Save the initramfs_build directory to update/build more
 # Or after booting into new MLFS build, use the mkinitramfs
