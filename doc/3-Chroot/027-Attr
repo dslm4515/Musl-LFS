@@ -1,12 +1,11 @@
-# Final System: Attr 2.4.48
-# Source: http://download.savannah.gnu.org/releases/attr/attr-2.4.48.tar.gz
+# Final System: Attr 
 # This section is done in Chroot environment
 
 ./configure --prefix=/usr     \
             --bindir=/bin     \
             --disable-static  \
             --sysconfdir=/etc \
-            --docdir=/usr/share/doc/attr-2.4.48
+            --docdir=/usr/share/doc/attr-2.5.1
 
 make && make install
 

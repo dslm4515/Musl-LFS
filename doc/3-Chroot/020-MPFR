@@ -1,5 +1,4 @@
-# Final System: MPFR 4.1.0
-# Souce: http://www.mpfr.org/mpfr-4.1.0/mpfr-4.1.0.tar.xz
+# Final System: MPFR 
 # This section is done in Chroot environment
 
 # Configure source

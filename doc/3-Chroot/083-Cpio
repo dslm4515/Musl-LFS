@@ -1,5 +1,4 @@
 # Final System: Cpio
-# Source: https://ftp.gnu.org/gnu/cpio/cpio-2.13.tar.bz2
 # Required when building an initrd for boot
 
 # Recreate configure
@@ -18,4 +17,5 @@ sed -i '/The name/,+2 d' src/global.c
 make 
 make install
 
+# Clean up
 unset CFLAGS

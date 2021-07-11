@@ -1,5 +1,4 @@
 # Final System: Libffi
-# Source: ftp://sourceware.org/pub/libffi/libffi-3.3.tar.gz
 # This section is done in Chroot environment
 
 # Configure source. If host and target are the same machine, 

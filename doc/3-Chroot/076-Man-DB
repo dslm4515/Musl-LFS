@@ -5,6 +5,7 @@
 patch -Np0 -i ../patches/man-db-void/guard-glibc-iconv-ext.patch
 patch -Np0 -i ../patches/man-db-void/add-missing-stdlib_h-include.patch 
 
+# Configure
 ./configure --prefix=/usr                        \
             --docdir=/usr/share/doc/man-db-2.9.4 \
             --sysconfdir=/etc                    \
@@ -21,6 +22,8 @@ patch -Np0 -i ../patches/man-db-void/add-missing-stdlib_h-include.patch
             --without-included-regex             \
             --enable-automatic-create 
 
+# Build and install
 make && make install
 
+# Clean up
 unset CFLAGS LDFLAGS

@@ -1,5 +1,4 @@
 # Final System: Ncurses
-# Source: http://ftp.gnu.org/gnu/ncurses/ncurses-6.2.tar.gz
 # This section is done in Chroot environment
 
 # Don't install a static library that is not 
@@ -13,7 +12,8 @@ sed -i '/LIBTOOL_INSTALL/d' c++/Makefile.in
             --without-debug         \
             --without-normal        \
             --enable-pc-files       \
-            --enable-widec
+            --enable-widec          \
+            --with-pkg-config-libdir=/usr/lib/pkgconfig
 
 # Build and install
 make && make install

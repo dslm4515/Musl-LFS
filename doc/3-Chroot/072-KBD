@@ -1,5 +1,4 @@
 # Final System: KBD
-# Source: https://www.kernel.org/pub/linux/utils/kbd/kbd-2.3.0.tar.xz
 # This section is done in Chroot environment
 
 patch -Np1 -i ../patches/kbd-lfs/kbd-2.3.0-backspace-1.patch
@@ -39,8 +38,6 @@ autoreconf -fvi
 # sizes the console appropriately) together with its manpage.
 sed -e '/^PKG_CHECK_MODULES.*/d' -i configure.ac
 sed -e 's,tests ,,g' -i Makefile.am
-
-
 
 # Configure
 ./configure --prefix=/usr --disable-vlock

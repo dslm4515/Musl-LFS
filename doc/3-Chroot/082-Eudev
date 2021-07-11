@@ -1,9 +1,10 @@
 # Final System: Eudev
-# Source: https://dev.gentoo.org/~blueness/eudev/eudev-3.2.9.tar.gz
 # This section is done in Chroot environment
 
+# Regenerate configure script
 autoreconf -fiv
 
+# Configure
 ./configure --prefix=/usr           \
             --bindir=/sbin          \
             --sbindir=/sbin         \
@@ -15,9 +16,9 @@ autoreconf -fiv
             --enable-manpages       \
             --disable-static        
 
+# Build and install
 make && make install
 
+# Install some useful udev rules
 tar -xvf ../udev-mlfs-20191014.tar.xz
-# Edit udev-lfs-20171102/55-lfs.rules:
-# Comment out the lines for rtc
 make -f udev-mlfs-20191014/Makefile.mlfs install

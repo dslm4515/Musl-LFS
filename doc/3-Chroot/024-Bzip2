@@ -1,11 +1,14 @@
 # Final System: Bzip2
-# Source: http://anduin.linuxfromscratch.org/LFS/bzip2-1.0.8.tar.gz
 # This section is done in Chroot environment
 
+# Patch, per Void Linux
 patch -Np1 -i ../patches/bzip2-void/install_docs-1.patch
 patch -Np0 -i ../patches/bzip2-void/soname.patch
 sed -i 's@\(ln -s -f \)$(PREFIX)/bin/@\1@' Makefile
 sed -i "s@(PREFIX)/man@(PREFIX)/share/man@g" Makefile
+
+# Freeytpe requires this flag set for bzip2
+export CFLAGS="-fPIC" 
 
 # Prepare the source
 make -f Makefile-libbz2_so
@@ -20,3 +23,4 @@ rm -v /usr/bin/{bunzip2,bzcat,bzip2}
 ln -sv bzip2 /bin/bunzip2
 ln -sv bzip2 /bin/bzcat
 
+unset CFLAGS

@@ -1,5 +1,4 @@
 # Final System: Meson
-# Source: https://github.com/mesonbuild/meson/releases/download/0.55.1/meson-0.55.1.tar.gz
 # This section is done in Chroot environment
 
 # Build

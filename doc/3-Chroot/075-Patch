@@ -1,5 +1,11 @@
 # Final System: Patch
-# Source: http://ftp.gnu.org/gnu/patch/patch-2.7.6.tar.xz
 # This section is done in Chroot environment
 
-./configure --prefix=/usr && make && make install
+# Configure
+./configure --prefix=/usr
+
+# Build
+make
+
+# Install
+make install

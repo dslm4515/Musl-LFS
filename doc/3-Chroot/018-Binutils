@@ -1,6 +1,11 @@
 # Final System: Binutils
-# Source: http://ftp.gnu.org/gnu/binutils/binutils-2.35.tar.xz
 # This section is done in Chroot environment
+
+# Apply patches from Alpine Linux;
+patch -Np1 -i ../patches/binutils-alpine/binutils-ld-fix-static-linking.patch
+patch -Np1 -i ../patches/binutils-alpine/binutils-mips-disable-assert.patch
+patch -Np1 -i ../patches/binutils-alpine/gold-mips.patch
+patch -Np1 -i ../patches/binutils-alpine/ld-bfd-mips.patch
 
 # Create build directory
 mkdir -v build && cd build
@@ -8,7 +13,7 @@ mkdir -v build && cd build
 case $(uname -m) in
   x86_64)  export EXTRA_CONFIG=" --enable-targets=x86_64-pep"
            ;;
-  i686)    export EXTRA_CONFIG=" --enable-64-bit-bfd --enable-targets=x86_64-linux-gnu,x86_64-pep"
+  i686)    export EXTRA_CONFIG=" --disable-separate-code --enable-64-bit-bfd --enable-targets=x86_64-linux-gnu,x86_64-pep"
            ;;
 esac
 
@@ -24,9 +29,11 @@ esac
              --enable-lto \
              --disable-nls \
              --enable-deterministic-archives \
+             --enable-default-hash-style=gnu \
              --enable-threads \
+             --disable-multilib \
              --disable-compressed-debug-sections \
-             --with-mmap $EXTRA_CONFIG 
+             --with-mmap $EXTRA_CONFIG
 
 # Build
 make tooldir=/usr
@@ -46,6 +53,7 @@ make CFLAGS="$CFLAGS -fPIC -fvisibility=hidden" -C bfd-pic
 cp -a opcodes opcodes-pic
 make -C opcodes-pic clean
 make CFLAGS="$CFLAGS -fPIC" -C opcodes-pic
+install -v -m 644 opcodes-pic/libopcodes.a  /usr/lib
 
 # Install
 make tooldir=/usr install

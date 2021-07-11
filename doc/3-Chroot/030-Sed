@@ -1,5 +1,4 @@
 # Final System: Sed 
-# Source: http://ftp.gnu.org/gnu/sed/sed-4.8.tar.xz
 # This section is done in Chroot environment
 
 ./configure --prefix=/usr --bindir=/bin

@@ -1,5 +1,4 @@
 # Final System: Shadow
-# Source: https://github.com/shadow-maint/shadow/releases/download/4.8.1/shadow-4.8.1.tar.xz
 # This section is done in Chroot environment
 
 #  Disable the installation of the groups program and its man pages, 
@@ -13,8 +12,11 @@ sed -i -e 's@#ENCRYPT_METHOD DES@ENCRYPT_METHOD SHA512@' \
 sed -i 's/1000/999/' etc/useradd
 
 # Configure source
-touch /usr/bin/passwd
-./configure --sysconfdir=/etc --with-group-name-max-length=32
+touch /usr/bin/passwd &&
+LIBS="-lutmps -lskarnet" \
+./configure --with-group-name-max-length=32 \
+            --sysconfdir=/etc \
+            --enable-utmpx
 
 # Build, Install, and fix misplaced files
 make && make install

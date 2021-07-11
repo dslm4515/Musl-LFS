@@ -1,10 +1,11 @@
 # Final System: Tar
-# Source: http://ftp.gnu.org/gnu/tar/tar-1.32.tar.xz
 # This section is done in Chroot environment
 
+# Configure
 FORCE_UNSAFE_CONFIGURE=1  \
 gl_cv_struct_dirent_d_ino=yes \
 ./configure --prefix=/usr  \
             --bindir=/bin
 
+# Build & install
 make && make install

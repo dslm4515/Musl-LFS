@@ -1,6 +1,8 @@
 # Final System: Diffutils
-# Source: http://ftp.gnu.org/gnu/diffutils/diffutils-3.7.tar.xz
 # This section is done in Chroot environment
 
+# Configure
 ./configure --prefix=/usr
+
+# Build and install
 make && make install

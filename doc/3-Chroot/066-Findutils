@@ -1,12 +1,10 @@
 # Final System: Findutils
-# Source: http://ftp.gnu.org/gnu/findutils/findutils-4.7.0.tar.xz
 # This section is done in Chroot environment
 
 # Configure source
 ./configure --prefix=/usr --localstatedir=/var/lib/locate
 
 # Build in this order:
-#make -C locate dblocation.texi &&
 make 
 
 # Install

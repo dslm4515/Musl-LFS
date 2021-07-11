@@ -1,8 +1,11 @@
 # Final System: Texinfo
-# Source: http://ftp.gnu.org/gnu/texinfo/texinfo-6.7.tar.xz
 # This section is done in Chroot environment
 
-
+# Configure
 ./configure --prefix=/usr --disable-static
 
-make && make install
+# Build
+make
+
+# Install
+make install

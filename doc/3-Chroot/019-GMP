@@ -1,5 +1,4 @@
-# Final System: GMP 6.2.0
-# Source: http://ftp.gnu.org/gnu/gmp/gmp-6.2.0.tar.xz
+# Final System: GMP 
 # This section is done in Chroot environment
 
 # By default, GMP configures to optimize for the
@@ -12,7 +11,7 @@
 ./configure --prefix=/usr    \
             --enable-cxx     \
             --disable-static \
-            --docdir=/usr/share/doc/gmp-6.2.0
+            --docdir=/usr/share/doc/gmp-6.2.1
 
 # Build
 make 

@@ -1,5 +1,4 @@
 # Final System: Ninja
-# Source: https://github.com/ninja-build/ninja/archive/v1.10.0/ninja-1.10.0.tar.gz
 # This section is done in Chroot environment
 
 # If desired, add the capability to use the 

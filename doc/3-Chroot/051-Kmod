@@ -1,5 +1,4 @@
 # Final System: Kmod
-# Source: https://www.kernel.org/pub/linux/utils/kernel/kmod/kmod-27.tar.xz
 # This section is done in Chroot environment
 
 ./configure --prefix=/usr          \

@@ -1,5 +1,4 @@
-# Final System: GDBM 1.18.1
-# Source: http://ftp.gnu.org/gnu/gdbm/gdbm-1.18.1.tar.gz
+# Final System: GDBM 
 # This section is done in Chroot environment
 
 sed -r -i '/^char.*parseopt_program_(doc|args)/d' src/parseopt.c

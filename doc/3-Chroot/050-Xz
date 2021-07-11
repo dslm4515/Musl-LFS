@@ -1,5 +1,4 @@
 # Final System: Xz
-# Source: https://tukaani.org/xz/xz-5.2.5.tar.xz
 # This section is done in Chroot environment
 
 ./configure --prefix=/usr    \

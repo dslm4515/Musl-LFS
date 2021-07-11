@@ -1,5 +1,4 @@
 # Final System: XML::Parser 
-# Source: https://cpan.metacpan.org/authors/id/T/TO/TODDR/XML-Parser-2.46.tar.gz
 # This section is done in Chroot environment
 
 perl Makefile.PL && make && make install
