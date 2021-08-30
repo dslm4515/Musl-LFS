@@ -17,7 +17,7 @@ CPPFLAGS="-I/tools/include"
 ./configure --prefix=/tools \
             --build=${MLFS_HOST} \
             --host=${MLFS_TARGET} \
-            --disbale-gui \
+            --disable-gui \
             --without-x
 
 # Build and install to toolchain
