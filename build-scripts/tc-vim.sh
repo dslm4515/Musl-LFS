@@ -17,7 +17,7 @@ echo "Building $PKGNAME..." &&
 ./configure --build=${MLFS_HOST} \
             --host=${MLFS_TARGET} \
             --prefix=/tools \
-            --disbale-gui \
+            --disable-gui \
 	    --without-x &&
 make ${MJ} && make install && unset LDFLAGS CPPFLAGS &&
 cd ${SRC_ROOT} && rm -rf ${PKGNAME}*
