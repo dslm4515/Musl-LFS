@@ -43,6 +43,9 @@ esac
 # Create link for ldd:
 ln -sv /lib/ld-musl-$ARCH.so.1 /bin/ldd
 
+# Create a compatibility link for rust
+ln -sv libc.so /usr/lib/libc.musl-$ARCH.so.1 
+
 # Create config for dynamic library loading:
 cat > /etc/ld-musl-$ARCH.path << "EOF"
 /lib
