@@ -18,5 +18,12 @@ mkdir -pv /cross-tools/${MLFS_TARGET}/include
 
 cp -rv usr/include/* /cross-tools/${MLFS_TARGET}/include
 
-# Remove unnecessary Makefile
+# Remove unnecessary files that don't need to be in /cross-tools/.../include
+# directory
+# Note: .*.cmd files are extremely useful when compiling the entire kernel,
+# since they're avoid unnecessary invocations of GNU make.
+# But, since we just need the headers, we can delete them from our
+# cross-toolchain.
+# Reference: https://www.kernel.org/doc/ols/2003/ols2003-pages-185-200.pdf
+find /cross-tools/${MLFS_TARGET}/include -name '.*.cmd' -exec rm -vf {} \;
 rm -v /cross-tools/${MLFS_TARGET}/include/Makefile
