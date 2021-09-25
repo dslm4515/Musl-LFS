@@ -26,7 +26,7 @@ case $(uname -m) in
 esac
 
 # Fix link
-rm -vf /cross-tools/lib/ld-musl* &&
+rm -vf /cross-tools/lib/ld-musl-${ARCH}.so.1 &&
 ln -sv libc.so /cross-tools/lib/ld-musl-${ARCH}.so.1
 
 # Create link for ldd:

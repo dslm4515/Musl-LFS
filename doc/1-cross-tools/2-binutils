@@ -1,4 +1,4 @@
-# Cross-Tools: Binutils
+# Cross-Tools: GNU Binutils
 # Build and install as mlfs
 
 # Create build directory in-tree
