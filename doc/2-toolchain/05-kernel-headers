@@ -17,5 +17,5 @@ cp -rv usr/include/* /tools/include
 # cp -rv dest/include/* /tools/include
 
 # Remove unnecessary files for this stage:
-find /tools/include \( -name '.*' -o -name .*.cmd \) -exec rm -vf {} \;
+find /tools/include \( -name '.*' -o -name '.*.cmd' \) -exec rm -vf {} \;
 rm -v /tools/include/Makefile
