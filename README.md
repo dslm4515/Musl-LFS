@@ -25,7 +25,18 @@ The aim of this project is to create a create a Linux system using Musl (www.mus
   <li> [x] Transition from pkgconfig to pkgconf</li>
   <li> [x] Transition from gettext to gettext-tiny</li>
   <li> [ ] POSIX compatibility </li>
+  <li> [ ] Unify directories bin, sbin, and lib from / and /usr
 </ul>
+
+## Build Method
+MLFS is based on LFS 9.1 and composed of 3 stages: cross-tools, tools, and chroot.
+<ol>
+  <li>Cross-Tools -- Create a very basic toolchain with host's own tool chain. THis will be used to build the next stage. It also allows the next stage to use Musl Libc instead of Glibc.</li>
+  <li>Tools -- Creates the tool chain that will be used in the next stage. Resulting toolchain is sandboxed from host and uses its own libc: Musl </li>
+  <li>Chroot -- Last stage in which the final Musl system is built, using the tool chain built in the previous stage </li>
+</ol>
+
+_Starting with LFS 10.x, LFS now uses as new method and has not been tested to work with MLFS at this time._
 
 ## Tested Builds
 
@@ -89,6 +100,8 @@ https://github.com/firasuke/mussel </li>
 https://code.foxkit.us/adelie/shimmy</li>
 <li>gettext-tiny - It provides lightweight replacements for tools typically used from the GNU gettext suite.
 https://github.com/AdelieLinux/gettext-tiny</li>
+<li>MLFS-pkgtool - MLFS built with Slackware's pkgtools. 
+https://github.com/dslm4515/MLFS-pkgtool </li>
 </ul>
 
 ## Layout
