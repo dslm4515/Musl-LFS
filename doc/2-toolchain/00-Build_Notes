@@ -1,0 +1,35 @@
+# General Build Notes for tools
+
+# This small tool chain will be used to create the final optimized system.
+# Once the /tools is built, /cross-tools will not longer be used for the 
+# rest of the build. This tool chain was designed to be sandboxed and has
+# its own libc. * This should still be bult by mlfs user and not root.*
+
+# In general, some fixes and patches will be applied to 
+# packages as this tool chain will be used for the final build. 
+
+# **************************************************************************
+# * This is also a good time to choose a package manager/system for 
+# * creating, deploying, and managing packages. Since package management
+# * is outide the scope of this project, it will not be discussed here nor
+# * will a package system be used when building the final system.
+# **************************************************************************
+# For example, Slackware's pkgtools can be used. Refer to:
+# https://github.com/dslm4515/MLFS-pkgtool
+
+# Each package should be unpacked in /mnt/mlfs/source, and change 
+# to the unpacked source directory. For example:
+cd /mnt/mlfs/sources
+tar xf pkgs/foo-1.2.3.tar.gz
+cd foo-1.2.3
+
+# Then patch and compile per instruction
+patch -Np1 -i ../patches/foo-mlfs/fix-it.patch
+./configure --prefix=/tools
+make
+make install
+
+# After the package is installed, change directories and remove
+# unpacked source directory unless instructed:
+cd ..
+rm -rf foo-1.2.3
