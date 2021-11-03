@@ -1,0 +1,30 @@
+# General Build Notes for cross-tools
+
+# This small tool chain will be used to create another tool chain (tools)
+# that will use Musl libc instead of the default of GLIBC. Once the /tools
+# is built, /cross-tools will not longer be used for the rest of the build.
+
+# Cross-tools is not sandboxed and will depend on libraries and binaries
+# found in the host. Therefore cross-tools built on a Glibc host will not
+# run/work on a Musl host and vice verssa.
+
+# In general, fixes and patches will not be applied to most packages as this  
+# tool chain will not be used for the final build. Cross-tools should be 
+# built by the mlfs user and not root. 
+
+# Each package should be unpacked in /mnt/mlfs/source, and change 
+# to the unpacked source directory. For example:
+cd /mnt/mfls/sources
+tar xf pkgs/foo-1.2.3.tar.gz
+cd foo-1.2.3
+
+# Then patch and compile per instruction
+patch -Np1 -i ../patches/foo-mlfs/fix-it.patch
+./configure --prefix=/cross-tools
+make
+make install
+
+# After the package is installed, change directories and remove
+# unpacked source directory unless instructed:
+cd ..
+rm -rf foo-1.2.3
