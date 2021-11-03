@@ -41,6 +41,11 @@ EOF
 #  * The TianoCore EDK2/UDK package (https://github.com/tianocore/edk2)
 #  or
 #  * The GNU-EFI package (http://sourceforge.net/projects/gnu-efi/)
+#
+# You may need efibootmgr to add rEFInd to list of bootloaders
+# https://github.com/rhboot/efibootmgr/archive/17.tar.gz
+#
+# ... Which also requires efivar & popt.
 
 # Mount the efi partition
 # For example, if efi partition is /dev/sda1:
@@ -56,6 +61,12 @@ cp -vr  refind/icons               /mnt/efi/EFI/BOOT/
 cp -vr  refind/drivers_x64         /mnt/efi/EFI/BOOT/
 cp -vr  refind/tools_x64           /mnt/efi/EFI/BOOT/
 cp -vr  refind/refind.conf-sample  /mnt/efi/EFI/BOOT/refind.conf
+
+# The following requires host to have booted in UEFI mode. To check, see if "EFI" exists:
+file  /sys/firmware/efi
+
+# Add rEFInd to your EFI's list of available boot loaders, which it stores in NVRAM
+efibootmgr -c -l \\EFI\\refind\\refind_x64.efi -L rEFInd
 
 ########################## For ARM ##########################
 Depending on target, boot loader may be u-boot.
