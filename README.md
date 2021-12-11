@@ -25,7 +25,8 @@ The aim of this project is to create a create a Linux system using Musl (www.mus
   <li> [x] Transition from pkgconfig to pkgconf</li>
   <li> [x] Transition from gettext to gettext-tiny</li>
   <li> [ ] POSIX compatibility </li>
-  <li> [ ] Unify directories bin, sbin, and lib from / and /usr
+  <li> [x] Unify directories bin, sbin, and lib from / and /usr </li>
+  <li> [x] Remove obselete bin group & user 
 </ul>
 
 ## Build Method
