@@ -4,9 +4,6 @@
 # Clean sources
 make mrproper
 
-# Build Headers
-make ARCH=${MLFS_ARCH} headers_check
-
 # Install
 
 ## For kernel up to 5.2.x:
