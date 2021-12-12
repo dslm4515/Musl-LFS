@@ -33,6 +33,7 @@ make install
 
 # Build and install linker that will be used later 
 # after adjusting toolchain
+make -C ld clean
 make -C ld LIB_PATH=/usr/lib:/lib 
 cp -v ld/ld-new /tools/bin
 
