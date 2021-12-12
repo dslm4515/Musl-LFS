@@ -1,0 +1,21 @@
+From: Alpine Linux community
+From: Olsken (updated patches)
+Date: Sat, 21 Aug 2021 08:51:52 +0000
+
+diff --git a/gcc/gcc.c b/gcc/gcc.c
+index bc1bd1686..b5c83977f 100644
+--- a/gcc/gcc.c
++++ b/gcc/gcc.c
+@@ -1005,6 +1005,12 @@ proper position among the other output files.  */
+ #define NO_SSP_SPEC ""
+ #endif
+ 
++#ifdef ENABLE_DEFAULT_SSP
++#define NO_SSP_SPEC "%{nostdlib|nodefaultlibs|ffreestanding:-fno-stack-protector} "
++#else
++#define NO_SSP_SPEC ""
++#endif
++
+ #ifndef LINK_SSP_SPEC
+ #ifdef TARGET_LIBC_PROVIDES_SSP
+ #define LINK_SSP_SPEC "%{fstack-protector|fstack-protector-all" \

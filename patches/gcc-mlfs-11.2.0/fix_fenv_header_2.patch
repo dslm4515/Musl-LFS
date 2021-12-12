@@ -1,0 +1,12 @@
+--- gcc-11.2.0.orig/libstdc++-v3/include/c_compatibility/fenv.h	2021-07-28 01:55:09.292315320 -0500
++++ gcc-11.2.0/libstdc++-v3/include/c_compatibility/fenv.h	2021-08-07 10:15:08.542063961 -0500
+@@ -25,6 +25,9 @@
+ /** @file fenv.h
+  *  This is a Standard C++ Library header.
+  */
++#if !defined __cplusplus || defined _GLIBCXX_INCLUDE_NEXT_C_HEADERS
++# include_next <fenv.h>
++#else
+ 
+ #ifndef _GLIBCXX_FENV_H
+ #define _GLIBCXX_FENV_H 1

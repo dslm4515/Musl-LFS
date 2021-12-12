@@ -10,14 +10,7 @@ gunzip -cd ../pkgs/mpc-1.2.1.tar.gz | tar -xf -
 mv -v mpc-1.2.1 mpc
 
 # Apply patches [from Alpine linux]
-bash ../patches/gcc-10.3.1_git20210424-alpine/apply_patches_ct.sh
-
-case $(uname -m) in
-  x86_64)
-    sed -e '/m64=/s/lib64/lib/' \
-        -i.orig gcc/config/i386/t-linux64
- ;;
-esac
+bash ../patches/gcc-alpine/apply_patches_ct.sh 
 
 # Configure in a dedicated build directory
 mkdir build && cd  build

@@ -1,0 +1,33 @@
+From 10f38bef9af2e3d6a32253ca18d5ae0123e25e1b Mon Sep 17 00:00:00 2001
+From: Ariadne Conill <ariadne@dereferenced.org>
+Date: Fri, 21 Aug 2020 06:53:36 +0000
+Subject: [PATCH] libitm: disable FORTIFY
+
+---
+ libitm/configure.tgt | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/libitm/configure.tgt b/libitm/configure.tgt
+index d1beb5c9ec8..c2b50b95c01 100644
+--- a/libitm/configure.tgt
++++ b/libitm/configure.tgt
+@@ -47,6 +47,16 @@ if test "$gcc_cv_have_tls" = yes ; then
+   esac
+ fi
+ 
++# FIXME: error: inlining failed in call to always_inline 
++# ‘int vfprintf(FILE*, const char*, __va_list_tag*)’
++# : function body can be overwritten at link time
++# Disable Fortify in libitm for now. #508852
++case "${target}" in
++    *-*-linux*)
++	XCFLAGS="${XCFLAGS} -U_FORTIFY_SOURCE"
++	;;
++esac
++
+ # Map the target cpu to an ARCH sub-directory.  At the same time,
+ # work out any special compilation flags as necessary.
+ case "${target_cpu}" in
+-- 
+2.31.1
+

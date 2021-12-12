@@ -1,0 +1,24 @@
+From: "A. Wilcox" <AWilcox@Wilcox-Tech.com>
+From: Olsken (updated patches)
+Date: Sat, 21 Aug 2021 08:51:52 +0000
+Subject: [PATCH] gcc-go: Fix st_{a,m,c}tim fields in generated sysinfo.go
+
+There are more than one st_{a,m,c}tim fields in struct stat on time64 machines.
+
+Run the Go-isation on all of them.
+
+Taken from Adélie Linux.
+
+diff --git a/libgo/mksysinfo.sh b/libgo/mksysinfo.sh
+index 0c52ea5d7..6fef104cc 100755
+--- a/libgo/mksysinfo.sh
++++ b/libgo/mksysinfo.sh
+@@ -510,7 +510,7 @@ fi
+ 
+ # For historical reasons Go uses the suffix "timespec" instead of "tim" for
+ # stat_t's time fields on NetBSD.
+-st_times='-e s/st_atim/Atim/ -e s/st_mtim/Mtim/ -e s/st_ctim/Ctim/'
++st_times='-e s/st_atim/Atim/g -e s/st_mtim/Mtim/g -e s/st_ctim/Ctim/g'
+ if test "${GOOS}" = "netbsd"; then
+     st_times='-e s/st_atim/Atimespec/ -e s/st_mtim/Mtimespec/ -e s/st_ctim/Ctimespec/'
+ fi

@@ -1,0 +1,21 @@
+From: Alpine Linux community
+From: Olsken (updated patches)
+Date: Sat, 21 Aug 2021 08:51:52 +0000
+
+diff --git a/gcc/config.in b/gcc/config.in
+index d0287d4cc..8c10816c4 100644
+--- a/gcc/config.in
++++ b/gcc/config.in
+@@ -112,6 +112,12 @@
+ #endif
+ 
+ 
++/* Define if libatomic should always be linked. */
++#ifndef USED_FOR_TARGET
++#undef ENABLE_AUTOLINK_LIBATOMIC
++#endif
++
++
+ /* Define to 1 to specify that we are using the BID decimal floating point
+    format instead of DPD */
+ #ifndef USED_FOR_TARGET
