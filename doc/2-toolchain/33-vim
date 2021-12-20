@@ -2,25 +2,15 @@
 # Build and install as mlfs
 # Optional package: Text editor for convenience or trouble shooting
 
-# Set the environment for cross-compiling if not done already.
-CC="${MLFS_TARGET}-gcc"
-CXX="${MLFS_TARGET}-g++"
-AR="${MLFS_TARGET}-ar"
-AS="${MLFS_TARGET}-as"
-RANLIB="${MLFS_TARGET}-ranlib"
-LD="${MLFS_TARGET}-ld"
-STRIP="${MLFS_TARGET}-strip"
-LDFLAGS="-L/tools/lib"
-CPPFLAGS="-I/tools/include"
-
-# Configure source
-./configure --prefix=/tools \
-            --build=${MLFS_HOST} \
-            --host=${MLFS_TARGET} \
-            --disable-gui \
-            --without-x
+# Configure and use libraries & headers iin /tools
+LDFLAGS="-L/tools/lib" \
+CPPFLAGS="-I/tools/include" \
+./configure --prefix=/tools --enable-gui=no --without-x
 
 # Build and install to toolchain
 make && make install
+
+# Some users use vim as vi
+ln -sv vim /tools/bin/vi 
 
 unset LDFLAGS CPPFLAGS
