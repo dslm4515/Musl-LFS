@@ -11,9 +11,9 @@ LD="${MLFS_TARGET}-ld"
 STRIP="${MLFS_TARGET}-strip"
 
 # Re-create configure script
-autoreconf -vif
+# autoreconf -vif # often fails
 
-patch -Np1 -i ../patches/coreutils-alpine/ls.patch
+#patch -Np1 -i ../patches/coreutils-alpine/ls.patch
 
 # Cross Compiling the configure script 
 # does not does not determine the correct 
