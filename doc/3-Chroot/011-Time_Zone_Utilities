@@ -35,5 +35,5 @@ unset timezones
 
 # Set the timezone:
 # use tzselect to determine <xxx>
-cp -v /usr/share/zoneinfo/<xxx> /etc/localtime
+ln -sv /usr/share/zoneinfo/<xxx> /etc/localtime
 
