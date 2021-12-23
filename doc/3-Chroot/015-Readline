@@ -13,8 +13,5 @@ sed -i '/{OLDSUFF}/c:' support/shlib-install
 # Build
 make SHLIB_LIBS="-L/tools/lib -lncursesw"
 
-# Install and fix misplaced files
+# Install 
 make SHLIB_LIBS="-L/tools/lib -lncurses" install
-mv -v /usr/lib/lib{readline,history}.so.* /lib
-ln -sfv ../../lib/$(readlink /usr/lib/libreadline.so) /usr/lib/libreadline.so
-ln -sfv ../../lib/$(readlink /usr/lib/libhistory.so ) /usr/lib/libhistory.so
