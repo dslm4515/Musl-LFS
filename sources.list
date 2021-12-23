@@ -35,8 +35,8 @@ https://github.com/westes/flex/releases/download/v2.6.4/flex-2.6.4.tar.gz
 https://anduin.linuxfromscratch.org/LFS/vim-8.2.3508.tar.gz
 https://www.kernel.org/pub/linux/utils/util-linux/v2.37/util-linux-2.37.2.tar.xz
 https://www.kernel.org/pub/linux/docs/man-pages/man-pages-5.12.tar.xz
-https://skarnet.org/software/skalibs/skalibs-2.10.0.3.tar.gz
-https://skarnet.org/software/utmps/utmps-0.1.0.2.tar.gz
+https://skarnet.org/software/skalibs/skalibs-2.11.1.0.tar.gz
+https://skarnet.org/software/utmps/utmps-0.1.1.0.tar.gz
 https://dev.alpinelinux.org/archive/posixtz/posixtz-0.5.tar.xz
 https://www.iana.org/time-zones/repository/releases/tzdata2021e.tar.gz
 https://www.iana.org/time-zones/repository/releases/tzcode2021e.tar.gz
