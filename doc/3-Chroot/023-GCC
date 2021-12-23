@@ -25,62 +25,61 @@ case $(uname -m) in
      arm*) export LIBITM=false ;;
 esac
 
-
 # Add isl source
-tar -xf ../pkgs/isl-0.23.tar.bz2
-mv -v isl-0.23 isl
+tar xf ../pkgs/isl-0.24.tar.xz
+mv isl-0.24 isl
 
 # Apply patches [from alpine-linux]
-bash ../patches/gcc-10.3.1_git20210424-alpine/apply_patches.sh
-
-# If building on x86_64, change the default 
-# directory name for 64-bit libraries to “lib”:
-case $(uname -m) in
-  x86_64)
-    sed -e '/m64=/s/lib64/lib/' \
-        -i.orig gcc/config/i386/t-linux64
-  ;;
-  aarch64) 
-    sed -e '/mabi.lp64=/s/lib64/lib/' \
-        -i.orig gcc/config/aarch64/t-aarch64-linux
-  ;;
-esac
+bash ../patches/gcc-alpine/apply_patches_ct.sh 
+patch -Np1 -i ../patches/gcc-alpine/0021-Alpine-musl-package-provides-libssp_nonshared.a.-We-.patch
 
 # Configure source in dedicated build directory:
 mkdir -v build && cd build
-SED=sed  libat_cv_have_ifunc=no       \
+
+# Disable features not used
+export  NOFF="--disable-libstdcxx-pch "
+export NOFF+="--disable-nls "
+export NOFF+="--disable-multilib "
+export NOFF+="--disable-bootstrap "
+export NOFF+="--disable-symvers "
+export NOFF+="--disable-libsanitizer "
+export NOFF+="--disable-libssp "
+export NOFF+="--disable-libmpx "
+export NOFF+="--disable-libmudflap "
+export NOFF+="--disable-fixed-point "
+export NOFF+="--disable-sjlj-exceptions "
+export NOFF+="--disable-werror "
+
+# Enable graphite
+export XCONFIG="--with-ppl=yes --with-cloog=yes "
+
+# Enable features for x86_54
+export XTRA86="--with-arch=x86-64 "
+
+# Enable features
+export  FON="--enable-threads=posix "
+export FON+="--enable-clocale=generic "
+export FON+="--enable-tls "
+export FON+="--enable-libstdcxx-time "
+export FON+="--enable-fully-dynamic-string "
+export FON+="--enable-default-pie "
+export FON+="--enable-default-ssp "
+export FON+="--enable-linker-build-id "
+export FON+="--enable-checking=release "
+export FON+="--enable-cloog-backend "
+export FON+="--enable-__cxa_atexit "
+export FON+="--enable-lto "
+export FON+="--enable-plugins "
+export FON+="--with-system-zlib "
+export FON+="--with-linker-hash-style=gnu "
+export FON+="--with-isl "
+
+# Configure source
+SED=sed  libat_cv_have_ifunc=no  \
 ../configure --prefix=/usr            \
-             --build="${TRUPLE}"\
-             --with-system-zlib       \
-             --with-isl \
-             --with-linker-hash-style=gnu \
-             --enable-languages=c,c++ \
-             --enable-threads=posix \
-             --enable-clocale=generic \
-             --enable-tls \
-             --enable-libstdcxx-time \
-             --enable-fully-dynamic-string \
-             --enable-default-pie \
-             --enable-default-ssp \
-             --enable-linker-build-id \
-             --enable-checking=release \
-             --enable-cloog-backend \
-             --enable-__cxa_atexit  \
-             --enable-lto \
-             --enable-plugins \
-             --disable-libstdcxx-pch \
-             --disable-nls \
-             --disable-multilib       \
-             --disable-bootstrap      \
-             --disable-symvers \
-             --disable-libsanitizer \
-             --disable-libssp \
-             --disable-libmpx \
-             --disable-libmudflap \
-             --disable-fixed-point \
-             --disable-sjlj-exceptions \
-             --disable-werror $EXTRA_CONFIG \
-             --with-pkgversion="Musl-LFS 9.0"
+             --build="${TRUPLE}" \
+             --enable-languages=c,c++,lto \
+             --with-pkgversion="MLFS 10.0.0" $NOFF $XTRA86 $XCONFIG $FON
 
 # Build
 make
@@ -111,7 +110,7 @@ cp -v ../../files/musl/getent.1   /usr/share/man/man1/
 cp -v ../../files/musl/getconf.1  /usr/share/man/man1/
 
 # Create a symlink required by the FHS for "historical" reasons
-ln -sv ../usr/bin/cpp /lib
+ln -sv ../bin/cpp /usr/lib
 
 # Many packages use the name cc to call the C compiler. To 
 # satisfy those packages, create a symlink
@@ -120,7 +119,7 @@ ln -sv gcc /usr/bin/cc
 # Add a compatibility symlink to enable building programs with 
 # Link Time Optimization (LTO): 
 install -v -dm755 /usr/lib/bfd-plugins
-ln -sfv ../../libexec/gcc/$(gcc -dumpmachine)/10.3.1/liblto_plugin.so \
+ln -sfv ../../libexec/gcc/$(gcc -dumpmachine)/11.2.0/liblto_plugin.so \
         /usr/lib/bfd-plugins/
 mkdir -pv /usr/share/gdb/auto-load/usr/lib
 mv -v /usr/lib/*gdb.py /usr/share/gdb/auto-load/usr/lib
