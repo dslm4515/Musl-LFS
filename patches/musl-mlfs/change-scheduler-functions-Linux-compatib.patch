@@ -22,7 +22,7 @@ diff -uNr musl-1.2.2.orig/src/sched/sched_getscheduler.c musl-1.2.2/src/sched/sc
  int sched_getscheduler(pid_t pid)
  {
 -	return __syscall_ret(-ENOSYS);
-+	return syscall(SYS_getscheduler, pid);
++	return syscall(SYS_sched_getscheduler, pid);
  }
 diff -uNr musl-1.2.2.orig/src/sched/sched_setparam.c musl-1.2.2/src/sched/sched_setparam.c
 --- musl-1.2.2.orig/src/sched/sched_setparam.c	2021-01-15 02:26:00.000000000 +0000
