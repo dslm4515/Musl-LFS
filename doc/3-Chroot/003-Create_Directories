@@ -2,8 +2,8 @@
 # This section is done in Chroot environment
 
 # Create a standard directory tree by issuing the following commands: 
-mkdir -pv /{bin,boot,etc/{opt,sysconfig},home,lib/firmware,mnt,opt}
-mkdir -pv /{media/{floppy,cdrom},sbin,srv,var}
+mkdir -pv /{boot,etc/{opt,sysconfig},home,mnt,opt}
+mkdir -pv /{media/{floppy,cdrom},srv,var}
 install -dv -m 0750 /root
 install -dv -m 1777 /tmp /var/tmp
 mkdir -pv /usr/{,local/}{bin,include,lib,sbin,src}
@@ -16,3 +16,8 @@ mkdir -v /var/{log,mail,spool}
 ln -sv /run /var/run
 ln -sv /run/lock /var/lock
 mkdir -pv /var/{opt,cache,lib/{color,misc,locate},local}
+
+ln -sv usr/bin  /bin
+ln -sv usr/sbin /sbin
+ln -sv usr/lib  /lib
+mkdir -pv /usr/lib/firmware
