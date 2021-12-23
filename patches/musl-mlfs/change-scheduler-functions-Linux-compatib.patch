@@ -1,0 +1,52 @@
+diff -uNr musl-1.2.2.orig/src/sched/sched_getparam.c musl-1.2.2/src/sched/sched_getparam.c
+--- musl-1.2.2.orig/src/sched/sched_getparam.c	2021-01-15 02:26:00.000000000 +0000
++++ musl-1.2.2/src/sched/sched_getparam.c	2021-12-23 00:31:16.590518270 +0000
+@@ -1,8 +1,7 @@
+ #include <sched.h>
+-#include <errno.h>
+ #include "syscall.h"
+ 
+ int sched_getparam(pid_t pid, struct sched_param *param)
+ {
+-	return __syscall_ret(-ENOSYS);
++	return syscall(SYS_sched_getparam, pid, param);
+ }
+diff -uNr musl-1.2.2.orig/src/sched/sched_getscheduler.c musl-1.2.2/src/sched/sched_getscheduler.c
+--- musl-1.2.2.orig/src/sched/sched_getscheduler.c	2021-01-15 02:26:00.000000000 +0000
++++ musl-1.2.2/src/sched/sched_getscheduler.c	2021-12-23 00:33:32.949520644 +0000
+@@ -1,8 +1,7 @@
+ #include <sched.h>
+-#include <errno.h>
+ #include "syscall.h"
+ 
+ int sched_getscheduler(pid_t pid)
+ {
+-	return __syscall_ret(-ENOSYS);
++	return syscall(SYS_getscheduler, pid);
+ }
+diff -uNr musl-1.2.2.orig/src/sched/sched_setparam.c musl-1.2.2/src/sched/sched_setparam.c
+--- musl-1.2.2.orig/src/sched/sched_setparam.c	2021-01-15 02:26:00.000000000 +0000
++++ musl-1.2.2/src/sched/sched_setparam.c	2021-12-23 00:35:12.277522374 +0000
+@@ -1,8 +1,7 @@
+ #include <sched.h>
+-#include <errno.h>
+ #include "syscall.h"
+ 
+ int sched_setparam(pid_t pid, const struct sched_param *param)
+ {
+-	return __syscall_ret(-ENOSYS);
++	return syscall(SYS_sched_setparam, pid, param);
+ }
+diff -uNr musl-1.2.2.orig/src/sched/sched_setscheduler.c musl-1.2.2/src/sched/sched_setscheduler.c
+--- musl-1.2.2.orig/src/sched/sched_setscheduler.c	2021-01-15 02:26:00.000000000 +0000
++++ musl-1.2.2/src/sched/sched_setscheduler.c	2021-12-23 00:36:37.548523859 +0000
+@@ -1,8 +1,7 @@
+ #include <sched.h>
+-#include <errno.h>
+ #include "syscall.h"
+ 
+ int sched_setscheduler(pid_t pid, int sched, const struct sched_param *param)
+ {
+-	return __syscall_ret(-ENOSYS);
++	return syscall(SYS_sched_setscheduler, pid, sched, param);
+ }
