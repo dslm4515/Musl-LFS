@@ -2,18 +2,22 @@
 # This section is done in Chroot environment
 
 # Apply patches from Alpine Linux;
+patch -Np1 -i ../patches/binutils-alpine/0001-Revert-PR25882-.gnu.attributes-are-not-checked-for-s.patch
+patch -Np1 -i ../patches/binutils-alpine/bfd-close-file-desriptor-if-there-is-no-archive-fd.patch
 patch -Np1 -i ../patches/binutils-alpine/binutils-ld-fix-static-linking.patch
-patch -Np1 -i ../patches/binutils-alpine/binutils-mips-disable-assert.patch
-patch -Np1 -i ../patches/binutils-alpine/gold-mips.patch
-patch -Np1 -i ../patches/binutils-alpine/ld-bfd-mips.patch
+patch -Np1 -i ../patches/binutils-alpine/defang-no-split.patch 
+
+# Remove existing empty man pages to force them to be regenerated.
+# Workaround for https://gitlab.alpinelinux.org/alpine/aports/-/issues/13034
+find . -name '[a-z]*\.[0-9]*' -empty -delete 
 
 # Create build directory
 mkdir -v build && cd build
 
 case $(uname -m) in
-  x86_64)  export EXTRA_CONFIG=" --enable-targets=x86_64-pep"
+  x86_64)  export EXTRA_CONFIG=" --enable-targets=x86_64-pep " 
            ;;
-  i686)    export EXTRA_CONFIG=" --disable-separate-code --enable-64-bit-bfd --enable-targets=x86_64-linux-gnu,x86_64-pep"
+  i686)    export EXTRA_CONFIG=" --disable-separate-code --enable-targets=x86_64-linux-gnu,x86_64-pep"
            ;;
 esac
 
@@ -32,28 +36,12 @@ esac
              --enable-default-hash-style=gnu \
              --enable-threads \
              --disable-multilib \
-             --disable-compressed-debug-sections \
-             --with-mmap $EXTRA_CONFIG
+             --with-mmap \
+             --enable-64-bit-bfd \
+             --with-pic $EXTRA_CONFIG
 
 # Build
 make tooldir=/usr
-
-# Rebuild libiberty.a with -fPIC
-cp -a libiberty libiberty-pic
-make -C libiberty-pic clean
-make CFLAGS="$CFLAGS -fPIC" -C libiberty-pic
-
-# Rebuild libbfd.a with -fPIC
-# hidden visability prevent 3rd party shared libraries exporting bfd non-stable API
-cp -a bfd bfd-pic
-make -C bfd-pic clean
-make CFLAGS="$CFLAGS -fPIC -fvisibility=hidden" -C bfd-pic
-
-# Rebuild libopcodes.a with -fPIC
-cp -a opcodes opcodes-pic
-make -C opcodes-pic clean
-make CFLAGS="$CFLAGS -fPIC" -C opcodes-pic
-install -v -m 644 opcodes-pic/libopcodes.a  /usr/lib
 
 # Install
 make tooldir=/usr install
@@ -66,18 +54,6 @@ ln -sfrv /usr/bin/ld.bfd /usr/bin/ld
 cd ..
 install -v -m 644 include/libiberty.h /usr/include
 install -v -m 644 include/demangle.h  /usr/include
-
-# install libraries rebuilt with -fPIC
-cd build
-install -v -m 644 libiberty-pic/libiberty.a /usr/lib
-install -v -m 644 bfd-pic/libbfd.a          /usr/lib
-install -v -m 644 opcodes-pic/libopcodes.a  /usr/lib
-
-# Remove these symlinks, they are not ABI stable.
-# Programs should compile static to the .a file.
-rm -fv /usr/lib/lib{bfd,opcodes}.so
-echo "INPUT ( /usr/lib/libbfd.a -liberty -lz )"  > /usr/lib/libbfd.so
-echo "INPUT ( /usr/lib/libopcodes.a -lbfd )"     > /usr/lib/libopcodes.so
 
 # Remove useless manpages.
 for f in dlltool nlmconv windres windmc; do
