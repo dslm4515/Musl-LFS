@@ -3,7 +3,7 @@
 
 # Set the version in pkconfig file
 cp -v ../files/utmps-alpine/*.pc /tmp/
-sed -i -e "s/@@VERSION@@/0.1.0.2/g" -- /tmp/*.pc 
+sed -i -e "s/@@VERSION@@/0.1.1.0/g" -- /tmp/*.pc 
 
 # Configure source
 ./configure --enable-shared      \
