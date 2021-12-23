@@ -1,0 +1,19 @@
+# Final System: Zlib-ng 
+# This section is done in Chroot environment
+# Alternative to Zlib
+
+# Fix configure script to call bash directly
+patch -Np1 -i ../patches/zlib-ng-mlfs/configure-fix-interpreter.patch
+
+# Configure source
+./configure  --prefix=/usr \
+             --libdir=/usr/lib \
+             --zlib-compat \
+             --sharedlibdir=/usr/lib 
+
+# Build and Install
+make 
+make install
+
+# Add missing combatibility link
+ln -sv libz.so.1.2.11.zlib-ng /usr/lib/libz.so.1.2.11
