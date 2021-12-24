@@ -1,0 +1,9 @@
+# Final System: netBSD's Curses 
+# This section is done in Chroot environment
+
+# There is no script to configure source
+# Build
+PREFIX=/usr make all
+
+# Install
+make PREFIX=/usr all install 
