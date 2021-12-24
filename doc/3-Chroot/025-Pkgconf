@@ -3,7 +3,7 @@
 
 # Configure source
 ./configure --prefix=/usr              \
-            --docdir=/usr/share/doc/pkgconf-${VER} \
+            --docdir=/usr/share/doc/pkgconf-1.80 \
             --sysconfdir=/etc          \
             --localstatedir=/var       \
             --with-pkg-config-dir=/usr/lib/pkgconfig:/usr/share/pkgconfig:/opt/qt5/lib/pkgconfig
