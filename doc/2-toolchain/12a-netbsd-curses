@@ -1,0 +1,15 @@
+# Toolchain: NetBSD-curses
+# Build and install as mlfs
+
+# There is no configure script 
+CC="${MLFS_TARGET}-gcc"  \
+CXX="${MLFS_TARGET}-g++" \
+AR="${MLFS_TARGET}-ar"   \
+AS="${MLFS_TARGET}-as"   \
+RANLIB="${MLFS_TARGET}-ranlib" \
+LD="${MLFS_TARGET}-ld"   \
+STRIP="${MLFS_TARGET}-strip"    \
+PREFIX=/tools make all
+
+# Install to /tools
+make PREFIX=/tools all install
