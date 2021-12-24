@@ -1,0 +1,48 @@
+From db0737d1c6954370ac9e872e0d6d30c90479e804 Mon Sep 17 00:00:00 2001
+From: Arjan van de Ven <arjan@linux.intel.com>
+Date: Sat, 26 Mar 2016 19:28:57 -0700
+Subject: [PATCH 2/2] Improve file access
+
+1) Don't open a file to find out if it exists. Use access(2).
+2) use the "m" flag to glibc's fopen(3), to use mmap(2).
+---
+ bzip2.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
+
+diff --git a/bzip2.c b/bzip2.c
+index d95d280..8156f1a 100644
+--- a/bzip2.c
++++ b/bzip2.c
+@@ -939,10 +939,7 @@ void copyFileName ( Char* to, Char* from )
+ static 
+ Bool fileExists ( Char* name )
+ {
+-   FILE *tmp   = fopen ( name, "rb" );
+-   Bool exists = (tmp != NULL);
+-   if (tmp != NULL) fclose ( tmp );
+-   return exists;
++   return (access(name, R_OK) == 0) ;
+ }
+ 
+ 
+@@ -1425,7 +1422,7 @@ void uncompress ( Char *name )
+          break;
+ 
+       case SM_F2O:
+-         inStr = fopen ( inName, "rb" );
++         inStr = fopen ( inName, "rbm" );
+          outStr = stdout;
+          if ( inStr == NULL ) {
+             fprintf ( stderr, "%s: Can't open input file %s:%s.\n",
+@@ -1437,7 +1434,7 @@ void uncompress ( Char *name )
+          break;
+ 
+       case SM_F2F:
+-         inStr = fopen ( inName, "rb" );
++         inStr = fopen ( inName, "rbm" );
+          outStr = fopen_output_safely ( outName, "wb" );
+          if ( outStr == NULL) {
+             fprintf ( stderr, "%s: Can't create output file %s: %s.\n",
+-- 
+2.23.0
+
