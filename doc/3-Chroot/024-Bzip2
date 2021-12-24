@@ -1,26 +1,35 @@
 # Final System: Bzip2
 # This section is done in Chroot environment
 
-# Patch, per Void Linux
-patch -Np1 -i ../patches/bzip2-void/install_docs-1.patch
-patch -Np0 -i ../patches/bzip2-void/soname.patch
-sed -i 's@\(ln -s -f \)$(PREFIX)/bin/@\1@' Makefile
-sed -i "s@(PREFIX)/man@(PREFIX)/share/man@g" Makefile
+# Apply patches from Clear Linux
+# Modifies build to configure with a script
+patch -Np1 -i ../patches/bzip2-clear/0001-Autotoolize-bzip2.patch 
+patch -Np1 -i ../patches/bzip2-clear/0002-Improve-file-access.patch
+
+# Create configure script...tool chain needs autotools!
+# Use patch instead of using autoreconf of auto-tools.
+# autoreconfig -vfi
+patch -Np1 -i ../patches/bzip2-mlfs/bzip2-reconfigured.patch
+chmod -v +x configure
 
 # Freeytpe requires this flag set for bzip2
 export CFLAGS="-fPIC" 
 
 # Prepare the source
-make -f Makefile-libbz2_so
-make clean
+./configure --prefix=/usr \
+            --disable-static 
 
 # Build & Install
-make && make PREFIX=/usr install
-cp -v bzip2-shared /bin/bzip2
-cp -av libbz2.so* /lib
-ln -sv ../../lib/libbz2.so.1.0 /usr/lib/libbz2.so
-rm -v /usr/bin/{bunzip2,bzcat,bzip2}
-ln -sv bzip2 /bin/bunzip2
-ln -sv bzip2 /bin/bzcat
+make && make install 
+
+# Library has wrong version in file name. Fix it
+mv -v /usr/lib/libbz2.so.1.0.0 /lib/libbz2.so.1.0.8
+rm -v /usr/lib/{libbz2.so,libbz2.so.1}
+ln -sv libbz2.so.1.0.8 /usr/lib/libbz2.so
+ln -sv libbz2.so.1.0.8 /usr/lib/libbz2.so.1
+
+# Create missing links
+ln -sv bzip2 /usr/bin/bunzip2
+ln -sv bzip2 /usr/bin/bzcat
 
 unset CFLAGS
