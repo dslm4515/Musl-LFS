@@ -7,7 +7,6 @@ make -C contrib/pzstd
 make prefix=/usr install
 make prefix=/usr -C contrib/pzstd install
 
-rm -v /usr/lib/libzstd.a
-mv -v /usr/lib/libzstd.so.* /lib
-ln -sfv ../../lib/$(readlink /usr/lib/libzstd.so) /usr/lib/libzstd.so
-
+rm -v   /usr/lib/libzstd.a
+mv -v   /usr/local/bin/pzstd /usr/bin/
+rm -rvf /usr/local
