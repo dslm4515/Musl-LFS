@@ -1,6 +1,6 @@
 # Final System: Bison 
 # This section is done in Chroot environment
 
-./configure --prefix=/usr --docdir=/usr/share/doc/bison-3.7.6
+./configure --prefix=/usr --docdir=/usr/share/doc/bison-3.8.2
 
 make && make install
