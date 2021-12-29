@@ -1,22 +1,30 @@
 # Final System: Perl 
 # This section is done in Chroot environment
 
+# If using zlib, do not build bundled zlib
 export BUILD_ZLIB=False
+rm -rf cpan/Compress-Raw-Zlib/zlib-src
+sed -i '/\(bzip2\|zlib\)-src/d' MANIFEST
+
+# If using zlib-ng, build bundled zlib as the
+# Compress::Raw::Zlib module will not compile
+# with zlib-ng
+export BUILD_ZLIB=True
+
 export BUILD_BZIP2=0
 export CF_OLD=$CFLAGS
 export CFLAGS+=" -DNO_POSIX_2008_LOCALE"
 export CFLAGS+=" -D_GNU_SOURCE"
 
-# Ensure that we never accidentally bundle zlib or bzip2
-rm -rf cpan/Compress-Raw-Zlib/zlib-src
+# Ensure that we never accidentally bundle bzip2
 rm -rf cpan/Compress-Raw-Bzip2/bzip2-src
-sed -i '/\(bzip2\|zlib\)-src/d' MANIFEST
+sed -i '/\(bzip2\|zzz\)-src/d' MANIFEST
 
 # Apply patch from Alpine to fix locale.c errors
 # in programs such as rxvt-unicode
-patch -p1 < ../patches/perl-5.30-alpine/musl-locale.patch
-
+patch -Np1 -i ../patches/perl-alpine/musl-locale.patch     &&
 patch -Np1 -i ../patches/perl-alpine/musl-stack-size.patch
+
 
 # Configure 
 sh Configure -des -Dprefix=/usr                                \
