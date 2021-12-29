@@ -9,4 +9,3 @@
 
 make && make install
 
-mv -vf /usr/bin/bash /bin
