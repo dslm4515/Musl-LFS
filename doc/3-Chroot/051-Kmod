@@ -2,16 +2,15 @@
 # This section is done in Chroot environment
 
 ./configure --prefix=/usr          \
-            --bindir=/bin          \
             --sysconfdir=/etc      \
-            --with-rootlibdir=/lib \
             --with-xz              \
-            --with-zlib
+            --with-zlib            \
+            --with-zstd
 
 make && make install
 
 for target in depmod insmod lsmod modinfo modprobe rmmod; do
-  ln -sfv ../bin/kmod /sbin/$target
+  ln -sfv ../bin/kmod /usr/sbin/$target
 done
 
-ln -sfv kmod /bin/lsmod
+ln -sfv kmod /usr/bin/lsmod
