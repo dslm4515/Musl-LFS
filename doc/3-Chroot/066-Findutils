@@ -10,8 +10,6 @@ make
 # Install
 make install
 
-mv -v /usr/bin/find /bin
-
 # The updatedb script also needs to be modified to 
 # correct an explicit path
 sed -i 's|find:=${BINDIR}|find:=/bin|' /usr/bin/updatedb
