@@ -8,6 +8,4 @@ DEFS=NO_ASM gl_cv_func_fflush_stdin=yes \
 # Build and install
 make && make install
 
-# Move to proper path
-mv -v /usr/bin/gzip /bin
 
