@@ -6,13 +6,10 @@ autoreconf -fiv
 
 # Configure
 ./configure --prefix=/usr           \
-            --bindir=/sbin          \
-            --sbindir=/sbin         \
-            --libdir=/usr/lib       \
+            --bindir=/usr/sbin      \
+            --sbindir=/usr/sbin     \
+            --libexecdir=/usr/lib   \
             --sysconfdir=/etc       \
-            --libexecdir=/lib       \
-            --with-rootprefix=      \
-            --with-rootlibdir=/lib  \
             --enable-manpages       \
             --disable-static        
 
