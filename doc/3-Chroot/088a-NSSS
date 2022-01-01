@@ -1,0 +1,21 @@
+# Final System: NSSS 
+# This section is done in Chroot environment
+# This is optional to add nss support
+
+# Configure
+./configure --prefix=/usr              \
+            --exec-prefix=/usr         \
+            --with-dynlib=/usr/lib     \
+            --libexecdir=/usr/lib/nsss \
+            --libdir=/usr/lib          \
+            --with-dynlib=/usr/lib     \
+            --enable-shared \
+            --enable-static \
+            --disable-allstatic 
+
+# Compile
+make
+
+# Install
+make install
+

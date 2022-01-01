@@ -1,6 +1,9 @@
 # Final System: S6-Linux-init
 # This section is done in Chroot environment
 
+# If NSSS was built, ass flag:
+# OPARG="--enable-nsss "
+
 # Configure
 ./configure --enable-shared      \
             --enable-static      \
@@ -9,7 +12,7 @@
             --libdir=/usr/lib \
             --libexecdir=/usr/lib/s6-linux-init \
             --with-dynlib=/usr/lib   \
-            --enable-utmps 
+            --enable-utmps ${OPARG}
 
 # Compile
 make
