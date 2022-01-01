@@ -10,7 +10,7 @@ echo 9.0.0 > /etc/mlfs-release
 # system with respect to the Linux Standards Base (LSB). To create this file, run: 
 cat > /etc/lsb-release << "EOF"
 DISTRIB_ID="Musl Linux From Scratch"
-DISTRIB_RELEASE="9.0.0"
+DISTRIB_RELEASE="10.0.0"
 DISTRIB_CODENAME="<your name here>"
 DISTRIB_DESCRIPTION="Musl Linux From Scratch"
 EOF
@@ -18,11 +18,11 @@ EOF
 # If desired, an os-release file
 cat > /usr/lib/os-release << "EOF"
 NAME="MLFS"
-VERSION="9.0.0"
+VERSION="10.0.0"
 ID=cmlfs
 ID_LIKE="lfs"
-PRETTY_NAME="Musl Linux From Scratch 9.0.0"
-VERSION_ID="9.0.0"
+PRETTY_NAME="Musl Linux From Scratch 10.0.0"
+VERSION_ID="10.0.0"
 HOME_URL="https://github.com/dslm4515/Musl-LFS"
 SUPPORT_URL="https://github.com/dslm4515/Musl-LFS/issues"
 BUG_REPORT_URL="https://github.com/dslm4515/Musl-LFS/issues"
