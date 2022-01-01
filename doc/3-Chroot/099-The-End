@@ -4,7 +4,7 @@
 # file, it is very easy for you (and for us if you need to ask for help at 
 # some point) to find out which LFS version is installed on the system. 
 # Create this file by running: 
-echo 9.0.0 > /etc/mlfs-release
+echo 10.0.0 > /etc/mlfs-release
 
 # It is also a good idea to create a file to show the status of your new 
 # system with respect to the Linux Standards Base (LSB). To create this file, run: 
