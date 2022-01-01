@@ -4,7 +4,7 @@
 # Configure
 ./configure --disable-allstatic \
             --prefix=/usr       \
-            --with=dynlib=/lib
+            --with=dynlib=/usr/lib
 
 # Compile
 make
