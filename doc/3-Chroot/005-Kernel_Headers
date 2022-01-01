@@ -13,6 +13,9 @@ make mrproper
 # For kernels up to 5.2.x:
 #make INSTALL_HDR_PATH=dest headers_install
 
+# Kernel version greater than 5.9.16 will not compile under musl 
+patch -Np1 -i ../patches/kernel/include-uapi-linux-swab-Fix-potentially-missing-__always_inline.patch 
+
 # For kernels 5.3.x and newer:
 make headers
 
