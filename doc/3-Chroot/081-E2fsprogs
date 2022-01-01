@@ -7,7 +7,6 @@ mkdir -v build && cd build
 # configure
 e2fsprogs_cv_struct_st_flags=no      \
 ../configure --prefix=/usr           \
-             --bindir=/bin           \
              --with-root-prefix=""   \
              --enable-elf-shlibs     \
              --disable-libblkid      \
