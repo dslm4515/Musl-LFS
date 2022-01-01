@@ -19,7 +19,7 @@ EOF
 cat > /usr/lib/os-release << "EOF"
 NAME="MLFS"
 VERSION="10.0.0"
-ID=cmlfs
+ID=mlfs
 ID_LIKE="lfs"
 PRETTY_NAME="Musl Linux From Scratch 10.0.0"
 VERSION_ID="10.0.0"
