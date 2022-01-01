@@ -1,0 +1,12 @@
+# Final System: Samurai
+# This section is done in Chroot environment
+# Alternative to ninja
+
+# Build 
+CC=gcc make PREFIX=/usr
+
+# Install
+make PREFIX=/usr install
+
+# In case ninja is invoked
+ln -sv samu /usr/bin/ninja
