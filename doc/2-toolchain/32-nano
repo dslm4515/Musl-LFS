@@ -1,18 +1,10 @@
 # Toolchain: nano
 # Build and install as mlfs
 # Optional package: Text editor for convenience or trouble shooting
+# ** Nano fails to build, as it is hardcoded to use host's headers. **
+# ** Can be built in chroot, if desired.**
 
-# Set the environment for cross-compiling if not done already.
-CC="${MLFS_TARGET}-gcc"
-CXX="${MLFS_TARGET}-g++"
-AR="${MLFS_TARGET}-ar"
-AS="${MLFS_TARGET}-as"
-RANLIB="${MLFS_TARGET}-ranlib"
-LD="${MLFS_TARGET}-ld"
-STRIP="${MLFS_TARGET}-strip"
-LDFLAGS="-L/tools/lib"
-CPPFLAGS="-I/tools/include"
-
+# Once in chroot ...
 # Configure source
 ./configure --prefix=/tools \
             --build=${MLFS_HOST} \
@@ -22,4 +14,3 @@ CPPFLAGS="-I/tools/include"
 # Build and install to toolchain
 make && make install
 
-unset LDFLAGS CPPFLAGS
