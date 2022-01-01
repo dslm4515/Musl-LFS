@@ -6,7 +6,7 @@
             --enable-allstatic    \
             --enable-static-libc  \
             --libdir=/usr/lib     \
-            --with-dynlib=/lib    \
+            --with-dynlib=/usr/lib    \
             --enable-pedantic-posix
 
 make
