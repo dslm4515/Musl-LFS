@@ -1,0 +1,11 @@
+--- util-linux-2.37.2.orig/text-utils/more.c	2021-08-16 05:57:48.692807016 -0500
++++ util-linux-2.37.2/text-utils/more.c	2021-12-31 19:18:20.162108917 -0600
+@@ -1990,7 +1990,7 @@
+ 	if (cursor_addr == NULL || *cursor_addr == '\0') {
+ 		cursor_addr = tigetstr(TERM_CURSOR_ADDRESS);
+ 		if (cursor_addr)
+-			cursor_addr = tparm(cursor_addr, 0, 0);
++			cursor_addr = tiparm(cursor_addr, 0, 0);
+ 	}
+ 	if (cursor_addr)
+ 		ctl->go_home = xstrdup(cursor_addr);

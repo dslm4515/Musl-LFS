@@ -1,8 +1,11 @@
 # Final System: Util-Linux
 # This section is done in Chroot environment
 
-# Aplly fix from void
+# Apply fix from void
 patch -Np0 -i ../patches/util-linux-void/fix-musl.patch
+
+# If building against netBSD's curses, use tiparm
+patch -Np1 -i ../patches/util-linux-mlfs/use-tiparm-when-compiling-with-netbsd_curses.patch
 
 mkdir -pv /var/lib/hwclock
 rm -vf /usr/include/{blkid,libmount,uuid}
