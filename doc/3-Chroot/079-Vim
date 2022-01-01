@@ -11,7 +11,7 @@ echo '#define SYS_VIMRC_FILE "/etc/vimrc"' >> src/feature.h
 # Build & install
 make && make install
 
-# For some,  it is a habbit to invoke vi instead of vim
+# For some,  it is a habit to invoke vi instead of vim
 ln -sv vim /usr/bin/vi
 
 # Fix the docs
