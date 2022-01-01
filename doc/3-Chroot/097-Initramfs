@@ -12,10 +12,11 @@ mkdir -pv etc/{modprobe.d,udev}
 
 # Create symlinks
 ln -sv lib lib64
-ln -sv ../bin usr/bin
+ln -sv ../bin  usr/bin
+ln -sv ../sbin usr/sbin
 
 # Copy binaries
-for b in cat cp dd killall kmod ln ls mkdir \
+for b in bash cat cp dd killall kmod ln ls mkdir \
          mknod mount rm sed sh sleep umount uname
 do
   cp -va /bin/$b bin/
@@ -41,13 +42,15 @@ touch etc/modprobe.d/modprobe.conf
 cp -v ../files/initramfs-init sbin/init
 
 # Copy required libraries
-for l in libacl.so.1  libattr.so.1 libblkid.so.1 libcap.so.2 \
-         libkmod.so.2 liblzma.so.5 libmount.so.1 libncursesw.so.6 \
-         libreadline.so.8 libz.so.1
+for l in libacl.so  libattr.so libblkid.so libcap.so \
+         libkmod.so liblzma.so libmount.so libncursesw.so \
+         libreadline.so libz.so libcurses.so libhistory.so \
+         libterminfo.so libzstd.so
 do
-  cp -va /lib/$l lib/
+  cp -va /lib/$l.* lib/
 done
-cp -v /lib/ld-musl-$(uname -m).so.1 lib/
+cp -v  /usr/lib/libc.so lib/
+ln -sv libc.so lib/ld-musl-$(uname -m).so.1 
 
 # Copy any firmware required for boot:
 cp -rv /lib/firmware/* lib/firmware/
