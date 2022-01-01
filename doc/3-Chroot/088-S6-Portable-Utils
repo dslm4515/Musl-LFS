@@ -7,8 +7,8 @@
             --enable-allstatic      \
             --enable-static-libc    \
             --libdir=/usr/lib       \
-            --libexecdir=/lib/s6-portable-utils \
-            --with-dynlib=/lib
+            --libexecdir=/usr/lib/s6-portable-utils \
+            --with-dynlib=/usr/lib
 
 # Compile
 make
