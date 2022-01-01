@@ -1,7 +1,9 @@
 # Adjust Cross Tool Chain
 #
 # Adjustment is needed when Host has a different libc than target.
-# Otherwise GCC of /tools will fail to build
+# Otherwise GCC of /tools will fail to build.
+# ** If host is musl-based, this can be skipped. **
+# ** If host is Glibc-based, this is REQUIRED. **
 
 # Dump current cross-gcc specs 
 export SPECFILE=`dirname $(${MLFS_TARGET}-gcc -print-libgcc-file-name)`/specs
