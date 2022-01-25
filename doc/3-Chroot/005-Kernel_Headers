@@ -19,20 +19,18 @@ patch -Np1 -i ../patches/kernel/include-uapi-linux-swab-Fix-potentially-missing-
 # For kernels 5.3.x and newer:
 make headers
 
-# There are also some hidden files used by the kernel
-# developers and not needed by MLFS that are removed
-# from the intermediate directory.
-# Kernels up to 5.2.x:
-# find dest/include \( -name .install -o -name ..install.cmd \) -exec rm -rvf {} \;
-
-# Kernels 5.3.x and newer:
-find usr/include -name '.*' -exec rm -rvf {} \;
-
 # Install Headers
 # Kernel up to 5.2.x:
 # cp -rv dest/include/* /usr/include
 
 # Kernels 5.2.x and newer:
 cp -rv usr/include/* /usr/include
-rm -v /usr/include/Makefile
 
+# After installed, there still are also some hidden
+# files used by the kernel developers (for what?)
+# and not needed by MLFS that now can be removed
+# from our /usr/include.
+find /usr/include -name '.*' -exec rm -vf {} \; 
+
+# The Makefile present also won't be used
+rm -v /usr/include/Makefile
