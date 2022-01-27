@@ -40,7 +40,7 @@ unset SPECFILE  MLFS_TARGET
 # the adjusted toolchain are working as expected. To do 
 # this, perform the following sanity checks:
 echo 'int main(){}' > dummy.c
-cc dummy.c -v -Wl,--verbose &> dummy.log
+cc dummy.c -v -Wl,--verbose > dummy.log 2>&1 
 readelf -l a.out | grep ': /lib'
 # Should output:
 # [Requesting program interpreter: /lib/ld-musl-x86_64.so.1]
