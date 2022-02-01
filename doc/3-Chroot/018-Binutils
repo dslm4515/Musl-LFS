@@ -9,7 +9,7 @@ patch -Np1 -i ../patches/binutils-alpine/defang-no-split.patch
 
 # Remove existing empty man pages to force them to be regenerated.
 # Workaround for https://gitlab.alpinelinux.org/alpine/aports/-/issues/13034
-find . -name '[a-z]*\.[0-9]*' -empty -delete 
+find . -name '[a-z]*\.[0-9]*' -empty -exec rm -vf {} \; 
 
 # Create build directory
 mkdir -v build && cd build
