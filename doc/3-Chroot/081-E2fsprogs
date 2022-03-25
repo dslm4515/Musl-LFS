@@ -14,7 +14,9 @@ e2fsprogs_cv_struct_st_flags=no      \
              --disable-uuidd         \
              --disable-fsck \
              --enable-e2initrd-helper \
-             --disable-rpath
+             --disable-rpath \
+             --sbindir=/usr/sbin \
+             --libdir=/usr/lib
 # build
 make
 
