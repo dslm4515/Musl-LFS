@@ -12,7 +12,7 @@ rm -fv man/man8/arpd.8
 sed -i 's/.m_ipt.o//' tc/Makefile
 
 # Build
-make 
+make NETNS_RUN_DIR=/run/netns 
 
 # Install
-make DOCDIR=/usr/share/doc/iproute2-5.12.0 install
+make DOCDIR=/usr/share/doc/iproute2-5.17.0 install
