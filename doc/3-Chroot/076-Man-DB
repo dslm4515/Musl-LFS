@@ -3,7 +3,7 @@
 
 # Configure
 ./configure --prefix=/usr                        \
-            --docdir=/usr/share/doc/man-db-2.9.4 \
+            --docdir=/usr/share/doc/man-db-2.10.2 \
             --sysconfdir=/etc                    \
             --disable-setuid                     \
             --enable-cache-owner=bin             \
@@ -20,6 +20,3 @@
 
 # Build and install
 make && make install
-
-# Clean up
-unset CFLAGS LDFLAGS
