@@ -9,7 +9,7 @@ sed -i '/The name/,+2 d' src/global.c
 
 # Configure source
 ./configure --prefix=/usr \
-            --bindir=/bin \
+            --bindir=/usr/bin \
             --enable-mt   \
             --with-rmt=/usr/libexec/rmt
 
