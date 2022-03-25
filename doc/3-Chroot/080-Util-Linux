@@ -24,7 +24,7 @@ NOCONFIGURE=1 ./autogen.sh
 
 LIBS="-lutmps -lskarnet" \
 ./configure ADJTIME_PATH=/var/lib/hwclock/adjtime   \
-            --docdir=/usr/share/doc/util-linux-2.36.2 \
+            --docdir=/usr/share/doc/util-linux-2.37.4 \
             --disable-chfn-chsh  \
             --disable-login      \
             --disable-nologin    \
@@ -35,7 +35,10 @@ LIBS="-lutmps -lskarnet" \
             --disable-static     \
             --without-python     \
             --without-systemd    \
-            --without-systemdsystemunitdir
+            --without-systemdsystemunitdir \
+            --sbindir=/usr/sbin \
+            --bindir=/usr/bin \
+            --libdir=/usr/lib
 make && make install
 
 unset CFLAGS
