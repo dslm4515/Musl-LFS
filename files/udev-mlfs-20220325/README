@@ -23,7 +23,7 @@ write_net_rules      - Scripts for MLFS rules
 write_cd_rules
 rule_generator.functions
 
-55-mlfs.txt          - Documentation for LFS installed rules
+55-mlfs.txt          - Documentation for MLFS installed rules
 
 ChangeLog            - Log of changes to 55-mlfs-rules
 

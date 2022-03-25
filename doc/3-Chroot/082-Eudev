@@ -9,6 +9,7 @@ autoreconf -fiv
             --bindir=/usr/sbin      \
             --sbindir=/usr/sbin     \
             --libexecdir=/usr/lib   \
+            --libdir=/usr/lib       \
             --sysconfdir=/etc       \
             --enable-manpages       \
             --disable-static        
@@ -17,5 +18,5 @@ autoreconf -fiv
 make && make install
 
 # Install some useful udev rules
-tar -xvf ../udev-mlfs-20191014.tar.xz
-make -f udev-mlfs-20191014/Makefile.mlfs install
+cp -r ../files/udev-mlfs-20220325 ./ 
+make -f udev-mlfs-20220325/Makefile.mlfs install

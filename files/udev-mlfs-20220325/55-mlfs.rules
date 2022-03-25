@@ -1,0 +1,15 @@
+# /etc/udev/rules.d/55-mlfs.rules: Rule definitions for MLFS.
+
+# Core kernel devices
+
+# S6 Boot scripts cover this.
+## This causes the system clock to be set as soon as /dev/rtc becomes available.
+##SUBSYSTEM=="rtc", ACTION=="add", MODE="0644", RUN+="/etc/rc.d/init.d/setclock start"
+##KERNEL=="rtc", ACTION=="add", MODE="0644", RUN+="/etc/rc.d/init.d/setclock start"
+
+# Comms devices
+
+KERNEL=="ippp[0-9]*",       GROUP="dialout"
+KERNEL=="isdn[0-9]*",       GROUP="dialout"
+KERNEL=="isdnctrl[0-9]*",   GROUP="dialout"
+KERNEL=="dcbri[0-9]*",      GROUP="dialout"

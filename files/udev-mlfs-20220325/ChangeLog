@@ -1,3 +1,6 @@
+2022-03-25 <dslm4515>
+        * Changed more filnames to match MLFS.
+	* Modified Makefile to install in /usr/lib instead of /lib
 2019-10-14 <dslm4515>
         * Changed filnames to match MLFS.
 	* Commented out RTC clock rules, as S6 bootscripts take care of that.

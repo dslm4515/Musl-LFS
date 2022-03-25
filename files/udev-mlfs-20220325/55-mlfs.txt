@@ -12,9 +12,11 @@ rule (and similar):
 
 KERNEL=="ippp[0-9]*", GROUP="dialout"
 
-The RTC-related rules cause the setclock bootscript to be run as soon as the
-RTC device has been created by Udev, meaning that times in log files, for
-example, are as accurate as possible as quickly as possible.
+S6 bootscripts handles this. Otherwise, create a script first to set system
+clock from RTC.
+##The RTC-related rules cause the setclock bootscript to be run as soon as the
+##RTC device has been created by Udev, meaning that times in log files, for
+##example, are as accurate as possible as quickly as possible.
 
 A final word of caution: Any particular rule must be written on one line, and a
 comma must separate each part of the rule.
