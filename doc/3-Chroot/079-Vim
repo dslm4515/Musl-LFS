@@ -6,7 +6,7 @@
 echo '#define SYS_VIMRC_FILE "/etc/vimrc"' >> src/feature.h
 
 # Configure
-./configure --prefix=/usr
+./configure --prefix=/usr --enable-gui=no --disable-gtktest 
 
 # Build & install
 make && make install
@@ -18,7 +18,13 @@ ln -sv vim /usr/bin/vi
 for L in  /usr/share/man/{,*/}man1/vim.1; do
     ln -sv vim.1 $(dirname $L)/vi.1
 done
-ln -sv ../vim/vim82/doc /usr/share/doc/vim-8.2.2890
+
+# No longer built?
+#ln -sv ../vim/vim82/doc /usr/share/doc/vim-8.2.4567
+
+# GVim was not build, requires GTK
+rm -v  /usr/share/applications/gvim.desktop
+rm -rf /usr/share/icons
 
 # Create a simple configuration
 cat > /etc/vimrc << "EOF"
