@@ -8,6 +8,10 @@ patch -Np0 -i ../patches/python3-void/tweak-MULTIARCH-for-powerpc-linux-musl.pat
 rm -r Modules/expat
 rm -r Modules/_ctypes/{darwin,libffi}*
 
+# If building Python 3.10.x with openssl:
+export  XARGS="--with-openssl=/opt/openssl "
+export XARGS+="--with-openssl-rpath=/opt/openssl/lib "
+
 # Configure source
 ./configure --prefix=/usr        \
             --enable-shared      \
@@ -17,12 +21,17 @@ rm -r Modules/_ctypes/{darwin,libffi}*
             --enable-ipv6        \
             --with-threads       \
             --enable-loadable-sqlite-extensions \
-            --with-computed-gotos
+            --with-computed-gotos $XARGS
 
 # Build and install
 make && make install
+unset XARGS
 
 # Change permissions to allow stripping later
+# For python 3.9.x
 chmod -v 755 /usr/lib/libpython3.9.so
+
+# For python 3.10.x
+chmod -v 755 /usr/lib/libpython3.10.so
 chmod -v 755 /usr/lib/libpython3.so
 

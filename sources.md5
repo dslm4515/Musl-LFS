@@ -72,7 +72,8 @@ e81e63acd80697d001c8d85c1acb38a0  kmod-29.tar.xz
 2c095e31e35d6be7b3718477b6d52702  elfutils-0.186.tar.bz2
 294b921e6cf9ab0fbaea4b639f8fdbe8  libffi-3.4.2.tar.gz
 18aa728e7947a30af3bb04243e4482aa  libressl-3.4.2.tar.gz
-ecc29a7688f86e550d29dba2ee66cf80  Python-3.9.6.tar.xz
+11d12076311563252a995201248d17e5  Python-3.9.9.tar.xz
+21e0b70d70fdd4756aafc4caa55cc17e  Python-3.10.3.tar.xz
 3ad6771de19a93660fdb36dc67687727  samurai-1.2.tar.gz
 8998d77313d753a0c474d9bdf1738b2e  meson-0.61.3.tar.gz
 bb8bf3898afefc8272989e4be8ff0a5b  meson-0.59.0.tar.gz
