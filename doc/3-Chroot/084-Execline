@@ -7,7 +7,8 @@
             --enable-static-libc  \
             --libdir=/usr/lib     \
             --with-dynlib=/usr/lib    \
-            --enable-pedantic-posix
+            --enable-pedantic-posix \
+            --enable-nsss
 
 make
 make install
