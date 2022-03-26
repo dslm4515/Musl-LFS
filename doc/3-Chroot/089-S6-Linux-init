@@ -12,10 +12,25 @@
             --libdir=/usr/lib \
             --libexecdir=/usr/lib/s6-linux-init \
             --with-dynlib=/usr/lib   \
-            --enable-utmps ${OPARG}
+            --enable-utmps \
+            --bindir=/usr/bin ${OPARG}
 
 # Compile
 make
 
 # Install
 make install
+
+# Configure scripts to match bootscripts:
+cat >> /etc/s6-linux-init/skel/rc.init << "EOF"
+s6-rc-init -c /etc/s6/db/current /run/service
+exec /etc/s6/base/scripts/runlevel "$rl"
+EOF
+
+cat >> /etc/s6-linux-init/skel/rc.shutdown << "EOF"
+exec s6-rc -v2 -bDa change
+EOF
+
+cat >> /etc/s6-linux-init/skel/runlevel << "EOF"
+exec s6-rc -v2 -up change "$1"
+EOF
