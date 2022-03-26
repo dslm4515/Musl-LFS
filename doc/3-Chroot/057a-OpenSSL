@@ -1,0 +1,26 @@
+# Final System: openSSL 
+# This section is done in Chroot environment
+# Required by Python 3.10.x	
+
+# Coreutils not installed yet, link env from /tools
+ln -sv /tools/bin/env /usr/bin/
+
+# Configure to install in /opt/openssl
+./config --prefix=/opt/openssl \
+         --openssldir=/opt/openssl/etc/ssl \
+         --libdir=/opt/openssl/lib \
+         shared zlib-dynamic
+# Compile
+make
+
+# Install
+sed -i '/INSTALL_LIBS/s/libcrypto.a libssl.a//' Makefile
+make MANSUFFIX=ssl install
+
+# Add the version to the documentation directory name, to 
+# be consistent with other packages: 
+mv -v /opt/openssl/share/doc/openssl /opt/openssl/share/doc/openssl-3.0.2
+
+# If desired, install some additional documentation: 
+cp -vfr doc/* /opt/openssl/share/doc/openssl-3.0.2
+
