@@ -9,3 +9,5 @@
 # Build and Install
 make
 make install
+cp -v ../files/skalibs-alpine/skalibs.pc /usr/lib/pkgconfig/
+sed -i "s|@@VERSION@@|2.11.2.0|" -i /usr/lib/pkgconfig/skalibs.pc
