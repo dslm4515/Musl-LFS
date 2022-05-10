@@ -10,8 +10,9 @@ RANLIB="${MLFS_TARGET}-ranlib"
 LD="${MLFS_TARGET}-ld"
 STRIP="${MLFS_TARGET}-strip"
 
-# Re-create configure script
-# autoreconf -vif # often fails
+# Re-create configure script ... often fails, so it may be omited if it fails
+# Will need to unpack again if it fails
+autoreconf -vif
 
 #patch -Np1 -i ../patches/coreutils-alpine/ls.patch
 
