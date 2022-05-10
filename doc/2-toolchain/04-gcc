@@ -23,6 +23,9 @@ mv -v mpfr-4.1.0 mpfr
 # Apply patches [from alpine linux]
 bash ../patches/gcc-alpine/apply_patches_ct.sh
 
+# Fix fenv header:
+patch -Np1 -i ../patches/gcc-mlfs-11.2.0/fix_fenv_header.patch
+
 # Re-create internal header
 cat gcc/{limitx,glimits,limity}.h > \
   $(dirname $($MLFS_TARGET-gcc -print-libgcc-file-name))/include-fixed/limits.h
