@@ -49,6 +49,9 @@ ln -sv /lib/ld-musl-$ARCH.so.1 /bin/ldd
 # Create a compatibility link for rust
 ln -sv libc.so /usr/lib/libc.musl-$ARCH.so.1 
 
+# Install a simple script for ldconfig
+cp -v ../files/musl-alpine/ldconfig /usr/bin/
+
 # Create config for dynamic library loading:
 cat > /etc/ld-musl-$ARCH.path << "EOF"
 /lib
@@ -60,10 +63,7 @@ EOF
 #rm -v ${BUILD}/usr/include/utmp.h   &&
 
 # Header will be provided by skarnet's umtps
-rm -v ${BUILD}/usr/include/utmpx.h 
-
-# Install ldconfig script from Adelie Linux
-install -v -D -m755 ../files/musl-adelie/ldconfig ${BUILD}/usr/bin/
+rm -v /usr/include/utmpx.h 
 
 # Some packages [outside MLFS] may expect ld-musl-i686.so.1 
 # instead of ld-musl-i386.so.1:
