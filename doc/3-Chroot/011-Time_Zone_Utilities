@@ -23,9 +23,9 @@ mkdir -pv /usr/share/zoneinfo/right
 
 # Install
 install -m444 -t /usr/share/zoneinfo iso3166.tab zone1970.tab zone.tab
-install -m755 zic zdump ${BUILD}/usr/sbin
-install -m644 zic.8 zdump.8 ${BUILD}/usr/share/man/man8
-install -v -Dm755 posixtz-0.5/posixtz ${BUILD}/usr/bin/posixtz
+install -m755 zic zdump /usr/sbin
+install -m644 zic.8 zdump.8 /usr/share/man/man8
+install -v -Dm755 posixtz-0.5/posixtz /usr/bin/posixtz
 
 # Build the timezones
 ./zic -b fat -y ./yearistype -d /usr/share/zoneinfo ${timezones}
