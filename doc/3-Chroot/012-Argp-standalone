@@ -2,8 +2,6 @@
 # This section is done in Chroot environment
 
 # Patch source to compile under Musl libc
-patch -Np0 -i ../patches/argp-standalone-void/fix-no_use_inline.patch       &&
-patch -Np1 -i ../patches/argp-standalone-adelie/001-throw-in-funcdef.patch  &&
 patch -Np1 -i ../patches/argp-standalone-adelie/gnu89-inline.patch
 
 # Configure source

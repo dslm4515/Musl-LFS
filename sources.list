@@ -41,7 +41,7 @@ https://skarnet.org/software/utmps/utmps-0.1.1.0.tar.gz
 https://dev.alpinelinux.org/archive/posixtz/posixtz-0.5.tar.xz
 https://www.iana.org/time-zones/repository/releases/tzdata2021e.tar.gz
 https://www.iana.org/time-zones/repository/releases/tzcode2021e.tar.gz
-https://www.lysator.liu.se/~nisse/misc/argp-standalone-1.3.tar.gz
+https://github.com/ericonr/argp-standalone/archive/refs/tags/1.4.1.tar.gz
 https://github.com/zlib-ng/zlib-ng/archive/refs/tags/2.0.5.tar.gz
 https://ftp.gnu.org/gnu/readline/readline-8.1.tar.gz
 https://github.com/gavinhoward/bc/releases/download/5.0.0/bc-5.0.0.tar.xz
