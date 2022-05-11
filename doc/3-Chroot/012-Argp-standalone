@@ -4,6 +4,10 @@
 # Patch source to compile under Musl libc
 patch -Np1 -i ../patches/argp-standalone-adelie/gnu89-inline.patch
 
+# Generate configure script with patch as there are no autotools in /tools
+patch -Np1 -i ../patches/argp-standalone-mlfs/generate_configure_script.patch 
+chmod -v +x configure
+
 # Configure source
 CFLAGS=" -fPIC" ./configure --prefix=/usr \
                             --disable-static \
