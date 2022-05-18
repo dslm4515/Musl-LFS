@@ -10,8 +10,8 @@ find man -name Makefile.in -exec sed -i 's/passwd\.5 / /'   {} \;
 sed -i -e 's@#ENCRYPT_METHOD DES@ENCRYPT_METHOD SHA512@' \
        -e 's@/var/spool/mail@/var/mail@' etc/login.defs
 
-# Fix a simple programming error
-sed -e "224s/rounds/min_rounds/" -i libmisc/salt.c
+# Fix a simple programming error ...fixed in 4.11.1?
+#sed -e "224s/rounds/min_rounds/" -i libmisc/salt.c
 
 # Configure source
 touch /usr/bin/passwd &&
