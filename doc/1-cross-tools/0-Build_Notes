@@ -14,7 +14,7 @@
 
 # Each package should be unpacked in /mnt/mlfs/source, and change 
 # to the unpacked source directory. For example:
-cd /mnt/mfls/sources
+cd /mnt/mlfs/sources
 tar xf pkgs/foo-1.2.3.tar.gz
 cd foo-1.2.3
 
