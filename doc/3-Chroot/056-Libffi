@@ -23,8 +23,7 @@ case $(uname -m) in
          ;;
 esac
 
-patch -Np0 -i ../patches/libffi-void/libffi-race-condition.patch
-patch -Np0 -i ../patches/libffi-void/no-toolexeclibdir.patch
+patch -Np1 -i ../patches/libffi-alpine/pax-dlmmap.patch
 
 ./configure --prefix=/usr    \
             --disable-static \
