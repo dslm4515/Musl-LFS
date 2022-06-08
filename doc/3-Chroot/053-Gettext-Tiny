@@ -1,10 +1,10 @@
 # Final System: Gettext-Tiny
 # This section is done in Chroot environment
 
-# Apply Patches from Adelie Linux:
-patch -Np1 -i ../patches/gettext-tiny-adiele/line-length.patch           &&
-patch -Np1 -i ../patches/gettext-tiny-adiele/respect-cflags.patch        &&
-patch -Np1 -i ../patches/gettext-tiny-adiele/stop-doing-macro-crap.patch 
+# Apply Patches from Alpine Linux:
+patch -Np1 -i ../patches/gettext-tiny-alpine/flip-macro-logic.patch
+patch -Np1 -i ../patches/gettext-tiny-alpine/line-length.patch
+patch -Np1 -i ../patches/gettext-tiny-alpine/respect-cflags.patch
 
 # Compile
 LIBINTL=MUSL prefix=/usr make 
