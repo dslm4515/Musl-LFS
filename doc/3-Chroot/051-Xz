@@ -1,6 +1,9 @@
 # Final System: Xz
 # This section is done in Chroot environment
 
+# Apply security patch from Alpine Linux:
+patch -Np1 -i ../patches/xz-alpine/xzgrep-ZDI-CAN-16587.patch
+
 ./configure --prefix=/usr    \
             --disable-static \
             --docdir=/usr/share/doc/xz-5.2.5
