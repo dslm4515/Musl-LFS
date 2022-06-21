@@ -18,12 +18,13 @@ ln -sv ../sbin usr/sbin
 # Copy binaries
 for b in bash s6-cat cp dd killall kmod s6-ln s6-ls \
           s6-mkdir mknod s6-mount rm sed s6-sleep \
-          umount uname s6-basename readlink 
+          umount uname s6-basename readlink printf
 do
   cp -va /bin/$b bin/
 done
 ln -sv kmod bin/insmod
 ln -sv kmod bin/lsmod
+ln -sv bash bin/sh
 
 # Create the nodes for udev to mount on:
 mknod -m 600 dev/console c 5 1
@@ -43,7 +44,8 @@ cp -v ../files/initramfs-init sbin/init
 # Copy required libraries
 for l in libreadline.so.8 libhistory.so.8 libcurses.so \
          libterminfo.so libacl.so.1 libattr.so.1 libzstd.so.1 \
-         liblzma.so.5  libz.so.1 libmount.so.1 libblkid.so.1  
+         liblzma.so.5  libz.so.1 libmount.so.1 libblkid.so.1 \
+         libkmod.so.2 
 do
   cp -va /lib/$l.* lib/
 done

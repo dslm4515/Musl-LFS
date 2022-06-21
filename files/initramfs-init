@@ -44,12 +44,12 @@ do_mount_root()
        problem
    done
 
-   if ! mount -n -t "$rootfstype" -o "$rootflags" "$device" /.root ; then
+   if ! s6-mount -n -t "$rootfstype" -o "$rootflags" "$device" /.root ; then
        no_mount $device
-       cat /proc/partitions
+       s6-cat /proc/partitions
        while true ; do sleep 10000 ; done
    else
-       echo "Successfully mounted device $root"
+       s6-echo "Successfully mounted device $root"
    fi
 }
 
@@ -61,10 +61,10 @@ ro="ro"
 rootflags=
 device=
 
-mount -n -t devtmpfs devtmpfs /dev
-mount -n -t proc     proc     /proc
-mount -n -t sysfs    sysfs    /sys
-mount -n -t tmpfs    tmpfs    /run
+s6-mount -n -t devtmpfs devtmpfs /dev
+s6-mount -n -t proc     proc     /proc
+s6-mount -n -t sysfs    sysfs    /sys
+s6-mount -n -t tmpfs    tmpfs    /run
 
 read -r cmdline < /proc/cmdline
 
@@ -88,7 +88,7 @@ elif [ -x /lib/udev/udevd ]; then
 elif [ -x /lib/systemd/systemd-udevd ]; then
   UDEVD=/lib/systemd/systemd-udevd
 else
-  echo "Cannot find udevd nor systemd-udevd"
+  s6-echo "Cannot find udevd nor systemd-udevd"
   problem
 fi
 
