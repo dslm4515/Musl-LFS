@@ -39,7 +39,8 @@ cp -rv /lib/udev/*         lib/udev/
 touch etc/modprobe.d/modprobe.conf
 
 # Copy the init script
-cp -v ../files/initramfs-init sbin/init
+cp -v ../files/initramfs-init init
+ln -sv ../init sbin/init
 
 # Copy required libraries
 for l in libreadline.so.8 libhistory.so.8 libcurses.so \
