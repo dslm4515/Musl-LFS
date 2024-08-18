@@ -15,7 +15,7 @@ mv -v mpc-1.3.1 mpc
 mkdir -v build && cd  build
 
 # For CMLFS-based hosts, configure script does not recognize
-# host's clang as a valid C++ compiler. For now use the host's GCC instead:
+# host's clang as a valid C++11 compiler. For now use the host's GCC instead:
 # PATH=/opt/gnu/bin:/usr/bin CC=gcc CXX=g++
 
 # Configure source 
