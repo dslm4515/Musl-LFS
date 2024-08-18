@@ -35,7 +35,10 @@ CXXFLAGS=$CFLAGS \
           --disable-libsanitizer --with-arch=${MLFS_CPU} \
           --disable-decimal-float --enable-clocale=generic 
 
-# Build only the mininum 
+# Build only the mininum
+# For CMLFS-based hosts, don't forget to add PATH 
+# of the host's GCC
+# PATH=/opt/gnu/bin:/usr/bin  
 make all-gcc all-target-libgcc
 
 # Install
