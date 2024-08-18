@@ -1,5 +1,5 @@
 https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.15.7.tar.xz
-https://ftp.gnu.org/gnu/binutils/binutils-2.37.tar.xz
+https://sourceware.org/pub/binutils/releases/binutils-2.43.1.tar.xz
 https://ftp.gnu.org/gnu/gcc/gcc-11.2.0/gcc-11.2.0.tar.xz
 https://musl.libc.org/releases/musl-1.2.2.tar.gz
 https://astron.com/pub/file/file-5.40.tar.gz
