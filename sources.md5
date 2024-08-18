@@ -3,7 +3,7 @@
 #             samurai, check 
 # Unverified (has a signature file): flex
 b79700122766ccf561f032eb3c8da27e  linux-5.15.7.tar.xz
-e78d9ff2976b745a348f4c1f27c77cb1  binutils-2.37.tar.xz
+9202d02925c30969d1917e4bad5a2320  binutils-2.43.1.tar.xz
 31c86f2ced76acac66992eeedce2fce2  gcc-11.2.0.tar.xz
 aed8ae9e2b0898151b36a204088292dd  musl-1.2.2.tar.gz
 72540ea1cc8c6e1dee35d6100ec66589  file-5.40.tar.gz
