@@ -15,10 +15,18 @@ mkdir -v build && cd build
    --enable-deterministic-archives \
    --disable-compressed-debug-sections \
    --enable-gprofng=no \
-   --enable-new-dtags
+   --enable-new-dtags \
+   --disable-bootstrap \
+   --enable-relro \
+   --enable-default-pie \
+   --enable-static-pie \
+   --disable-werror --disable-linker-build-id --enable-default-hash-style="sysv" 
 
 # build to check host can build
 make configure-host
 
-# Build and install
-make && make install
+# Build
+make all-binutils all-gas all-ld
+
+# Install
+make install-strip-binutils install-strip-gas install-strip-ld
