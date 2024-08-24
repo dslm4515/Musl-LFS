@@ -1,0 +1,177 @@
+--- gcc/config/mips/mips.h
++++ gcc/config/mips/mips.h
+@@ -3450,8 +3450,8 @@
+ #define STANDARD_STARTFILE_PREFIX_1 "/lib32/"
+ #define STANDARD_STARTFILE_PREFIX_2 "/usr/lib32/"
+ #elif MIPS_ABI_DEFAULT == ABI_64
+-#define STANDARD_STARTFILE_PREFIX_1 "/lib64/"
+-#define STANDARD_STARTFILE_PREFIX_2 "/usr/lib64/"
++#define STANDARD_STARTFILE_PREFIX_1 "/lib/"
++#define STANDARD_STARTFILE_PREFIX_2 "/usr/lib/"
+ #endif
+ 
+ /* Load store bonding is not supported by micromips and fix_24k.  The
+--- gcc/config/mips/mti-linux.h
++++ gcc/config/mips/mti-linux.h
+@@ -38,7 +38,7 @@
+ #define STARTFILE_PREFIX_SPEC                          \
+   "%{mabi=32: /usr/local/lib/ /lib/ /usr/lib/}         \
+    %{mabi=n32: /usr/local/lib32/ /lib32/ /usr/lib32/}  \
+-   %{mabi=64: /usr/local/lib64/ /lib64/ /usr/lib64/}"
++   %{mabi=64: /usr/local/lib/ /lib/ /usr/lib/}"
+ 
+ #undef DRIVER_SELF_SPECS
+ #define DRIVER_SELF_SPECS						\
+--- gcc/config/mips/t-img-linux
++++ gcc/config/mips/t-img-linux
+@@ -28,11 +28,11 @@
+ MULTILIB_REQUIRED += mips64r6
+ MULTILIB_OSDIRNAMES += mips64r6=!mips-r6-hard/lib32
+ MULTILIB_REQUIRED += mips64r6/mabi=64
+-MULTILIB_OSDIRNAMES += mips64r6/mabi.64=!mips-r6-hard/lib64
++MULTILIB_OSDIRNAMES += mips64r6/mabi.64=!mips-r6-hard/lib
+ 
+ MULTILIB_REQUIRED += EL
+ MULTILIB_OSDIRNAMES += EL=!mipsel-r6-hard/lib
+ MULTILIB_REQUIRED += mips64r6/EL
+ MULTILIB_OSDIRNAMES += mips64r6/EL=!mipsel-r6-hard/lib32
+ MULTILIB_REQUIRED += mips64r6/mabi=64/EL
+-MULTILIB_OSDIRNAMES += mips64r6/mabi.64/EL=!mipsel-r6-hard/lib64
++MULTILIB_OSDIRNAMES += mips64r6/mabi.64/EL=!mipsel-r6-hard/lib
+--- gcc/config/mips/t-irix6
++++ gcc/config/mips/t-irix6
+@@ -1,4 +1,4 @@
+ MULTILIB_OPTIONS=mabi=n32/mabi=64
+ MULTILIB_DIRNAMES=n32 64
+ MULTILIB_MATCHES=
+-MULTILIB_OSDIRNAMES=../lib32 ../lib64
++MULTILIB_OSDIRNAMES=../lib32 ../lib
+--- gcc/config/mips/t-linux64
++++ gcc/config/mips/t-linux64
+@@ -23,4 +23,4 @@
+ MULTILIB_OSDIRNAMES = \
+ 	../lib32$(call if_multiarch,:mips64$(MIPS_EL)-linux-gnuabin32$(MIPS_SOFT)) \
+ 	../lib$(call if_multiarch,:mips$(MIPS_EL)-linux-gnu$(MIPS_SOFT)) \
+-	../lib64$(call if_multiarch,:mips64$(MIPS_EL)-linux-gnuabi64$(MIPS_SOFT))
++	../lib$(call if_multiarch,:mips64$(MIPS_EL)-linux-gnuabi64$(MIPS_SOFT))
+--- gcc/config/mips/t-mti-linux
++++ gcc/config/mips/t-mti-linux
+@@ -28,56 +28,56 @@
+ MULTILIB_REQUIRED   += mips64r2
+ MULTILIB_OSDIRNAMES += mips64r2=!mips-r2-hard/lib32
+ MULTILIB_REQUIRED   += mips64r2/mabi=64
+-MULTILIB_OSDIRNAMES += mips64r2/mabi.64=!mips-r2-hard/lib64
++MULTILIB_OSDIRNAMES += mips64r2/mabi.64=!mips-r2-hard/lib
+ 
+ MULTILIB_REQUIRED   += mnan=2008
+ MULTILIB_OSDIRNAMES += mnan.2008=!mips-r2-hard-nan2008/lib
+ MULTILIB_REQUIRED   += mips64r2/mnan=2008
+ MULTILIB_OSDIRNAMES += mips64r2/mnan.2008=!mips-r2-hard-nan2008/lib32
+ MULTILIB_REQUIRED   += mips64r2/mabi=64/mnan=2008
+-MULTILIB_OSDIRNAMES += mips64r2/mabi.64/mnan.2008=!mips-r2-hard-nan2008/lib64
++MULTILIB_OSDIRNAMES += mips64r2/mabi.64/mnan.2008=!mips-r2-hard-nan2008/lib
+ 
+ MULTILIB_REQUIRED   += msoft-float
+ MULTILIB_OSDIRNAMES += msoft-float=!mips-r2-soft/lib
+ MULTILIB_REQUIRED   += mips64r2/msoft-float
+ MULTILIB_OSDIRNAMES += mips64r2/msoft-float=!mips-r2-soft/lib32
+ MULTILIB_REQUIRED   += mips64r2/mabi=64/msoft-float
+-MULTILIB_OSDIRNAMES += mips64r2/mabi.64/msoft-float=!mips-r2-soft/lib64
++MULTILIB_OSDIRNAMES += mips64r2/mabi.64/msoft-float=!mips-r2-soft/lib
+ 
+ #MULTILIB_REQUIRED   += msoft-float/mnan=2008
+ #MULTILIB_OSDIRNAMES += msoft-float/mnan.2008=!mips-r2-soft-nan2008/lib
+ #MULTILIB_REQUIRED   += mips64r2/msoft-float/mnan=2008
+ #MULTILIB_OSDIRNAMES += mips64r2/msoft-float/mnan.2008=!mips-r2-soft-nan2008/lib32
+ #MULTILIB_REQUIRED   += mips64r2/mabi=64/msoft-float/mnan=2008
+-#MULTILIB_OSDIRNAMES += mips64r2/mabi.64/msoft-float/mnan.2008=!mips-r2-soft-nan2008/lib64
++#MULTILIB_OSDIRNAMES += mips64r2/mabi.64/msoft-float/mnan.2008=!mips-r2-soft-nan2008/lib
+ 
+ MULTILIB_REQUIRED   += EL
+ MULTILIB_OSDIRNAMES += EL=!mipsel-r2-hard/lib
+ MULTILIB_REQUIRED   += mips64r2/EL
+ MULTILIB_OSDIRNAMES += mips64r2/EL=!mipsel-r2-hard/lib32
+ MULTILIB_REQUIRED   += mips64r2/mabi=64/EL
+-MULTILIB_OSDIRNAMES += mips64r2/mabi.64/EL=!mipsel-r2-hard/lib64
++MULTILIB_OSDIRNAMES += mips64r2/mabi.64/EL=!mipsel-r2-hard/lib
+ 
+ MULTILIB_REQUIRED   += EL/mnan=2008
+ MULTILIB_OSDIRNAMES += EL/mnan.2008=!mipsel-r2-hard-nan2008/lib
+ MULTILIB_REQUIRED   += mips64r2/EL/mnan=2008
+ MULTILIB_OSDIRNAMES += mips64r2/EL/mnan.2008=!mipsel-r2-hard-nan2008/lib32
+ MULTILIB_REQUIRED   += mips64r2/mabi=64/EL/mnan=2008
+-MULTILIB_OSDIRNAMES += mips64r2/mabi.64/EL/mnan.2008=!mipsel-r2-hard-nan2008/lib64
++MULTILIB_OSDIRNAMES += mips64r2/mabi.64/EL/mnan.2008=!mipsel-r2-hard-nan2008/lib
+ 
+ MULTILIB_REQUIRED   += EL/msoft-float
+ MULTILIB_OSDIRNAMES += EL/msoft-float=!mipsel-r2-soft/lib
+ MULTILIB_REQUIRED   += mips64r2/EL/msoft-float
+ MULTILIB_OSDIRNAMES += mips64r2/EL/msoft-float=!mipsel-r2-soft/lib32
+ MULTILIB_REQUIRED   += mips64r2/mabi=64/EL/msoft-float
+-MULTILIB_OSDIRNAMES += mips64r2/mabi.64/EL/msoft-float=!mipsel-r2-soft/lib64
++MULTILIB_OSDIRNAMES += mips64r2/mabi.64/EL/msoft-float=!mipsel-r2-soft/lib
+ 
+ #MULTILIB_REQUIRED   += EL/msoft-float/mnan=2008
+ #MULTILIB_OSDIRNAMES += EL/msoft-float/mnan.2008=!mipsel-r2-soft-nan2008/lib
+ #MULTILIB_REQUIRED   += mips64r2/EL/msoft-float/mnan=2008
+ #MULTILIB_OSDIRNAMES += mips64r2/EL/msoft-float/mnan.2008=!mipsel-r2-soft-nan2008/lib32
+ #MULTILIB_REQUIRED   += mips64r2/mabi=64/EL/msoft-float/mnan=2008
+-#MULTILIB_OSDIRNAMES += mips64r2/mabi.64/EL/msoft-float/mnan.2008=!mipsel-r2-soft-nan2008/lib64
++#MULTILIB_OSDIRNAMES += mips64r2/mabi.64/EL/msoft-float/mnan.2008=!mipsel-r2-soft-nan2008/lib
+ 
+ # We will not include any 64 bit mips16 combinations.
+ MULTILIB_REQUIRED   += mips16
+@@ -123,28 +123,28 @@
+ MULTILIB_REQUIRED   += mips64
+ MULTILIB_OSDIRNAMES += mips64=!mips-r1-hard/lib32
+ MULTILIB_REQUIRED   += mips64/mabi=64
+-MULTILIB_OSDIRNAMES += mips64/mabi.64=!mips-r1-hard/lib64
++MULTILIB_OSDIRNAMES += mips64/mabi.64=!mips-r1-hard/lib
+ 
+ MULTILIB_REQUIRED   += mips32/msoft-float
+ MULTILIB_OSDIRNAMES += mips32/msoft-float=!mips-r1-soft/lib
+ MULTILIB_REQUIRED   += mips64/msoft-float
+ MULTILIB_OSDIRNAMES += mips64/msoft-float=!mips-r1-soft/lib32
+ MULTILIB_REQUIRED   += mips64/mabi=64/msoft-float
+-MULTILIB_OSDIRNAMES += mips64/mabi.64/msoft-float=!mips-r1-soft/lib64
++MULTILIB_OSDIRNAMES += mips64/mabi.64/msoft-float=!mips-r1-soft/lib
+ 
+ MULTILIB_REQUIRED   += mips32/EL
+ MULTILIB_OSDIRNAMES += mips32/EL=!mipsel-r1-hard/lib
+ MULTILIB_REQUIRED   += mips64/EL
+ MULTILIB_OSDIRNAMES += mips64/EL=!mipsel-r1-hard/lib32
+ MULTILIB_REQUIRED   += mips64/mabi=64/EL
+-MULTILIB_OSDIRNAMES += mips64/mabi.64/EL=!mipsel-r1-hard/lib64
++MULTILIB_OSDIRNAMES += mips64/mabi.64/EL=!mipsel-r1-hard/lib
+ 
+ MULTILIB_REQUIRED   += mips32/EL/msoft-float
+ MULTILIB_OSDIRNAMES += mips32/EL/msoft-float=!mipsel-r1-soft/lib
+ MULTILIB_REQUIRED   += mips64/EL/msoft-float
+ MULTILIB_OSDIRNAMES += mips64/EL/msoft-float=!mipsel-r1-soft/lib32
+ MULTILIB_REQUIRED   += mips64/mabi=64/EL/msoft-float
+-MULTILIB_OSDIRNAMES += mips64/mabi.64/EL/msoft-float=!mipsel-r1-soft/lib64
++MULTILIB_OSDIRNAMES += mips64/mabi.64/EL/msoft-float=!mipsel-r1-soft/lib
+ 
+ # We will not include any 64 bit mips16 combinations.
+ MULTILIB_REQUIRED   += mips32/mips16
+--- gcc/config/mips/t-st
++++ gcc/config/mips/t-st
+@@ -17,14 +17,14 @@
+ # <http://www.gnu.org/licenses/>.
+ 
+ MULTILIB_OPTIONS = march=loongson2e/march=loongson2f mabi=n32/mabi=32/mabi=64 
+-MULTILIB_DIRNAMES = 2e 2f lib32 lib lib64
++MULTILIB_DIRNAMES = 2e 2f lib32 lib lib
+ 
+ MULTILIB_OSDIRNAMES  = march.loongson2e/mabi.n32=../lib32/2e
+ MULTILIB_OSDIRNAMES += march.loongson2e/mabi.32=../lib/2e
+-MULTILIB_OSDIRNAMES += march.loongson2e/mabi.64=../lib64/2e
++MULTILIB_OSDIRNAMES += march.loongson2e/mabi.64=../lib/2e
+ MULTILIB_OSDIRNAMES += march.loongson2f/mabi.n32=../lib32/2f
+ MULTILIB_OSDIRNAMES += march.loongson2f/mabi.32=../lib/2f
+-MULTILIB_OSDIRNAMES += march.loongson2f/mabi.64=../lib64/2f
++MULTILIB_OSDIRNAMES += march.loongson2f/mabi.64=../lib/2f
+ MULTILIB_OSDIRNAMES += mabi.n32=../lib32
+ MULTILIB_OSDIRNAMES += mabi.32=../lib
+-MULTILIB_OSDIRNAMES += mabi.64=../lib64
++MULTILIB_OSDIRNAMES += mabi.64=../lib

@@ -1,4 +1,4 @@
-# Cross-Tools: GCC (static)
+# Cross-Tools: static GCC 
 # Build and install as mlfs
 
 # GCC now requires the GMP, MPFR and MPC packages to build.
@@ -10,36 +10,57 @@ mv -v mpfr-4.2.1 mpfr
 mv -v gmp-6.3.0 gmp
 mv -v mpc-1.3.1 mpc
 
+# For 64-bit systems, unify lib & lib64
+case $(uname -m) in
+      ?86) patch -Np0 -i ../patches/gcc-glaucus/0001-pure64-for-x86-64.patch
+           ;;
+      aarch64) patch -Np0 -i ../patches/gcc-glaucus/0001-pure64-for-aarch64.patch 
+           ;;
+esac
+
 # The GCC documentation recommends building GCC in 
 # a dedicated build directory
 mkdir -v build && cd  build
 
 # For CMLFS-based hosts, configure script does not recognize
 # host's clang as a valid C++11 compiler. For now use the host's GCC instead:
-# PATH=/opt/gnu/bin:/usr/bin CC=gcc CXX=g++
+# PATH=/cross-tools/bin:/opt/gnu/bin:/usr/bin CC=gcc CXX=g++
 
 # Configure source 
-CFLAGS='-g0 -O0' \
-CXXFLAGS=$CFLAGS \
 ../configure \
-          --prefix=/cross-tools --build=${MLFS_HOST} \
-          --host=${MLFS_HOST}   --target=${MLFS_TARGET} \
-          --with-sysroot=/cross-tools/${MLFS_TARGET} \
-          --disable-nls         --with-newlib  \
-          --disable-libitm     --disable-libvtv \
-          --disable-libssp     --disable-shared \
-          --disable-libgomp    --without-headers \
-          --disable-threads    --disable-multilib \
-          --disable-libatomic  --disable-libstdcxx \
-          --enable-languages=c --disable-libquadmath \
-          --disable-libsanitizer --with-arch=${MLFS_CPU} \
-          --disable-decimal-float --enable-clocale=generic 
+  --with-sysroot=/cross-tools/${MLFS_TARGET} \
+  --with-build-sysroot=/cross-tools/${MLFS_TARGET} \
+  --prefix=/cross-tools \
+  --target=${MLFS_TARGET} \
+  --enable-languages=c,c++ \
+  --enable-default-hash-style="sysv" \
+  --enable-default-pie \
+  --enable-static-pie \
+  --enable-relro \
+  --enable-initfini-array \
+  --disable-bootstrap \
+  --disable-multilib \
+  --disable-libsanitize \
+  --disable-linker-build-id \
+  --disable-rpath \
+  --disable-werror 
 
-# Build only the mininum
+# Create a link for build to find kernel headers
+mkdir -pv /cross-tools/${MLFS_TARGET}/usr 
+ln -sv ../include /cross-tools/${MLFS_TARGET}/usr/include 
+
 # For CMLFS-based hosts, don't forget to add PATH 
-# of the host's GCC
-# PATH=/opt/gnu/bin:/usr/bin  
-make all-gcc all-target-libgcc
+# of the host's GCC to the make commands below
+# PATH=/cross-tools/bin:/opt/gnu/bin:/usr/bin  
+make all-gcc
 
-# Install
-make install-gcc install-target-libgcc
+# Install without debugging symbols
+make install-strip-gcc
+
+# Build libgcc
+CFLAGS='-pipe -g0 -O0' CXXFLAGS='-pipe -g0 -O0' make enable_shared=no all-target-libgcc
+
+# Install libgcc without debugging symbols
+make install-strip-target-libgcc
+
+# Do not remove build directory as it will be re-used later
