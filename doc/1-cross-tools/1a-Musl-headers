@@ -1,0 +1,28 @@
+# Cross-Tools: Musl Headers
+# Build & install as user mlfs
+
+case $(uname -m) in
+  x86_64) export ARCH="x86_64"
+          ;;
+  i686)   export ARCH="i386"
+          ;;
+  arm*)   export ARCH="arm"
+          ;;
+  aarch64) export ARCH="aarch64"
+          ;;
+esac
+
+make ARCH=$ARCH prefix="" DESTDIR=/cross-tools  install-headers 
+
+# Some packages are hard-coded for $PREFIX/usr.
+# Create a link for compatibility
+mkdir -pv /cross-tools/usr
+ln -sv ../include /cross-tools/usr/include
+
+# Consolidate all headers to /cross-tools/include
+# and use links for other headers paths
+cp -rvn /cross-tools/${MLFS_TARGET}/include/* /cross-tools/include/
+rm -rf /cross-tools/${MLFS_TARGET}/include
+ln -sv ../include /cross-tools/${MLFS_TARGET}/include 
+
+unset ARCH
