@@ -1,0 +1,11 @@
+--- coreutils-9.5.orig/gnulib-tests/vma-iter.c	2024-01-01 07:21:47.000000000 -0600
++++ coreutils-9.5/gnulib-tests/vma-iter.c	2024-08-24 23:06:50.846533410 -0500
+@@ -46,7 +46,7 @@
+ #include <unistd.h> /* getpagesize, lseek, read, close, getpid */
+ 
+ #if defined __linux__ || defined __ANDROID__
+-# include <limits.h> /* PATH_MAX */
++# include <linux/limits.h> /* PATH_MAX */
+ #endif
+ 
+ #if defined __linux__ || defined __ANDROID__ || defined __FreeBSD_kernel__ || defined __FreeBSD__ || defined __DragonFly__ || defined __NetBSD__ || defined __minix /* || defined __CYGWIN__ */
