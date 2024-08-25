@@ -121,3 +121,22 @@ export MLFS_CPU="${MLFS_CPU}"
 EOF
 source ~/.bashrc
 
+# Create a cache file to use freshed built cross-gcc & cross-binutils
+# when building /tools
+cat > config.cache << EOF
+CC="${MLFS_TARGET}-gcc"
+CXX="${MLFS_TARGET}-g++"
+AR="${MLFS_TARGET}-ar"
+AS="${MLFS_TARGET}-as"
+RANLIB="${MLFS_TARGET}-ranlib"
+LD="${MLFS_TARGET}-ld"
+STRIP="${MLFS_TARGET}-strip"
+CC_FOR_BUILD="${MLFS_TARGET}-gcc"
+CXX_FOR_BUILD="${MLFS_TARGET}-g++"
+AR_FOR_BUILD="${MLFS_TARGET}-ar"
+AS_FOR_BUILD="${MLFS_TARGET}-as"
+RANLIB_FOR_BUILD="${MLFS_TARGET}-ranlib"
+LD_FOR_BUILD="${MLFS_TARGET}-ld"
+STRIP_FOR_BUILD="${MLFS_TARGET}-strip"
+EOF
+mv config.cache $MLFS/sources/files/ct-config.cache
