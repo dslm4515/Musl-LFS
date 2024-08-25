@@ -32,6 +32,7 @@ EOF
              --disable-nls              \
              --disable-werror           \
              --with-sysroot \
+             --enable-gprofng=no \
              --cache-file=config.cache
 # Build
 make
