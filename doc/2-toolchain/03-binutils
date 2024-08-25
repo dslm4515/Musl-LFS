@@ -2,13 +2,13 @@
 # Build and install as mlfs
 
 # Set the environment to cross-compile with cross-tools
-CC="${MLFS_TARGET}-gcc"
-CXX="${MLFS_TARGET}-g++"
-AR="${MLFS_TARGET}-ar"
-AS="${MLFS_TARGET}-as"
-RANLIB="${MLFS_TARGET}-ranlib"
-LD="${MLFS_TARGET}-ld"
-STRIP="${MLFS_TARGET}-strip"
+export CC="${MLFS_TARGET}-gcc"
+export CXX="${MLFS_TARGET}-g++"
+export AR="${MLFS_TARGET}-ar"
+export AS="${MLFS_TARGET}-as"
+export RANLIB="${MLFS_TARGET}-ranlib"
+export LD="${MLFS_TARGET}-ld"
+export STRIP="${MLFS_TARGET}-strip"
 
 # Link directories so libraries can be found in both lib & lib64
 case $(uname -m) in
