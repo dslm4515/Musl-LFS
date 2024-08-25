@@ -4,6 +4,14 @@
 # Ensure that gawk is found first during configuration: 
 sed -i s/mawk// configure
 
+# First build the tic utility on the build host, per LFS
+mkdir build
+pushd build
+../configure 
+make -C include
+make -C progs tic
+popd
+
 # Configure source
 ./configure --prefix=/tools \
     --build=${MLFS_HOST} \
