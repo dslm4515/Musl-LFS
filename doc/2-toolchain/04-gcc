@@ -20,7 +20,7 @@ case $(uname -m) in
 esac
 
 # Apply patches [from alpine linux]
-#bash ../patches/gcc-alpine/apply_patches_ct.sh
+bash ../patches/gcc-alpine/apply_patches_ct.sh
 
 # Fix fenv header:
 patch -Np1 -i ../patches/gcc-mlfs-11.2.0/fix_fenv_header.patch
