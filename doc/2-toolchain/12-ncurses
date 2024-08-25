@@ -16,11 +16,22 @@ popd
 ./configure --prefix=/tools \
     --build=${MLFS_HOST} \
     --host=${MLFS_TARGET} \
+    --with-manpage-format=normal \
     --with-shared   \
+    --with-cxx-shared \
     --without-debug \
+    --without-normal \
     --without-ada   \
     --enable-widec  \
-    --enable-overwrite     
+    --enable-overwrite \
+    --disable-stripping    
 
 # Build and install to toolchain
-make && make install
+make && make TIC_PATH=$(pwd)/build/progs/tic install
+ln -sv libncursesw.so /tools/lib/libncurses.so
+
+# Edit the header so the wide-character data structure 
+# definition will be compatible with libncursew.so
+sed -e 's/^#if.*XOPEN.*$/#if 1/' \
+    -i /tools/include/curses.h
+
