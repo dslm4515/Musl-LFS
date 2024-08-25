@@ -13,12 +13,12 @@ STRIP="${MLFS_TARGET}-strip"
 # Additional sources to add
 # Added "pipping" from xz/gunzip for tar, improves 
 # compatibility with sane implementations.
-xz -cd ../pkgs/gmp-6.2.1.tar.xz | tar -xf -
-gunzip -cd ../pkgs/mpc-1.2.1.tar.gz | tar -xf -
-xz -cd ../pkgs/mpfr-4.1.0.tar.xz | tar -xf -
-mv -v gmp-6.2.1 gmp
-mv -v mpc-1.2.1 mpc
-mv -v mpfr-4.1.0 mpfr
+xz -cd ../pkgs/mpfr-4.2.1.tar.xz | tar -xf -
+xz -cd ../pkgs/gmp-6.3.0.tar.xz | tar -xf -
+gzip -cd ../pkgs/mpc-1.3.1.tar.gz | tar -xf -
+mv -v mpfr-4.2.1 mpfr
+mv -v gmp-6.3.0 gmp
+mv -v mpc-1.3.1 mpc
 
 # The target build is finding the host libstdc++'s <fenv.h>, fix it
 patch -Np1 -i ../patches/gcc-mlfs-11.2.0/fix_fenv_header.patch
