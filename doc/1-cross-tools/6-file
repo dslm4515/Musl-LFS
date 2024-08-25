@@ -2,6 +2,7 @@
 # Build and install as mlfs
 
 # Configure source
+CC=${MLFS_TARGET}-gcc \
 ./configure --prefix=/cross-tools --disable-libseccomp
 
 # Build and install
