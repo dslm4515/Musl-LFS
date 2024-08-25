@@ -1,15 +1,6 @@
 # Tool Chain: GCC
 # Build and install as mlfs
 
-# Set the environment for cross-compiling if not done already.
-CC="${MLFS_TARGET}-gcc"
-CXX="${MLFS_TARGET}-g++"
-AR="${MLFS_TARGET}-ar"
-AS="${MLFS_TARGET}-as"
-RANLIB="${MLFS_TARGET}-ranlib"
-LD="${MLFS_TARGET}-ld"
-STRIP="${MLFS_TARGET}-strip"
-
 # Additional sources to add
 # Added "pipping" from xz/gunzip for tar, improves 
 # compatibility with sane implementations.
@@ -76,6 +67,26 @@ done
 
 # Configure in dedicated build directory
 mkdir -v build && cd build
+
+# Create a cache file to configure
+# # the source to build with cross-tools
+cat > config.cache << EOF
+CC="${MLFS_TARGET}-gcc"
+CXX="${MLFS_TARGET}-g++"
+AR="${MLFS_TARGET}-ar"
+AS="${MLFS_TARGET}-as"
+RANLIB="${MLFS_TARGET}-ranlib"
+LD="${MLFS_TARGET}-ld"
+STRIP="${MLFS_TARGET}-strip"
+CC_FOR_BUILD="${MLFS_TARGET}-gcc"
+CXX_FOR_BUILD="${MLFS_TARGET}-g++"
+AR_FOR_BUILD="${MLFS_TARGET}-ar"
+AS_FOR_BUILD="${MLFS_TARGET}-as"
+RANLIB_FOR_BUILD="${MLFS_TARGET}-ranlib"
+LD_FOR_BUILD="${MLFS_TARGET}-ld"
+STRIP_FOR_BUILD="${MLFS_TARGET}-strip"
+EOF
+
 CFLAGS='-g0 -O0' \
 CXXFLAGS=$CFLAGS \
 ../configure                                       \
@@ -95,7 +106,8 @@ CXXFLAGS=$CFLAGS \
     --disable-libvtv                               \
     --disable-symvers                              \
     --disable-libitm                               \
-    --disable-libsanitizer                         
+    --disable-libsanitizer  \
+    --cache-file=config.cache                       
 
 # Compile
 PATH=/bin:/usr/bin:/cross-tools/bin:/tools/bin make 
