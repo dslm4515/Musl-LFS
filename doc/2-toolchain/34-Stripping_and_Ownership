@@ -6,8 +6,8 @@
 # of unneeded debugging symbols.
 
 # Remove debug symbols with:
-find /tools/lib -type f -exec strip --strip-unneeded {} \;
-/usr/bin/strip --strip-unneeded /tools/{,s}bin/*
+find /tools/lib -type f -exec /cross-tools/${MLFS_TARGET}/bin/strip --strip-debug {} \;
+/cross-tools/${MLFS_TARGET}/bin/strip --strip-unneeded /tools/{,s}bin/*
 
 # Remove the documentation:
 rm -rf /tools/{,share}/{info,man,doc}
