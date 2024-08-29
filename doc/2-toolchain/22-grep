@@ -1,19 +1,11 @@
 # Toolchain: Grep
 # Build and install as mlfs
 
-# Set the environment for cross-compiling if not done already.
-CC="${MLFS_TARGET}-gcc"
-CXX="${MLFS_TARGET}-g++"
-AR="${MLFS_TARGET}-ar"
-AS="${MLFS_TARGET}-as"
-RANLIB="${MLFS_TARGET}-ranlib"
-LD="${MLFS_TARGET}-ld"
-STRIP="${MLFS_TARGET}-strip"
+# Use kernel header instead for limits
+patch -Np1 -i ../patches/grep-mlfs/use-linux-limits-header.patch 
 
 # Configure source
-./configure --prefix=/tools \
-            --build=${MLFS_HOST} \
-            --host=${MLFS_TARGET}
+./configure --prefix=/tools 
 
 # Build and install to toolchain
 make && make install
