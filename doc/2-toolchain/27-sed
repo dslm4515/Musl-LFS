@@ -1,6 +1,9 @@
 # Toolchain: Sed
 # Build and install as mlfs
 
+# Use kernel header instead
+patch -Np1 -i ../patches/sed-mlfs/use-linux-limits-header.patch
+
 # Configure source
 ./configure --prefix=/tools 
 

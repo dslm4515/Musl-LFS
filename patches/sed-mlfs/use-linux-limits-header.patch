@@ -1,0 +1,11 @@
+--- sed-4.9.orig/gnulib-tests/vma-iter.c        2022-10-09 09:42:28.000000000 -0500
++++ sed-4.9/gnulib-tests/vma-iter.c     2024-08-29 13:13:46.066838616 -0500
+@@ -41,7 +41,7 @@
+ #include <unistd.h> /* getpagesize, lseek, read, close, getpid */
+ 
+ #if defined __linux__ || defined __ANDROID__
+-# include <limits.h> /* PATH_MAX */
++# include <linux/limits.h> /* PATH_MAX */
+ #endif
+ 
+ #if defined __linux__ || defined __ANDROID__ || defined __FreeBSD_kernel__ || defined __FreeBSD__ || defined __DragonFly__ || defined __NetBSD__ || defined __minix /* || defined __CYGWIN__ */
