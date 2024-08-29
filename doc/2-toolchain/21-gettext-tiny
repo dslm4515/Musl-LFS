@@ -1,14 +1,8 @@
 # Toolchain: Gettext-tiny
 # Build and install as mlfs
 
-# Set the environment for cross-compiling if not done already.
-CC="${MLFS_TARGET}-gcc"
-CXX="${MLFS_TARGET}-g++"
-AR="${MLFS_TARGET}-ar"
-AS="${MLFS_TARGET}-as"
-RANLIB="${MLFS_TARGET}-ranlib"
-LD="${MLFS_TARGET}-ld"
-STRIP="${MLFS_TARGET}-strip"
+# Use the limits.h header in include/linux
+patch -Np1 -i ../patches/gettext-tiny-mlfs/use-linux-limits-header.patch 
 
 # Build and install to toolchain
 make ${MJ} LIBINTL=MUSL prefix=/tools      

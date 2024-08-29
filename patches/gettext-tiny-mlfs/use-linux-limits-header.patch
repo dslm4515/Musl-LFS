@@ -1,0 +1,11 @@
+--- gettext-tiny-0.3.2.orig/src/msgfmt.c        2020-04-06 05:43:29.000000000 -0500
++++ gettext-tiny-0.3.2/src/msgfmt.c     2024-08-29 10:43:11.095594254 -0500
+@@ -6,7 +6,7 @@
+ #include <stdint.h>
+ #include <string.h>
+ #include <ctype.h>
+-#include <limits.h>
++#include <linux/limits.h>
+ #include <assert.h>
+ #include "poparser.h"
+ 
