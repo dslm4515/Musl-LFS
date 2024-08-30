@@ -1,8 +1,25 @@
-# Toolchain: Perl 5.32.1
+# Toolchain: Perl 
 # Build and install as mlfs
 
+# Zlib not built, build the bundled zlib
+export BUILD_ZLIB=True
+
+# Avoid building the bundled bzip2
+export BUILD_BZIP2=0
+
+# Make sure the bundled bzip2 is not compiled
+rm -rf cpan/Compress-Raw-Bzip2/bzip2-src
+sed -i '/\(bzip2\|zzz\)-src/d' MANIFEST
+
+# Set additional flags
+export  CFLAGS=" -DNO_POSIX_2008_LOCALE"
+export CFLAGS+=" -D_GNU_SOURCE"
+
 # Configure source
-./configure --prefix=/tools 
+sh Configure -des -Dprefix=/tools \
+   -Dlibs=-lm -Uloclibpth -Ulocincpth \
+   -Dcccdlflags='-fPIC' -Dccdlflags='-rdynamic' \
+   -Dccflags='-Wno-implicit-function-declaration' 
 
 # Build 
 make 
@@ -12,3 +29,4 @@ cp -v perl cpan/podlators/scripts/pod2man /tools/bin &&
 mkdir -pv /tools/lib/perl5/5.40.0    &&
 cp -Rv lib/* /tools/lib/perl5/5.40.0
 
+unset BUILD_ZLIB BUILD_BZIP2 CFLAGS 
