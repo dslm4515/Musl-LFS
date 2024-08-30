@@ -14,7 +14,7 @@ make -f Makefile-libbz2_so
 make clean
 
 # Build
-make CFLAGS=-fPIC"  
+make CFLAGS="-fPIC"  
 
 # Install to tool chain
 make PREFIX=/tools install
