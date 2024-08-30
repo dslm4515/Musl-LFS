@@ -29,8 +29,7 @@ e99adfa059a63db3503cc71f3d151e31  coreutils-9.5.tar.xz
 d5c9fc9441288817a4a0be2da0249e29  gzip-1.13.tar.xz
 c8469a3713cbbe04d955d4ae4be23eeb  make-4.4.1.tar.gz
 78ad9937e4caadcba1526ef1853730d5  patch-2.7.6.tar.xz
-df7ecb0653440b26dc951ad9dbfab517  perl-5.34.0.tar.xz
-7f104064b906ad8c7329ca5e409a32d7  perl-5.32.1.tar.xz
+cfe14ef0709b9687f9c514042e8e1e82  perl-5.40.0.tar.xz
 1112b49140bbf3e557bca28a360972b0  perl-cross-1.3.6.tar.gz
 6aac9b2dbafcd5b7a67a8a9bcb8036c3  sed-4.9.tar.xz
 a2d8042658cfd8ea939e6d911eaf4152  tar-1.35.tar.xz

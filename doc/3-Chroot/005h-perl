@@ -24,6 +24,6 @@ make
 
 # Copy only what is needed:
 cp -v perl cpan/podlators/scripts/pod2man /tools/bin &&
-mkdir -pv /tools/lib/perl5/5.32.1    &&
-cp -Rv lib/* /tools/lib/perl5/5.32.1
+mkdir -pv /tools/lib/perl5/5.40.0    &&
+cp -Rv lib/* /tools/lib/perl5/5.40.0
 
