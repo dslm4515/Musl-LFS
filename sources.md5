@@ -21,7 +21,7 @@ f204835b2e06c06e37b5ad776ff907f4  bash-5.2.32.tar.gz
 c28f119f405a2304ff0a7ccdcc629713  bison-3.8.2.tar.xz
 67e051268d0c475ea773822f7500d0e5  bzip2-1.0.8.tar.gz
 e99adfa059a63db3503cc71f3d151e31  coreutils-9.5.tar.xz
-6a6b0fdc72acfe3f2829aab477876fbc  diffutils-3.8.tar.xz
+2745c50f6f4e395e7b7d52f902d075bf  diffutils-3.10.tar.xz
 4a4a547e888a944b2f3af31d789a1137  findutils-4.9.0.tar.xz
 97c5a7d83f91a7e1b2035ebbe6ac7abd  gawk-5.3.0.tar.xz
 9ddf4d35636fa3beacd3627cc02723ff  gettext-tiny-0.3.2.tar.xz
