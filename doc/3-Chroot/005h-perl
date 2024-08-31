@@ -15,18 +15,27 @@ sed -i '/\(bzip2\|zzz\)-src/d' MANIFEST
 export  CFLAGS=" -DNO_POSIX_2008_LOCALE"
 export CFLAGS+=" -D_GNU_SOURCE"
 
+export PVER="5.40"
+
 # Configure source
 sh Configure -des -Dprefix=/tools \
    -Dlibs=-lm -Uloclibpth -Ulocincpth \
    -Dcccdlflags='-fPIC' -Dccdlflags='-rdynamic' \
-   -Dccflags='-Wno-implicit-function-declaration' 
+   -Dccflags='-Wno-implicit-function-declaration' \
+   -Dusevendorprefix -Dvendorprefix=/tools \
+   -Dprivlib=/tools/lib/perl5/${PVER}/core_perl \
+   -Darchlib=/tools/lib/perl5/${PVER}/core_perl \
+   -Dsitelib=/tools/lib/perl5/${PVER}/site_perl \
+   -Dsitearch=/tools/lib/perl5/${PVER}/site_perl \
+   -Dvendorlib=/tools/lib/perl5/${PVER}/vendor_perl \
+   -Dvendorarch=/tools/lib/perl5/${PVER}/vendor_perl
 
 # Build 
 make 
 
 # Copy only what is needed:
 cp -v perl cpan/podlators/scripts/pod2man /tools/bin &&
-mkdir -pv /tools/lib/perl5/5.40/core_perl    &&
-cp -Rv lib/* /tools/lib/perl5/5.40/core_perl/
+mkdir -pv /tools/lib/perl5/${PVER}/core_perl    &&
+cp -Rv lib/* /tools/lib/perl5/${PVER}/core_perl/
 
-unset BUILD_ZLIB BUILD_BZIP2 CFLAGS 
+unset BUILD_ZLIB BUILD_BZIP2 CFLAGS PVER 
