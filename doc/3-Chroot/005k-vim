@@ -1,5 +1,5 @@
 # Toolchain: Vim
-# Build and install as mlfs
+# Build and install under chroot
 # Optional package: Text editor for convenience or trouble shooting
 
 # Configure and use libraries & headers iin /tools
@@ -8,7 +8,10 @@ CPPFLAGS="-I/tools/include" \
 ./configure --prefix=/tools --enable-gui=no --without-x
 
 # Build and install to toolchain
-make && make install
+# Creation of ja.sjis.mo will abort 
+# during install, but vim shoudl still 
+# be functional
+make && make -k install
 
 # Some users use vim as vi
 ln -sv vim /tools/bin/vi 
