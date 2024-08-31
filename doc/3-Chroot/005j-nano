@@ -1,12 +1,9 @@
 # Toolchain: nano
-# Build and install as mlfs
+# Build and install under chroot
 # Optional package: Text editor for convenience or trouble shooting
-# ** Nano fails to build, as it is hardcoded to use host's headers. **
-# ** Can be built in chroot, if desired.**
 
-# Once in chroot ...
 # Configure source
-./configure --prefix=/tools 
+./configure --prefix=/tools \
             --enable-tiny
 
 # Build and install to toolchain
