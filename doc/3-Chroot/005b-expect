@@ -6,7 +6,7 @@
 # Patch source to run with musl libc with patches from Chimera Linux
 patch -Np1 -i ../patches/expect-5.45.4-chimera/001-expect-5.45-gfbsd.patch
 patch -Np1 -i ../patches/expect-5.45.4-chimera/002-expect-5.45-ldflags.patch
-patch -Np1 -i ../patches/expect-5.45.4-chimera/003-expect-5.45-headers.patc
+patch -Np1 -i ../patches/expect-5.45.4-chimera/003-expect-5.45-headers.patch
 patch -Np1 -i ../patches/expect-5.45.4-chimera/004-expect-5.45-format-security.patch
 patch -Np1 -i ../patches/expect-5.45.4-chimera/005-expect-5.45-configure-in.patch
 patch -Np1 -i ../patches/expect-5.45.4-chimera/006-expect-5.45.4-configure-clang16.patch
@@ -17,14 +17,21 @@ patch -Np1 -i ../patches/expect-5.45.4-chimera/fix-overflow-when-logging.patch
 cp -v ../files/config.guess-musl tclconfig/config.guess
 cp -v ../files/config.sub-musl tclconfig/config.sub
 
+# Set the system tuple
+case $(uname -m) in
+   x86_64 | i686 | i586) export MLFS_TARGET=$(uname -m)-pc-linux-musl
+             ;;
+   aarch64 | arm*)       export MLFS_TARGET=$(uname -m)-pc-linux-musleabihf
+             ;;
+esac
+
 # Configure source
 expect_cv_wnohang_value=1 \
-./configure --build=${MLFS_HOST} \
-            --host=${MLFS_TARGET} \
-            --prefix=/tools \
+./configure --prefix=/tools \
             --with-tcl=/tools/lib \
             --with-tclinclude=/tools/include \
-            --cache-file=config.cache 
+            PTY_TYPE=termios host_alias=$MLFS_TARGET \
+            target_alias=$MLFS_TARGET
 
 # Build and install to toolchain
 make && make SCRIPTS="" install
