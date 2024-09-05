@@ -2,7 +2,8 @@
 # This section is done in Chroot environment
 
 # Configure source
-./configure --enable-shared   \
+./configure --prefix=/usr     \
+            --enable-shared   \
             --enable-static   \
             --libdir=/usr/lib
 
