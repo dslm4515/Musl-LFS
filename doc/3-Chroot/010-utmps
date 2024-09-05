@@ -3,7 +3,7 @@
 
 # Set the version in pkconfig file
 cp -v ../files/utmps-alpine/*.pc /tmp/
-sed -i -e "s/@@VERSION@@/0.1.2.0/g" -- /tmp/*.pc 
+sed -i -e "s/@@VERSION@@/0.1.2.2/g" -- /tmp/*.pc 
 
 # Configure source
 ./configure --enable-shared      \
@@ -12,15 +12,13 @@ sed -i -e "s/@@VERSION@@/0.1.2.0/g" -- /tmp/*.pc
             --enable-static-libc \
             --libdir=/usr/lib    \
             --with-dynlib=/usr/lib   \
-            --libexecdir="/usr/lib/utmps" 
+            --libexecdir="/usr/lib/utmps" \
+            --enable-libc-includes
 
 # Build and Install
 make
 make install
 install -v -D -m644 /tmp/utmps.pc /usr/lib/pkgconfig/
-
-# Create link as some expect header in /usr/include:
-ln -sv utmps/utmpx.h /usr/include/utmpx.h
 
 # Clean up
 rm -rf /tmp/*.pc
