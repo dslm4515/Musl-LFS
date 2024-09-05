@@ -8,3 +8,16 @@ chroot "$MLFS" /tools/bin/env -i \
     PATH=/bin:/usr/bin:/sbin:/usr/sbin:/tools/bin \
     /tools/bin/bash --login +h
 
+# Establish variable for musl libc build
+case $(uname -m) in
+     i686)    export TUPLE="i686-pc-linux-musl"
+              export   MCA="i386"   ;;
+     x86_64)  export TUPLE="x86_64-pc-linux-musl"
+              export   MCA="x86_64" ;;
+     aarch64) export TUPLE="aarch64-pc-linux-musleabihf"
+              export   MCA="aarch64" ;;
+     armv7*)  export TUPLE="armv7l-pc-linux-musleabihf"
+              export   MCA="arm" ;;
+     armv6*)  export TUPLE="armv6l-pc-linux-musleabihf"
+              export   MCA="arm" ;;
+esac
