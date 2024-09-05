@@ -7,15 +7,16 @@ export timezones="africa antarctica asia australasia europe northamerica \
 
 # Unpack the sources in a build directory
 mkdir tzdb && cd tzdb &&
-tar xf ../pkgs/tzdata2021a.tar.gz &&
-tar xf ../pkgs/tzcode2021a.tar.gz &&
+tar xf ../pkgs/tzdata2024a.tar.gz &&
+tar xf ../pkgs/tzcode2024a.tar.gz &&
 tar xf ../pkgs/posixtz-0.5.tar.xz
 
-# Apply patch from Adelie Linux
-patch -Np1 -i ../patches/posixtz-adelie/0001-posixtz-fix-up-lseek.patch
+# Apply patch from Alpine Linux
+patch -Np1 -i ../patches/posixtz-alpine/0001-posixtz-ensure-the-file-offset-we-pass-to-lseek-is-o.patch
+patch -Np1 -i ../patches/posixtz-alpine/0002-fix-implicit-declaration-warnings-by-including-strin.patch
 
 # Build utilities
-make CFLAGS="$CFLAGS -DHAVE_STDINT_H=1" TZDIR="/usr/share/zoneinfo"
+make CC=gcc CFLAGS="-DHAVE_STDINT_H=1" TZDIR="/usr/share/zoneinfo"
 make -C posixtz-0.5 posixtz
 
 # Create directories to install in
