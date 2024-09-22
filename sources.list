@@ -40,7 +40,7 @@ https://dev.alpinelinux.org/archive/posixtz/posixtz-0.5.tar.xz
 https://www.iana.org/time-zones/repository/releases/tzdata2024a.tar.gz
 https://www.iana.org/time-zones/repository/releases/tzcode2024a.tar.gz
 https://github.com/ericonr/argp-standalone/archive/743004c68e7358fb9cd4737450f2d9a34076aadf.tar.gz
-https://github.com/zlib-ng/zlib-ng/archive/refs/tags/2.0.5.tar.gz
+https://github.com/zlib-ng/zlib-ng/archive/refs/tags/2.2.1.tar.gz
 https://ftp.gnu.org/gnu/readline/readline-8.1.tar.gz
 https://github.com/gavinhoward/bc/releases/download/5.0.0/bc-5.0.0.tar.xz
 https://github.com/shadow-maint/shadow/releases/download/v4.9/shadow-4.9.tar.xz
