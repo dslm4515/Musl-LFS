@@ -6,7 +6,7 @@ mkdir -v build && cd build
 
 # Create a cache file to configure
 # the source to build with cross-tools
-cp -v ../files/ct-config.cache config.cache
+cp -v ../../files/ct-config.cache config.cache
 
 # Configure
 ../configure --prefix=/tools            \
