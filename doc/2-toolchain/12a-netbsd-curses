@@ -3,6 +3,7 @@
 
 # Compile
 PREFIX=/tools make all
+# FAIL: GCC not looking for limits.h in /tools/include
 
 # Install to /tools
 make PREFIX=/tools all install
