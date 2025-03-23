@@ -108,7 +108,7 @@ https://github.com/dslm4515/MLFS-pkgtool </li>
 ## Layout
 
 <ul>
-  <li>build-scripts - Build scripts to use to semi-automate building /cross-tools, /tools, and the final system</li>
+  <li>archive - Old build scripts to use to semi-automate building /cross-tools, /tools, and the final system</li>
   <li>contrib - Additional sources that are hard to find or re-packed
   <li>doc - Build instructions to build a LFS installation that uses Musl instead of Glibc and S6 instead of SysVint.</li>
   <li>extra - Helpful scripts to mount, chroot, and umount a MLFS build.</li>
