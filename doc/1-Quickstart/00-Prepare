@@ -1,0 +1,23 @@
+# Quickstart: Acquire Prebuilt Toolchain
+
+# Prebuilt toolchain can be downloaded from releases at:
+# https://github.com/dslm4515/Musl-LFS/releases
+# Make sure toolchain is "tools" and not "cross-tools"
+
+# Make sure the current directory is root of the
+# final MLFS system
+cd $MLFS
+
+# Unpack the toolchain
+tar xf ${location_of_downloaded_toolchain}/tools-amd64-mlfs-9.0.0.tar.xz
+
+# Alternatively, a toolchain from a previous MLFS build can be used.
+# Unpack/copy the previous MLFS toolchain to $MLFS
+
+# Confirmed it was unpacked:
+ls /tools
+
+# Output should similar to this
+bin  etc  include  lib  libexec  share  var  x86_64-mlfs-linux-musl
+
+
