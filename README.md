@@ -126,32 +126,8 @@ https://github.com/dslm4515/MLFS-pkgtool </li>
   <li>sources.list - List of sources to download
 </ul>
 
-## Changelog (since 8.00)
+## Changelog (since 9.00)
 
 <ul>
-    <li> Completed scripts to build cross-tools and tools </li>
-    <li> Upgraded bash to 5.1 </li>
-    <li> Updated lsb-release to 9.0 </li>
-    <li> Upgraded flex to 2.6.4 </li>
-    <li> Upgraded expat to 2.4.1 </li>
-    <li> Upgraded inetutils to 2.0 </li>
-    <li> Upgraded perl to 5.34.0 </li>
-    <li> Upgraded autoconf to 2.7.1 </li>
-    <li> Upgraded automake to 1.16.3 </li>
-    <li> Upgraded libelf to 0.185 </li>
-    <li> Upgraded libreSSL to 3.3.3 </li>
-    <li> Upgraded Python3 to 3.9.5 </li>
-    <li> Upgraded procps-ng to 3.3.17 with utmps support </li>
-    <li> Upgraded coreutils with utmps support </li>
-    <li> Upgraded grub to 2.06 </li>
-    <li> Upgraded iproute 2 to 5.12.0 </li>
-    <li> Upgraded to man-db 2.9.4. </li>
-    <li> Upgraded vim to 8.2.2890 </li>
-    <li> Upgraded util-linux to 2.36.2 </li>
-    <li> Upgraded execline to 2.8.0.1 </li>
-    <li> Upgraded s6 to 2.10.0.3 </li>
-    <li> Upgraded s6-rc to 0.5.2.2 </li>
-    <li> Upgraded s6-linux-utils to 2.5.1.5 </li>
-    <li> Upgraded s6-portable-utils to 2.2.3.2 </li>
-    <li> Upgraded s6-linux-init 1.0.6.3 </li>
+    <li>Added build instructions to build MLFS with an upgraded prebuilt toolchain</li>
 </ul>
