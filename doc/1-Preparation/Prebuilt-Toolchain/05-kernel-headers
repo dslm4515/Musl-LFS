@@ -1,0 +1,21 @@
+# Prebuilt Toolchain: Update Kernel Headers
+# Build and install in chroot
+
+# Clean source
+make mrproper
+
+# Extract headers
+# For kernels up to 5.2.x:
+# make INSTALL_HDR_PATH=dest headers_install
+# For kernels 5.3.x and newer:
+make headers
+
+# Install
+cp -rv usr/include/* /tools/include
+
+# ... for kernels up to 5.2.x:
+#cp -rv dest/include/* /tools/include
+
+# Remove unnecessary files for this stage:
+find /tools/include \( -name '.*' -o -name '.*.cmd' \) -exec rm -vf {} \;
+rm -v /tools/include/Makefile

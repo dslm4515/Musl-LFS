@@ -1,0 +1,59 @@
+# Quickstart: Update Musl libc
+# Build and install in chroot
+
+# Configure 
+./configure --prefix=/ 
+
+# Build 
+make
+
+# Install in a temporary directory as some links
+# have to be fixed first
+make DESTDIR=/tmp/tools install
+
+# Make sure symlink is valid: 
+# /tmp/tools/lib/ld-musl-$ARCH.so.1 to /tools/lib/libc.so
+
+case $(uname -m) in
+  x86_64)  rm -v  /tmp/tools/lib/ld-musl-x86_64.so.1
+           ln -sv libc.so /tmp/tools/lib/ld-musl-x86_64.so.1
+           export barch=$(uname -m)
+           ;;
+  i686)    rm -v  /tmp/tools/lib/ld-musl-i386.so.1
+           ln -sv libc.so /tmp/tools/lib/ld-musl-i386.so.1
+           export barch=i386
+           ;;
+  arm*)    rm -v  /tmp/tools/lib/ld-musl-arm.so.1
+           ln -sv libc.so /tmp/tools/lib/ld-musl-arm.so.1
+           export barch=arm
+           ;;
+  aarch64) rm -v /tmp/tools/lib/ld-musl-aarch64.so.1
+           ln -sv libc.so /tmp/tools/lib/ld-musl-aarch64.so.1
+           export barch=$(uname -m)
+           ;;
+esac
+
+# Create dynamic linker config
+mkdir -pv /tools/etc &&
+cat > /tools/etc/ld-musl-${barch}.path << "EOF"
+/tools/lib
+EOF
+
+# Now install to /tools
+# 1 - First exit chroot. Musl libc cannot be replaced
+#     as the current shell has a runtime dependancy on
+#     it. 
+exit
+
+# 2 - As root, copy over the new musl libc
+cp -rv $MLFS/tmp/tools/* /tools/ 
+
+# 3 - Re-enter chroot
+chroot "$MLFS" /tools/bin/env -i \
+    HOME=/root                  \
+    TERM="$TERM"                \
+    PS1='(mlfs chroot) \u:\w\$ ' \
+    PATH=/bin:/usr/bin:/sbin:/usr/sbin:/tools/bin \
+    /tools/bin/bash --login +h
+
+

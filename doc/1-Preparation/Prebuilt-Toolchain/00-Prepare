@@ -1,4 +1,55 @@
-# Quickstart: Acquire Prebuilt Toolchain
+# Prebuilt Toolchain: Setup build
+# ** Skips the need to build the toolchain **
+#    entirely from scratch with cross-tools
+
+# Final System can be built in a directory and later copied to a partition.
+# If building on a seperate partition, create the file system and mount it.
+# Set #MLFS to the mount point. Example:
+# Perform as root:
+mkfs.etx4 /dev/sdXY
+mkdir -pv /mnt/mlfs
+mount /dev/sdXY /mnt/mlfs
+export MLFS=/mnt/mlfs
+
+# As root, create directory to store the "tools" toolchain and link them 
+# to host's root directory:
+mkdir -v $MLFS/tools
+ln -sv   $MLFS/tools /
+
+# As root, reate directories to hold patches, files, packages, and 
+# build area:
+mkdir -pv $MLFS/sources/{patches,files,pkgs,scripts}
+
+# Download sources + patches
+# Use the list in sources folder with wget to download sources. Some sources 
+# may not download or are hard to find. Copy such sources from included 
+# sources folder.
+# 
+# Source directory should have this structure:
+#  source
+#  |
+#  +-scripts
+#  +-patches
+#  +-pkgs
+#  +-files
+#
+# Source tarballs should in $LFS/sources/pkgs
+# Patches & files can be symbolically linked[from a clone of this
+# repo] to root of $LFS/sources to avoid have copies of patches
+# and file in two different places
+
+# [Optionally] Create user and group - or just use host's 
+# unprivileged user.
+groupadd mlfs
+useradd -s /bin/bash -g mlfs -m -k /dev/null mlfs
+passwd mlfs
+
+
+# Change ownership to allow installation of tools by unprivileged user
+# NOTE: subsitute 'mlfs' with username of unprivileged user
+chown -vR mlfs $MLFS/sources
+chmod -v  a+wt $MLFS/sources
+chown -v  mlfs $MLFS/tools
 
 # Prebuilt toolchain can be downloaded from releases at:
 # https://github.com/dslm4515/Musl-LFS/releases
@@ -20,4 +71,33 @@ ls /tools
 # Output should similar to this
 bin  etc  include  lib  libexec  share  var  x86_64-mlfs-linux-musl
 
+# Changing Ownership
 
+# Currently, the $MLFS/tools directory is owned by
+# the user mlfs or an unprivileged user , a user that 
+# exists only on the host system. If the $MLFS/tools 
+# directory is kept as is, the files are owned by a 
+# user ID without a corresponding account. This is 
+# dangerous because a user account created later 
+# could get this same user ID and would own the 
+# $MLFS/tools directory and all the files therein, 
+# thus exposing these files to possible malicious 
+# manipulation.
+
+# To avoid this issue, you could add the mlfs user
+# or unprivileged user to the new MLFS system later 
+# when creating the /etc/passwd file, taking care 
+# to assign it the same user and group IDs as on 
+# the host system.
+
+# ************************************************
+# The commands in the remainder of this build must
+# be performed while logged in as user root and
+# no longer as user mlfs or unprivileged user. 
+# Also, double check that $MLFS is set in root's 
+# environment.
+# ************************************************
+
+# Change the ownership of the $MLFS/tools directory
+# to user root by running the following command:
+chown -R root:root $MLFS/tools
