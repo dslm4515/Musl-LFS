@@ -31,15 +31,15 @@ The aim of this project is to create a create a Linux system using Musl (www.mus
 
 ## Build Method
 
-### Standard
-MLFS is based on LFS 9.1 and composed of 3 stages: cross-tools, tools, and chroot.
+### Build Toolchain
+MLFS is based on LFS 9.1 and composed of 3 stages: cross-tools, tools, and chroot. All three stages are built from source.
 <ol>
   <li>Cross-Tools -- Create a very basic toolchain with host's own tool chain. THis will be used to build the next stage. It also allows the next stage to use Musl Libc instead of Glibc.</li>
   <li>Tools -- Creates the tool chain that will be used in the next stage. Resulting toolchain is sandboxed from host and uses its own libc: Musl </li>
   <li>Chroot -- Last stage in which the final Musl system is built, using the tool chain built in the previous stage </li>
 </ol>
 
-### Quickstart
+### Prebuilt Toolchain
 If MLFS has been built before, the old/previous toolchain (tools) can be upgraded to build a newer MLFS. Alternatively, a prebuilt toolchain can be downloaded from past releases and upgraded to build this version of MLFS. Cross-tools will not be built or required.
 <ol>
  <li> Upgrade -- Enter chroot with prebuilt toolchain and update toolchain packages to match the final system build </li>
