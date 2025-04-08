@@ -1,0 +1,144 @@
+# Prebuilt Toolchain: Update GCC
+# # Build and install in chroot
+
+# Additional sources to add
+# Added "pipping" from xz/gunzip for tar, improves 
+# compatibility with sane implementations.
+xz -cd ../pkgs/mpfr-4.2.1.tar.xz | tar -xf -
+xz -cd ../pkgs/gmp-6.3.0.tar.xz | tar -xf -
+gzip -cd ../pkgs/mpc-1.3.1.tar.gz | tar -xf -
+mv -v mpfr-4.2.1 mpfr
+mv -v gmp-6.3.0 gmp
+mv -v mpc-1.3.1 mpc
+
+# For 64-bit systems, unify lib & lib64
+case $(uname -m) in
+     *86*) patch -Np0 -i ../patches/gcc-glaucus/0001-pure64-for-x86-64.patch
+          ;;
+     aarch64) patch -Np0 -i ../patches/gcc-glaucus/0001-pure64-for-aarch64.patch
+          ;;
+esac
+
+# Re-create internal header
+cat gcc/{limitx,glimits,limity}.h > \
+  $(dirname $(gcc -print-libgcc-file-name))/include-fixed/limits.h
+
+## Change the location of GCC's default dynamic linker to use the one installed in /tools
+#
+# For i686/x86_64:
+for file in gcc/config/{linux,i386/linux{,64}}.h
+do
+  cp -uv $file{,.orig}
+  sed -e 's/\/lib\(64\)\?\(32\)\?\/ld/\/tools&/g' \
+      -e 's/\/usr/\/tools/g' ${file}.orig > ${file}
+  echo '
+#undef STANDARD_STARTFILE_PREFIX_1
+#undef STANDARD_STARTFILE_PREFIX_2
+#define STANDARD_STARTFILE_PREFIX_1 "/tools/lib/"
+#define STANDARD_STARTFILE_PREFIX_2 ""' >> ${file}
+  touch ${file}.orig
+done
+
+# For ARM (32-bit)
+for file in gcc/config/arm/linux-eabi.h
+do
+  cp -uv $file{,.orig}
+  sed -e 's/\/lib\(64\)\?\(32\)\?\/ld/\/tools&/g' \
+      -e 's/\/usr/\/tools/g' ${file}.orig > ${file}
+  echo '
+#undef STANDARD_STARTFILE_PREFIX_1
+#undef STANDARD_STARTFILE_PREFIX_2
+#define STANDARD_STARTFILE_PREFIX_1 "/tools/lib/"
+#define STANDARD_STARTFILE_PREFIX_2 ""' >> ${file}
+  touch ${file}.orig
+done
+
+# For AARCH64 (64-bit)
+for file in gcc/config/aarch64/aarch64-linux.h
+do
+  cp -uv $file{,.orig}
+  sed -e 's/\/lib\(64\)\?\(32\)\?\/ld/\/tools&/g' \
+      -e 's/\/usr/\/tools/g' ${file}.orig > ${file}
+  echo '
+#undef STANDARD_STARTFILE_PREFIX_1
+#undef STANDARD_STARTFILE_PREFIX_2
+#define STANDARD_STARTFILE_PREFIX_1 "/tools/lib/"
+#define STANDARD_STARTFILE_PREFIX_2 ""' >> ${file}
+  touch ${file}.orig
+done
+
+# Configure in dedicated build directory
+mkdir -v build && cd build
+
+# Set build options
+export  CARGS="--with-local-prefix=/tools "
+export CARGS+="--with-native-system-header-dir=/tools/include "
+
+# Only need C and C++ support
+export CARGS+="--enable-languages=c,c++ "
+
+# Disable features not needed
+export CARGS+="--disable-libstdcxx-pch "
+export CARGS+="--disable-multilib "
+export CARGS+="--disable-bootstrap "
+export CARGS+="--disable-libgomp "
+export CARGS+="--disable-libquadmath "
+export CARGS+="--disable-libssp "
+export CARGS+="--disable-libvtv "
+export CARGS+="--disable-symvers "
+export CARGS+="--disable-libitm "
+
+# Configure source
+CFLAGS='-g0 -O0' \
+CXXFLAGS=$CFLAGS \
+../configure --prefix=/tools $CARGS
+
+# Compile
+make 
+
+# Install to a temporary directory.
+make DESTDIR=/tmp/GCC install
+
+# Remove directories of previous GCC
+rm -rf /tools/lib/gcc
+rm -rf /tools/include/c++
+rm -rf /tools/share/gcc*
+
+# Remove binaries of previous GCC.
+# Any missed will be overwritten.
+rm -rf  /tools/bin/*gcc*
+
+# Remove documention before installing
+rm -rf /tmp/GCC/tools/share/man
+rm -rf /tmp/GCC/tools/share/info
+
+# Remove unneeded libtool files as no
+# libraries in this build are loaded
+# by libltdl
+rm -vf /tmp/GCC/tools/lib/*.la
+
+# Install by copying
+cp -rv /tmp/GCC/tools/* /tools/
+
+# Per LFS book explanation:
+# Many programs and scripts run cc instead of gcc, which is used 
+# to keep programs generic and therefore usable on all kinds 
+# of UNIX systems where the GNU C compiler is not always 
+# installed. Running cc leaves the system administrator free 
+# to decide which C compiler to install. Create a link, if
+# missing:
+ln -sv gcc /tools/bin/cc
+
+# Clean up
+unset CARGS
+
+# Test toolchain
+echo 'int main(){}' > dummy.c &&
+gcc dummy.c
+readelf -l a.out | grep ': /tools' 
+
+# Should output similar to this:
+#      [Requesting program interpreter: /tools/lib/ld-musl-x86_64.so.1]
+
+# Clean up
+rm -v dummy.c a.out
