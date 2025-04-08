@@ -1,0 +1,45 @@
+# Prebuilt Toolchain: Update NetBSD Curses
+# Build and install under chroot
+
+# Build 
+PREFIX=/tools make all
+
+# Install to a temporary directory
+make PREFIX=/tools DESTDIR=/tmp/ncurses install
+
+# Remove old version
+for b in clear  infocmp  reset  tabs  tic  tput  tset
+do
+  rm -v /tools/bin/$b
+done
+for l in form menu ncurse curse  panel termcap terminfo
+do
+  rm -v  /tools/lib/lib$l*
+done 
+for h in curses eti form menu ncurses panel term termcap unctrl
+do
+  rm -v /tools/include/$h.h
+done
+
+# If replacing ncurses with netbsd-curses, do
+# the above along with this:
+for b in captoinfo infotocap ncursesw toe 
+do
+  rm -v /tools/bin/$b*
+done
+for h in cursesapp etip ncurses_dll term_entry 
+do
+  rm -v /tools/include/$h.h
+done
+for h in f m p w k
+do
+ rm -v /tools/include/curses$h.h
+done
+rm -rv /tools/share/{tabset,terminfo}
+
+# No need to install documentation
+rm -rf /tmp/ncurses/tools/share/man
+
+# Then install to toolchain
+cp -rv /tmp/ncurses/tools/* /tools/
+
