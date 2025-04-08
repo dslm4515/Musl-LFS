@@ -1,5 +1,5 @@
 # Prebuilt Toolchain: Update GCC
-# # Build and install in chroot
+# Build and install in chroot
 
 # Additional sources to add
 # Added "pipping" from xz/gunzip for tar, improves 
