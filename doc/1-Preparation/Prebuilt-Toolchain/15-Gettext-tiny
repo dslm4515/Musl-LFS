@@ -1,0 +1,19 @@
+# Prebuilt Toolchain: Update gettext-tiny
+# Build and install under chroot
+
+# Remove old  gettext-tiny or GNU gettext 
+# (if toolchain has it)
+rm -v /tools/bin/{autopoint,msgfmt,msgmerge,xgettext}
+
+# Build
+make LIBINTL=MUSL prefix=/tools
+
+# Build shared library
+cc -O0 -fPIC -c -o libintl-musl.o libintl/libintl-musl.c
+cc -shared -o libintl.so libintl-musl.o
+
+# Install library
+cp -v libintl.so /tools/lib/
+
+# Install the msgfmt, msgmerge and xgettext programs to toolchain
+cp -v autopoint msgfmt msgmerge xgettext /tools/bin

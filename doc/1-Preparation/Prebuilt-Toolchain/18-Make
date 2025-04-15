@@ -1,0 +1,8 @@
+# Prebuilt Toolchain: Update Make
+# Build and install under chroot
+
+# Configure source
+./configure --prefix=/tools --without-guile
+
+# Build and install to toolchain
+make && make install

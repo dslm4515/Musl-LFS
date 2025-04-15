@@ -1,0 +1,11 @@
+# Prebuilt Toolchain: Update Flex
+# Build and install under chroot
+
+# Configure source
+./configure --prefix=/tools
+
+# Build and install to toolchain
+make && make install
+
+# Create a compatibility link, if missing
+ln -sv flex /tools/bin/lex

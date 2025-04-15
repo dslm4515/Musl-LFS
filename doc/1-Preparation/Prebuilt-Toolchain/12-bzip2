@@ -1,0 +1,20 @@
+# Prebuilt Toolchain: Update bzip2
+# Build and install under chroot
+
+# Fix the Makefiles for  ensures installation of symbolic
+# links are relative and the man pages are installed into
+# the correct location:
+cp Makefile{,.orig}
+sed -e "/^all:/s/ test//" Makefile.orig > Makefile
+sed -i 's@\(ln -s -f \)$(PREFIX)/bin/@\1@' Makefile
+sed -i "s@(PREFIX)/man@(PREFIX)/share/man@g" Makefile
+
+# Prepare source 
+make -f Makefile-libbz2_so 
+make clean
+
+# Build 
+make 
+
+# Install to tool chain
+make PREFIX=/tools install
