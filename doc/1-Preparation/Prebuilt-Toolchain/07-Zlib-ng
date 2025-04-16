@@ -1,0 +1,15 @@
+# Prebuilt Toolchain: Update Zlib-ng
+# Build and install under chroot
+
+# Remove previous zlib-ng or zlib
+rm -v /tools/lib/libz*
+
+# Configure source
+./configure --prefix=/tools \
+            --libdir=/tools/lib \
+            --zlib-compat 
+
+# Build and install to toolchain
+make && make install
+
+ln -sv libz.so.1.3.1.zlib-ng  /tools/lib/libz.so.1.3.11 
