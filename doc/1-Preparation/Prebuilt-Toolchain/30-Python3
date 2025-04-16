@@ -1,0 +1,19 @@
+# Prebuilt Toolchain: Update Python3
+# Build and install under chroot
+
+# Apply fixes to build under musl
+patch -Np0 -i ../patches/python3-void/musl-find_library.patch 
+
+# If adding optional python-based tools to toolchain, like
+# meson, make sure pip3 is built
+export PI="--with-ensurepip=yes "
+# Otherwise:
+export PI="--without-ensurepip "
+
+# Configure source
+./configure --prefix=/tools --enable-shared $PI
+
+# Build and install to toolchain
+make && make install
+
+unset PI

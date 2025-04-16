@@ -1,0 +1,39 @@
+# Prebuilt Toolchain: Update Perl
+# Build and install under chroot
+
+# Remove previous perl
+rm -rf /tools/lib/perl5
+
+# Zlib not built, build the bundled zlib
+export BUILD_ZLIB=True
+
+# Set to avoid compiling a bundled bzip2.
+# Use the bzip2 installed in tools
+export BUILD_BZIP2=0
+
+# Set additional flags
+export  CFLAGS=" -DNO_POSIX_2008_LOCALE"
+export CFLAGS+=" -D_GNU_SOURCE"
+
+# Make sure the bundled bzip2 is not compiled
+rm -rf cpan/Compress-Raw-Bzip2/bzip2-src
+sed -i '/\(bzip2\|zzz\)-src/d' MANIFEST
+
+export PVER="5.40.1"
+
+# Configure source 
+sh Configure -des -Dprefix=/tools \
+    -Dlibs=-lm -Uloclibpth -Ulocincpth \
+    -Dlibc="/tools/lib/libc.so" \
+    -Dccflags='-Wno-implicit-function-declaration' \
+    -Dcccdlflags='-fPIC' -Dccdlflags='-rdynamic'
+
+# compile
+make
+
+# Only a few of the utilities and libraries need to be installed to toolchain
+cp -v perl cpan/podlators/scripts/pod2man /tools/bin
+mkdir -pv    /tools/lib/perl5/${PVER}
+cp -Rv lib/* /tools/lib/perl5/${PVER}
+
+unset BUILD_ZLIB BUILD_BZIP2 CFLAGS

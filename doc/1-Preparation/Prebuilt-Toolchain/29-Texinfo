@@ -1,0 +1,8 @@
+# Prebuilt Toolchain: Update Texinfo
+# Build and install under chroot
+
+# Configure source
+./configure --prefix=/tools 
+
+# Build and install to toolchain
+make && make install
