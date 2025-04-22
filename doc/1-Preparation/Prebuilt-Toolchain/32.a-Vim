@@ -1,0 +1,20 @@
+# Prebuilt Toolchain: Update Vim
+# Build and install under chroot
+
+# Remove previous vim, if installed:
+rm -rf /tools/bin/{vim,vimtutor,vi}
+rm -rf /tools/share/vim
+
+
+# Modify source for vim's configuration
+echo '#define SYS_VIMRC_FILE "/tools/etc/vimrc"' >> src/feature.h
+sed -i '/call/{s/split/xsplit/;s/303/492/}' src/testdir/test_recover.vim
+
+# Configure source
+./configure --prefix=/tools --disable-gui --without-x --disable-nls
+
+# Build and install to toolchain
+make && make install
+
+# Create an optional compatibility link
+ln -sv vim /tools/bin/vi

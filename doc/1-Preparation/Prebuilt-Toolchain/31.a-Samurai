@@ -1,0 +1,16 @@
+# Prebuilt Toolchain: Update Samurai
+# Build and install under chroot
+
+# If replacing ninja with samurai,
+# remove ninja
+rm -rf /tools/bin/ninja
+
+# Build
+CC=cc make PREFIX=/tools
+
+# Install
+make PREFIX=/tools install
+
+# If choosing samurai over ninja,
+# create a compatibility link:
+ln -sv samu /tools/bin/ninja

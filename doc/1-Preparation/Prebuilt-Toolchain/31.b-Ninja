@@ -1,0 +1,19 @@
+# Prebuilt Toolchain: Update Ninja
+# Build and install under chroot
+
+# NOTE: This is optional if ninja is preferred over samurai
+
+# If desired, add the capability to use the
+# environment variable NINJAJOBS
+sed -i '/int Guess/a \
+  int   j = 0;\
+  char* jobs = getenv( "NINJAJOBS" );\
+  if ( jobs != NULL ) j = atoi( jobs );\
+  if ( j > 0 ) return j;\
+' src/ninja.cc
+
+# Build with python:
+python3 configure.py --bootstrap --verbose
+
+# Install to toolchain
+install -vm755 ninja /tools/bin/
